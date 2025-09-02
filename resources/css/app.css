@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+    font-family: monteserat;
+    src: url("../../public/storage/fonts/montserrat/Montserrat-Bold.ttf"),
+     url("../../public/storage/fonts/montserrat/Montserrat-Regular.ttf");
+}
+    
+@font-face {
+    font-family: josefin;
+    src: url("../../public/storage/fonts/josefin-sans/JosefinSans-Regular.ttf"),
+    url("../../public/storage/fonts/josefin-sans/JosefinSans-SemiBold.ttf"),
+        url("../../public/storage/fonts/josefin-sans/JosefinSans-Bold.ttf");
+}
