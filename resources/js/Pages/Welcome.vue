@@ -6,7 +6,7 @@ import { Head, Link } from '@inertiajs/vue3';
 
 <template>
     <Head title="Welcome" />
-    <div class="flex flex-col justify-around h-screen p-6 sm:p-12 ">
+    <div class="flex flex-col justify-around h-screen">
         <div class="flex flex-row space-x-6">
             <div>
                 <div

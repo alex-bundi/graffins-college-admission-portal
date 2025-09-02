@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GeneralController;
+use App\Http\Controllers\Application\ApplicationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -9,6 +10,12 @@ use Inertia\Inertia;
 
 Route::get('/', [GeneralController::class, 'getHomePage']);
 Route::get('/welcome', [GeneralController::class, 'getWelcomePage'])->name('welcome');
+
+// General Queries
+Route::prefix('application')->group(function () {
+    Route::get('/department', [ApplicationController::class, 'getDepartmentPage'])->name('department');
+
+});
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
