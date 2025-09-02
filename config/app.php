@@ -2,6 +2,26 @@
 
 return [
 
+     /*
+    |--------------------------------------------------------------------------
+    | Live Environment
+    |--------------------------------------------------------------------------
+    */
+    // 'webService' => 'https://api.businesscentral.dynamics.com/v2.0/9db19b6a-d4cf-4625-b29e-0f5028f72d99/Graffins-Test-Ref/WS/Graffins%20Fareens%20Sandbox/Codeunit/StudentPortal',
+    // 'odata' => "https://api.businesscentral.dynamics.com/v2.0/9db19b6a-d4cf-4625-b29e-0f5028f72d99/Graffins-Test-Ref/ODataV4/Company('Graffins%20Fareens%20Sandbox')/",
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Test Environment
+    |--------------------------------------------------------------------------
+    */
+    'odata' => "https://api.businesscentral.dynamics.com/v2.0/9db19b6a-d4cf-4625-b29e-0f5028f72d99/Graffins-Sandbox/ODataV4/Company('Graffins%20College%20Alex')/",
+    'webService' => 'https://api.businesscentral.dynamics.com/v2.0/9db19b6a-d4cf-4625-b29e-0f5028f72d99/Graffins-Sandbox/WS/Graffins%20College%20Alex/Codeunit/VendorPortal',
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
