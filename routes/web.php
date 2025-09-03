@@ -14,6 +14,7 @@ Route::get('/welcome', [GeneralController::class, 'getWelcomePage'])->name('welc
 // General Queries
 Route::prefix('application')->group(function () {
     Route::get('/department', [ApplicationController::class, 'getDepartmentPage'])->name('department');
+    Route::get('/mode-of-study', [ApplicationController::class, 'getModeOfStudyPage'])->name('mode.of.study');
 
 });
 
