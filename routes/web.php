@@ -31,8 +31,15 @@ Route::get('/dashboard', [GeneralController::class, 'getDashboard'])->name('dash
 Route::get('/apply-course', [CourseController::class, 'getCourseList'])->name('course.list');
 
 Route::prefix('application')->group(function () {
-    Route::get('/department', [ApplicationController::class, 'getDepartmentPage'])->name('department');
+    
     Route::get('/mode-of-study', [ApplicationController::class, 'getModeOfStudyPage'])->name('mode.of.study');
+    Route::post('/post-mode-of-study', [ApplicationController::class, 'postModeOfStudy'])->name('post.mode.of.study');
+
+    Route::get('/department', [ApplicationController::class, 'getDepartmentPage'])->name('department');
+    Route::post('/post-department', [ApplicationController::class, 'postDepartment'])->name('post.department');
+
+    Route::get('/pick-course', [ApplicationController::class, 'getPickCoursePage'])->name('pick.course');
+    Route::post('/post-pick-course', [ApplicationController::class, 'postPickCourse'])->name('post.pick.course');
 
 });
 

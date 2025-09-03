@@ -9,14 +9,13 @@ import Notifications from '@/Layouts/Notifications.vue';
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    inclass: '',
-    online: '',
+    departmentCode: '',
 });
 
 function submit(){
 
   
-    router.post('/application/post-mode-of-study', form, {
+    router.post('/application/post-department', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
@@ -33,8 +32,9 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Mode of Study" />
+    <Head title="Pick Course" />
     <AuthenticatedLayout>
+        
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div
@@ -42,8 +42,11 @@ function submit(){
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
-                    Select your Mode of Study
+                    🎓 Please pick the course you are joining
                 </h1>
+                <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
+                    This will help us provide the right information and support for your registration.
+                </p>
             </div>
         </div>
 
@@ -51,41 +54,14 @@ function submit(){
                 <Notifications :errors="errors" :success="success"/> 
         </div>
 
-        <div class="mt-12"> 
+        <div class="mt-12 ">
+            
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <ul class="grid w-full gap-6 md:grid-cols-2">
-                    <li>
-                        <input type="radio" v-model="form.inclass" id="inclass" name="inclass" value="inclass" class="hidden peer" />
-                        <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                            bg-white border border-gray-200 rounded-lg cursor-pointer  
-                            peer-checked:border-primaryColor
-                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                            dark:text-gray-400 ">                           
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">IN CLASS</div>
-                            </div>
-                            
-                        </label>
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.inclass">{{ form.errors.inclass }}</div>
+               <div>
 
-                    </li>
-                    <li>
-                        <input type="radio"  v-model="form.inclass" id="online" name="online" value="online" class="hidden peer">
-                        <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                            bg-white border border-gray-200 rounded-lg cursor-pointer  
-                            peer-checked:border-primaryColor
-                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                            dark:text-gray-400 ">
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">ONLINE</div>
-                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.online">{{ form.errors.online }}</div>
+               </div>
 
-                            </div>
-                        </label>
-                    </li>
-                </ul>
-
-                 <div class="w-1/4">
+                         <div class="w-1/4">
                     <button type="submit" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                     rounded-full shadow-md 
                                     bg-gradient-to-b from-lime-400 to-green-500 
@@ -103,7 +79,6 @@ function submit(){
                 </div>
             </form>
         </div>
-
 
     </AuthenticatedLayout>
 </template>
