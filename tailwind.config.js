@@ -35,7 +35,8 @@ export default {
               },
             colors: {
                 appTheme: '#F4F5FA', 
-                primaryColor: '#008f3f'
+                primaryColor: '#008f3f',
+                darkPrimaryColor: '#006400',
               },
         },
     },

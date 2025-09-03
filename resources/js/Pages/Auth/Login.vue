@@ -1,100 +1,143 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm,router } from '@inertiajs/vue3';
+import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
+import Notifications from '@/Layouts/Notifications.vue';
+import FormInput from '@/Components/FormInput.vue';
+import FormInputLabel from '@/Components/FormInputLabel.vue';
+import { ref, onMounted } from 'vue';
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-
+const errors = ref({});
+const success = ref({});
 const form = useForm({
     email: '',
     password: '',
-    remember: false,
 });
+const disableSubmitBtn = ref(false);
 
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+function submit(){
+
+    disableSubmitBtn.value = true;
+   if (form.email == null){
+        form.errors.email = 'Email is required'; 
+        return;
+    }
+    if (form.password == null){
+        form.errors.password = 'Password is required'; 
+        return;
+    }
+    if (form.password.length < 8){
+        form.errors.password = 'The password length has to be 8 characters long'; 
+        return; 
+    }
+
+    router.post('/post-login', form, {
+        onError : (allErrors) => {
+            for(let error in allErrors){
+            errors.value[error] = allErrors[error]
+            }
+            disableSubmitBtn.value = false;
+
+           
+        },
+
     });
-};
+
+ 
+}
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Log in" />
+    <Head title="Register" />
+    <ApplicationLayout>
+        <div class="flex flex-row space-x-6 items-center">
+             <div>
+                <div
+                    class="inline-block rounded-md h-20 min-h-[1em] w-0.5 self-stretch bg-green-400 dark:bg-white/10"></div>
+            </div>
+            <div>
+                <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
+                    Login 
+                </h1>
+            </div>
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-            {{ status }}
+            <div>
+                <Notifications :errors="errors" :success="success"/> 
+            </div>
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+        <div class="mt-4"> 
+            <form action="" method="post" class="" @submit.prevent="submit">
+                <div class="grid gap-4 md:grid-cols-2">
+                
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+                    <!--  Email -->
+                    <div class="max-w-sm" >
+                        <div class="flex flex-row space-x-2">
+                            <FormInputLabel for-input="_email" label-name="Email" class="" />
+                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                *
+                            </span>
+                        </div>
+                        <FormInput 
+                            type="email"
+                            id="_email"
+                            v-model="form.email"
+                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                            
+                            required/> 
+                            
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.email">{{ form.errors.email }}</div>
+                        
+                    </div>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                    <!-- Password -->
+                    <div class="max-w-sm" >
+                        <div class="flex flex-row space-x-2">
+                            <FormInputLabel for-input="password" label-name="Password" class="" />
+                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                *
+                            </span>
+                        </div>
+                        
+                        <FormInput 
+                            type="text"
+                            id="password"
+                            v-model="form.password"
+                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                            
+                            required/> 
+                            
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.password">{{ form.errors.password }}</div>
+                        
+                    </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                    <div v-show="disableSubmitBtn == false" >
+                            <div class="max-w-sm mt-5" id="sign-in-btn"> 
+                                <button type="submit" :disabled="form.processing" class="py-2.5 sm:py-3 px-4  block w-full items-center gap-x-2 font-league tracking-wider text-sm font-medium rounded-lg border border-transparent 
+                                    bg-primaryColor text-white hover:bg-darkPrimaryColor focus:outline-hidden focus:bg-primaryColor disabled:opacity-50 
+                                    disabled:pointer-events-none">
+                                    Login
+                                </button>
+                            </div>
+                    </div>
+                    <div v-show="disableSubmitBtn" class="max-w-sm mt-5">
+                        <button disabled type="button" class="text-white bg-amber-700 hover:bg-amber-800 cursor-not-allowed
+                            font-medium rounded-lg font-monteserat tracking-wider text-sm px-5 py-2.5 text-center me-2 inline-flex items-center">
+                            <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                            </svg>
+                           Logging in...
+                        </button>
+                    </div>
+                </div>
+            </form>
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
+        </div>
 
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
 
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
-                </label>
-            </div>
 
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Forgot your password?
-                </Link>
 
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+
+    </ApplicationLayout>
 </template>

@@ -36,7 +36,7 @@ import { Head, Link } from '@inertiajs/vue3';
         </div>
 
         <div class="w-1/4">
-            <Link :href="route('mode.of.study')" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
+            <Link :href="route('registration.status')" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                             rounded-full shadow-md 
                             bg-gradient-to-b from-lime-400 to-green-500 
                             hover:from-lime-500 hover:to-green-600 

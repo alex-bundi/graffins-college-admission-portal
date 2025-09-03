@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
-import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
 </script>
 
 <template>
     <Head title="Mode of Study" />
-    <ApplicationLayout>
+    <AuthenticatedLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div
@@ -20,5 +21,5 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
         </div>
 
 
-    </ApplicationLayout>
+    </AuthenticatedLayout>
 </template>
