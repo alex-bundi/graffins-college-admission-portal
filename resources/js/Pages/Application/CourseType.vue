@@ -98,7 +98,7 @@ function submit(){
                                     </label>
                                 </li>
                              
-                            </ul>
+                        </ul>
                     </section>
 
                     <section>

@@ -62,10 +62,60 @@ class ApplicationController extends Controller
 
     }
 
-     public function getCourseTypePage(){
+    public function getCourseTypePage(){
         return Inertia::render('Application/CourseType');
     }
     public function postCourseType(Request $request){
+        try{
+
+            return redirect()->route('class.start.date');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+
+    public function getClassStartDatePage(){
+        return Inertia::render('Application/ClassStartDate');
+    }
+    public function postClassStartDate(Request $request){
+        try{
+
+            return redirect()->route('class.start.time');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+
+    public function getClassStartTimePage(){
+        return Inertia::render('Application/ClassTime');
+    }
+    public function postClassStartTime(Request $request){
+        try{
+
+            return redirect()->route('course.summary');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+    public function getCourseSummmary(){
+        return Inertia::render('Application/CourseSummary');
+    }
+    public function postCourseSummmary(Request $request){
         try{
 
             return redirect()->route('department');
@@ -76,5 +126,9 @@ class ApplicationController extends Controller
             ]);
         }
 
+    }
+
+    public function getStartBioData(){
+        return Inertia::render('Application/StartBioData');
     }
 }
