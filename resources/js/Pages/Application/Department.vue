@@ -59,7 +59,7 @@ function submit(){
                 </p>
             </div>
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <ul class="grid w-full gap-6 md:grid-cols-2">
+                <ul class="grid w-full gap-6 md:grid-cols-1">
                     <li>
                         <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
                         <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 

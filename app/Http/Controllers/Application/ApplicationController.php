@@ -52,6 +52,22 @@ class ApplicationController extends Controller
     public function postPickCourse(Request $request){
         try{
 
+            return redirect()->route('course-type');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+     public function getCourseTypePage(){
+        return Inertia::render('Application/CourseType');
+    }
+    public function postCourseType(Request $request){
+        try{
+
             return redirect()->route('department');
             
         }catch(Exception $e){

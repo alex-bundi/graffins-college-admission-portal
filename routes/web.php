@@ -41,6 +41,9 @@ Route::prefix('application')->group(function () {
     Route::get('/pick-course', [ApplicationController::class, 'getPickCoursePage'])->name('pick.course');
     Route::post('/post-pick-course', [ApplicationController::class, 'postPickCourse'])->name('post.pick.course');
 
+    Route::get('/course-type', [ApplicationController::class, 'getCourseTypePage'])->name('course-type');
+    Route::post('/post-course-type', [ApplicationController::class, 'postCourseType'])->name('post.course-type');
+
 });
 
 
