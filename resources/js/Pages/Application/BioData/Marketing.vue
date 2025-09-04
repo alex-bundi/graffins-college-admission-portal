@@ -18,7 +18,7 @@ function submit(){
 
    
 
-    router.post('/post-login', form, {
+    router.post('/application/post-marketing', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]

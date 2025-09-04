@@ -18,7 +18,7 @@ function submit(){
 
    
 
-    router.post('/application/post-upload-id-passport', form, {
+    router.post('/application/post-upload-photo', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
@@ -35,7 +35,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="Upload Passport Photo" />
     <ApplicationLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>
@@ -44,10 +44,10 @@ function submit(){
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
-                    🆔 Upload Your ID or Passport
+                    🆔 Upload Your Passport size photo
                 </h1>
                 <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
-                    Kindly upload a clear photo or scan of your National ID or Passport for verification.
+                    Kindly upload a clear photo or scan of your photo
                 </p>
             </div>
 
@@ -61,7 +61,7 @@ function submit(){
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="max-w-sm" >
                         <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="phone_no" label-name="Area code phone number" class="" />
+                            <FormInputLabel for-input="phone_no" label-name="Upload Photo" class="" />
                             <span class="font-josefin tracking-wider font-bold text-base text-red-500">
                                 *
                             </span>

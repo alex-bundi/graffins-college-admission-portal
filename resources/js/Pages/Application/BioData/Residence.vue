@@ -18,7 +18,7 @@ function submit(){
 
    
 
-    router.post('/post-login', form, {
+    router.post('/application/post-residence', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
@@ -35,7 +35,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Nationality" />
+    <Head title="Residence" />
     <ApplicationLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>

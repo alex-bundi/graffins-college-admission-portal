@@ -5,6 +5,8 @@ use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Application\BioDataController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\RegulationsController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -60,7 +62,64 @@ Route::prefix('application')->group(function () {
     Route::get('/full-name', [BioDataController::class, 'getFullNamePage'])->name('full.name');
     Route::post('/post-full-name', [BioDataController::class, 'postFullNamePage'])->name('post.full.name');
 
+    Route::get('/contacts', [BioDataController::class, 'getContactPage'])->name('contacts');
+    Route::post('/post-contacts', [BioDataController::class, 'postContact'])->name('post.contacts');
+
+    Route::get('/nationality', [BioDataController::class, 'getNationalityPage'])->name('nationality');
+    Route::post('/post-nationality', [BioDataController::class, 'postNationality'])->name('post.nationality');
+
+    Route::get('/email-address', [BioDataController::class, 'getEmailAddressPage'])->name('email.address');
+    Route::post('/post-email-address', [BioDataController::class, 'postEmailAddress'])->name('post.email.address');
+
+    Route::get('/residence', [BioDataController::class, 'getResidencePage'])->name('residence');
+    Route::post('/post-residence', [BioDataController::class, 'postResidence'])->name('post.residence');
+
+    Route::get('/marketing', [BioDataController::class, 'getMarketingPage'])->name('marketing');
+    Route::post('/post-marketing', [BioDataController::class, 'postMarketing'])->name('post.marketing');
+
+    Route::get('/allergies', [BioDataController::class, 'getAllergiesPage'])->name('allergies');
+    Route::post('/post-allergies', [BioDataController::class, 'postAllergies'])->name('post.allergies');
+
+    Route::get('/allergy-description', [BioDataController::class, 'getAllergyDescriptionPage'])->name('allergy.description');
+    Route::post('/post-allergy-description', [BioDataController::class, 'postAllergyDescription'])->name('post.allergy.description');
+
+    Route::get('/emergency-contact', [BioDataController::class, 'getEmergencyContactPage'])->name('emergency.contact');
+    Route::post('/post-emergency-contact', [BioDataController::class, 'postEmergencyContact'])->name('post.emergency.contact');
+
+    Route::get('/upload-id-passport', [BioDataController::class, 'getUploadIDPage'])->name('upload.id');
+    Route::post('/post-upload-id-passport', [BioDataController::class, 'postUploadID'])->name('post.upload.id');
+    
+    Route::get('/upload-photo', [BioDataController::class, 'getUploadPhotoPage'])->name('upload.photo');
+    Route::post('/post-upload-photo', [BioDataController::class, 'postUploadPhoto'])->name('post.upload.photo');
+
+    Route::get('/personal-information-summary', [BioDataController::class, 'getBiodataSummary'])->name('bio.data.summary');
+
 });
+
+Route::prefix('regulations')->group(function () {
+    
+    Route::get('/page-one', [RegulationsController::class, 'getPageOne'])->name('page.one');
+    Route::get('/page-two', [RegulationsController::class, 'getPageTwo'])->name('page.two');
+    Route::get('/page-three', [RegulationsController::class, 'getPageThree'])->name('page.three');
+    Route::get('/page-four', [RegulationsController::class, 'getPageFour'])->name('page.four');
+    Route::get('/page-five', [RegulationsController::class, 'getPageFive'])->name('page.five');
+    Route::get('/page-six', [RegulationsController::class, 'getPageSix'])->name('page.six');
+    Route::get('/page-seven', [RegulationsController::class, 'getPageSeven'])->name('page.seven');
+    Route::get('/page-eight', [RegulationsController::class, 'getPageEight'])->name('page.eight');
+    Route::get('/declaration', [RegulationsController::class, 'getDeclaration'])->name('declaration');
+
+
+});
+
+Route::prefix('payments')->group(function () {
+    
+    Route::get('/amount-payable', [PaymentController::class, 'getAmountPayable'])->name('amount.payable');
+    Route::get('/payment-instructions', [PaymentController::class, 'getPaymentInstructions'])->name('payment.instructions');
+    Route::get('/update-payment', [PaymentController::class, 'getUpdatePaymentForm'])->name('update.payment');
+    
+
+});
+
 
 
 Route::middleware('auth')->group(function () {

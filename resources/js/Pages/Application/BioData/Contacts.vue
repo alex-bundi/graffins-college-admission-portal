@@ -18,7 +18,7 @@ function submit(){
 
    
 
-    router.post('/post-login', form, {
+    router.post('/application/post-contacts', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
@@ -35,7 +35,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="Contact Number" />
     <ApplicationLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>
