@@ -6,13 +6,33 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Exception;
+use App\Models\Applicant;
+use App\Models\ApplicantCourse;
+use App\Traits\OdataTrait;
+use App\Models\GeneralQueries;
+use App\Traits\GeneralTrait;
 
 
 class ApplicationController extends Controller
 {
-    //
+    use OdataTrait;
+    use GeneralTrait;
+    protected $generalQueries;
+
+    public function __construct()
+    {
+        $this->generalQueries = new GeneralQueries();
+    }
 
     public function getDepartmentPage(){
+        try {
+            $departmentsQuery = $this->generalQueries->departmentsQuery();
+            $departmentsURL = config('app.odata') . "{$departmentsQuery}";
+            $departmentsData = $this->getOdata($departmentsURL);
+            dd($departmentsData);
+        }catch(Exception $e){
+
+        }
         return Inertia::render('Application/Department');
         
     }
@@ -33,7 +53,14 @@ class ApplicationController extends Controller
     }
 
     public function postModeOfStudy(Request $request){
+        // dd($request->all());
+        // $validated = $request->validate([
+        //     'inclass' => 'nullable|string',
+        //     'online' => 'nullable|string',
+        // ]);
         try{
+
+            // Create the applica
 
             return redirect()->route('department');
             

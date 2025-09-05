@@ -13,6 +13,10 @@ class GeneralQueries extends Model
         return 'QyApplicants';
     }
 
+    public function departmentsQuery(){
+        return 'QyDimensions';
+    }
+
     
 
 }

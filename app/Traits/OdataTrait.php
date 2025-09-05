@@ -46,7 +46,6 @@ trait OdataTrait {
             
             
         }  catch (ClientException | ServerException $e) {
-            dd($e->getMessage());
             $statusCode = $e->getResponse()->getStatusCode();
             $message = $e->getMessage();
 
