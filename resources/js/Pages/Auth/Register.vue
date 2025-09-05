@@ -9,7 +9,9 @@ import { ref, onMounted } from 'vue';
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    fullName: '',
+    firstName: '',
+    secondName: '',
+    lastName: '',
     email: '',
     password: '',
 });
@@ -18,18 +20,24 @@ const disableSubmitBtn = ref(false);
 function submit(){
 
     disableSubmitBtn.value = true;
-   if (form.email == null){
+
+    if (form.firstName == null){
+        form.errors.firstName = 'First Name is required'; 
+    }
+    if (form.secondName == null){
+        form.errors.secondName = 'Second Name is required'; 
+    }
+    if (form.lastName == null){
+        form.errors.lastName = 'Last Name is required'; 
+    }
+
+    if (form.email == null){
         form.errors.email = 'Email is required'; 
-        return;
     }
     if (form.password == null){
         form.errors.password = 'Password is required'; 
-        return;
     }
-    if (form.password.length < 8){
-        form.errors.password = 'The password length has to be 8 characters long'; 
-        return; 
-    }
+    
 
     router.post('/post-register', form, {
         onError : (allErrors) => {
@@ -71,20 +79,58 @@ function submit(){
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="max-w-sm" >
                         <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="full_name" label-name="Full Name" class="" />
+                            <FormInputLabel for-input="first_name" label-name="First Name" class="" />
                             <span class="font-josefin tracking-wider font-bold text-base text-red-500">
                                 *
                             </span>
                         </div>
                         <FormInput 
                             type="text"
-                            id="full_name"
-                            v-model="form.fullName"
+                            id="first_name"
+                            v-model="form.firstName"
                             class="py-2.5 sm:py-3 px-4 block w-full text-base font-josefin font-bold tracking-wider"
                             
                             required/> 
                             
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.fullName">{{ form.errors.fullName }}</div>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.firstName">{{ form.errors.firstName }}</div>
+                        
+                    </div>
+
+                    <div class="max-w-sm" >
+                        <div class="flex flex-row space-x-2">
+                            <FormInputLabel for-input="second_name" label-name="Second Name" class="" />
+                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                *
+                            </span>
+                        </div>
+                        <FormInput 
+                            type="text"
+                            id="second_name"
+                            v-model="form.secondName"
+                            class="py-2.5 sm:py-3 px-4 block w-full text-base font-josefin font-bold tracking-wider"
+                            
+                            required/> 
+                            
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.secondName">{{ form.errors.secondName }}</div>
+                        
+                    </div>
+
+                    <div class="max-w-sm" >
+                        <div class="flex flex-row space-x-2">
+                            <FormInputLabel for-input="last_name" label-name="Last Name" class="" />
+                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                *
+                            </span>
+                        </div>
+                        <FormInput 
+                            type="text"
+                            id="last_name"
+                            v-model="form.lastName"
+                            class="py-2.5 sm:py-3 px-4 block w-full text-base font-josefin font-bold tracking-wider"
+                            
+                            required/> 
+                            
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.lastName">{{ form.errors.lastName }}</div>
                         
                     </div>
 

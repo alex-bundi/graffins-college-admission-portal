@@ -25,10 +25,6 @@ function submit(){
         form.errors.password = 'Password is required'; 
         return;
     }
-    if (form.password.length < 8){
-        form.errors.password = 'The password length has to be 8 characters long'; 
-        return; 
-    }
 
     router.post('/post-login', form, {
         onError : (allErrors) => {
@@ -60,9 +56,10 @@ function submit(){
                 </h1>
             </div>
 
-            <div>
-                <Notifications :errors="errors" :success="success"/> 
-            </div>
+            
+        </div>
+        <div>
+            <Notifications :errors="errors" :success="success"/> 
         </div>
 
         <div class="mt-4"> 
