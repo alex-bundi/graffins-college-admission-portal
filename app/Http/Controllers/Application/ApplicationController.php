@@ -29,16 +29,29 @@ class ApplicationController extends Controller
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}";
             $departmentsData = $this->getOdata($departmentsURL);
-            dd($departmentsData);
+            $departments = $departmentsData['value'];
+
+            return Inertia::render('Application/Department', [
+                'departments' => $departments,
+            ]);
+
         }catch(Exception $e){
 
         }
-        return Inertia::render('Application/Department');
         
     }
-    public function postDepartment(){
+    public function postDepartment(Request $request){
         try{
-
+            $validated = $request->validate([
+                'departmentCode' => 'required|string',
+            ]);
+            
+            $applicationID =session('user_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->department_code = trim($validated['departmentCode']);
+            $applicantCourse->save();
+            
             return redirect()->route('pick.course');
             
         }catch(Exception $e){
@@ -53,16 +66,38 @@ class ApplicationController extends Controller
     }
 
     public function postModeOfStudy(Request $request){
-        // dd($request->all());
-        // $validated = $request->validate([
-        //     'inclass' => 'nullable|string',
-        //     'online' => 'nullable|string',
-        // ]);
+        $validated = $request->validate([
+            'inclass' => 'nullable|string',
+            'online' => 'nullable|string',
+        ]);
         try{
+            $applicationNo = session('user_data')['application_no'];
+            
+            // Create the application
+            $application = [
+                'application_no' => $applicationNo,
+            ];
 
-            // Create the applica
+            $newApplication = Applicant::create($application);
+            if($newApplication->exists){
+                
 
-            return redirect()->route('department');
+                $applicantCourse = [
+                    'mode_of_study' =>$validated['inclass'] != null ? 1 : 2,
+                    'applicant_id' => $newApplication->id,
+                ];
+                session()->put('user_data.applicant_id', $newApplication->id);
+
+
+                $newApplicantCourse = ApplicantCourse::create($applicantCourse);
+
+                if($newApplicantCourse->exists){
+                    session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
+                    return redirect()->route('department')->with('success', 'Mode of study created successfully');;
+                }
+            }
+
+            
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([

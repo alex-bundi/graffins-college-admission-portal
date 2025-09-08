@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('applicant_course', function (Blueprint $table) {
-            $table->id();
-            $table->string('applicant_id');
+        Schema::create('applicant_course', function (Blueprint $table) {
+            $table->bigIncrements('id')->primary();
+            $table->unsignedBigInteger('applicant_id');
             $table->string('academic_year')->nullable();
             $table->string('intake')->nullable();
             $table->string('department_code')->nullable();

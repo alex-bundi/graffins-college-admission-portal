@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('applicant', function (Blueprint $table) {
-            $table->id();
-            $table->string('first_name');
+        Schema::create('applicant', function (Blueprint $table) {
+            $table->bigIncrements('id')->primary();
+            $table->string('first_name')->nullable();
             $table->string('second_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('phone_no')->nullable();
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('allergies')->nullable();
             $table->string('allergy_description')->nullable();
             $table->date('application_date')->nullable();
+            $table->string('application_no')->nullable();
             $table->timestamps();
         });
     }
