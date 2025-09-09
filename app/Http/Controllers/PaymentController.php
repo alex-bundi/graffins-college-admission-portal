@@ -24,4 +24,16 @@ class PaymentController extends Controller
         return Inertia::render('Payments/UpdatePayment');
 
     }
+
+    public function postPayment(Request $request){
+        try{
+
+            return redirect()->route('student.id');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }

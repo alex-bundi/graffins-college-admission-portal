@@ -93,6 +93,14 @@ Route::prefix('application')->group(function () {
     Route::post('/post-upload-photo', [BioDataController::class, 'postUploadPhoto'])->name('post.upload.photo');
 
     Route::get('/personal-information-summary', [BioDataController::class, 'getBiodataSummary'])->name('bio.data.summary');
+    
+    Route::get('/student-id', [ApplicationController::class, 'getStudentIDPage'])->name('student.id');
+    Route::post('/post-student-id', [ApplicationController::class, 'postStudentID'])->name('post.upload.photo');
+
+    Route::get('/admission-letter', [ApplicationController::class, 'getAdmissionLetterPage'])->name('admission.letter');
+    Route::get('/final', [ApplicationController::class, 'getFinalPage'])->name('final');
+
+
 
 });
 
@@ -116,6 +124,7 @@ Route::prefix('payments')->group(function () {
     Route::get('/amount-payable', [PaymentController::class, 'getAmountPayable'])->name('amount.payable');
     Route::get('/payment-instructions', [PaymentController::class, 'getPaymentInstructions'])->name('payment.instructions');
     Route::get('/update-payment', [PaymentController::class, 'getUpdatePaymentForm'])->name('update.payment');
+    Route::post('/post-update-payment', [PaymentController::class, 'postPayment'])->name('post.payment');
     
 
 });

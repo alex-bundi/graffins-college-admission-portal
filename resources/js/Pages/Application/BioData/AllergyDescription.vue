@@ -9,7 +9,7 @@ import { ref, onMounted } from 'vue';
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    residence: '',
+    allergyDescription: '',
 });
 
 
@@ -58,20 +58,20 @@ function submit(){
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="max-w-sm" >
                         <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="full_name" label-name="Full Name" class="" />
+                            <FormInputLabel for-input="allergy_description" label-name="Allergy Description" class="" />
                             <span class="font-josefin tracking-wider font-bold text-base text-red-500">
                                 *
                             </span>
                         </div>
                         <FormInput 
                             type="text"
-                            id="full_name"
-                            v-model="form.fullName"
+                            id="allergy_description"
+                            v-model="form.allergyDescription"
                             class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
                             
                             required/> 
                             
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.fullName">{{ form.errors.fullName    }}</div>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.allergyDescription">{{ form.errors.allergyDescription    }}</div>
                         
                     </div>
   

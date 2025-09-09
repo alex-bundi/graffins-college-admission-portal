@@ -10,6 +10,8 @@ use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Applicant;
+
 
 
 
@@ -69,6 +71,10 @@ class GeneralController extends Controller
 
             } else if (count($applicantsData['value']) > 0){
                 if(Hash::check($validated['password'], $applicantsData['value'][0]['Admission_Portal_Password'])){
+                    // find applicant
+                    $applicant = Applicant::where('email', $email)->first();
+
+
                     $user = [
                         'application_no' => $applicantsData['value'][0]['Application_No'],
                         'first_name' => $applicantsData['value'][0]['First_Name'],
@@ -76,6 +82,7 @@ class GeneralController extends Controller
                         'last_name' => $applicantsData['value'][0]['Last_Name'],
                         'email' => $applicantsData['value'][0]['Email'],
                         'application_status' => $applicantsData['value'][0]['Application_Status'],
+                        'applicant_id' => $applicant->id,
                     ];
                     session()->put('user_data', $user);
 
@@ -136,6 +143,15 @@ class GeneralController extends Controller
 
 
                 if($result){
+                    
+                    $application = [
+                        'application_no' => $result->return_value,
+                        'first_name' => trim($validated['firstName']),
+                        'second_name' => trim($validated['secondName']),
+                        'last_name' => trim($validated['lastName']),
+                        'email' => strtolower(trim($validated['email'])),
+                    ];
+                    $newApplication = Applicant::create($application);
                 // Rember to cater for the other $result conditions such as 'Reset UnSuccessful' etc...
                     if($result->return_value){
                         return redirect()->route('login')->with('success', 'Your account has been created successfully and is currently under review');

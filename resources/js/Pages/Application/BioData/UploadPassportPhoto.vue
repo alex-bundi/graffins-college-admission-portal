@@ -9,7 +9,7 @@ import { ref, onMounted } from 'vue';
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    phoneNo: '',
+    passportImage: null,
 });
 
 
@@ -23,9 +23,7 @@ function submit(){
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
             }
-            disableSubmitBtn.value = false;
-
-           
+            disableSubmitBtn.value = false;   
         },
 
     });
@@ -57,26 +55,23 @@ function submit(){
         </div>
 
         <div class="mt-4"> 
-            <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
+            <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit" enctype="multipart/form-data">
                 <div class="grid gap-4 md:grid-cols-2">
+                    <div class="grid gap-4 md:grid-cols-2">
                     <div class="max-w-sm" >
                         <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="phone_no" label-name="Upload Photo" class="" />
-                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                                *
-                            </span>
+                            <FormInputLabel for-input="pharmacy_image" label-name="Photo" class="" />
+                            
                         </div>
-                        <FormInput 
-                            type="text"
-                            id="phone_no"
-                            v-model="form.phoneNo"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                        <input @input="form.passportImage = $event.target.files[0]" id="your_photo" type="file" class="py-2.5 sm:py-3 px-4 block w-full text-sm text-gray-600 
+                        bg-white border border-gray-200 rounded-lg file:bg-gray-200 file:text-gray-700 file:text-sm 
+                            file:px-4 file:py-1 file:border-none file:rounded-full placeholder-gray-400/70 focus:outline-none 
+                            focus:ring-1 focus:ring-opacity-40  focus:ring-primaryColor focus:border-primaryColor  " accept="image/png, image/jpeg"/>
                             
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.phoneNo">{{ form.errors.phoneNo    }}</div>
-                        
+
                     </div>
+  
+                </div>
   
                 </div>
 

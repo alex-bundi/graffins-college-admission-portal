@@ -4,33 +4,19 @@ import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 
-const props = defineProps({
-    courses: Object,
-});
-
-const itCourses = Object.fromEntries(
-    Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WCAPS')
-)
-
-const engCourses = Object.fromEntries(
-    Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WENG')
-)
-
-const businessCourses = Object.fromEntries(
-    Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WBM')
-)
 
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    courseCode: '',
+    inclass: '',
+    online: '',
 });
 
 function submit(){
 
   
-    router.post('/application/post-pick-course', form, {
+    router.post('/application/post-course-type', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
@@ -47,9 +33,8 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Pick Course" />
+    <Head title="Mode of Study" />
     <AuthenticatedLayout>
-        
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div
@@ -57,10 +42,11 @@ function submit(){
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
-                    🎓 Please pick the course you are joining
+                    📘 Are you registering for a single subject or the full course?
                 </h1>
+
                 <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
-                    This will help us provide the right information and support for your registration.
+                    Please select one so we can guide you accordingly.
                 </p>
             </div>
         </div>
@@ -69,100 +55,96 @@ function submit(){
                 <Notifications :errors="errors" :success="success"/> 
         </div>
 
-        <div class="mt-12 ">
-            
+        <div class="mt-12"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- It Courses section -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                     <!-- It Courses section -->
                     <section>
                         <!-- Header -->
                         <div class="p-6 bg-white rounded-md ">
                             <h2 class="font-monteserat text-base tracking-wider">
-                                💼 Technology Department
+                                Single Subject
                             </h2>
                         </div>
                          <!-- IT Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li v-for="course in itCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" />
-                                    <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                <li>
+                                    <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
+                                    <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
                                         peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                                         dark:text-gray-400 ">                           
                                         <div class="block">
-                                            <div class="w-full text-lg font-semibold">{{ course.CourseDescription }}</div>
+                                            <div class="w-full text-lg font-semibold">Indesign</div>
                                         </div>
                                         
                                     </label>
                                     <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
                                 </li>
-                               
+                                <li>
+                                    <input type="radio"  v-model="form.departmentCode" id="online" name="online" value="online" class="hidden peer">
+                                    <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                        peer-checked:border-primaryColor
+                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                        dark:text-gray-400 ">
+                                        <div class="block">
+                                            <div class="w-full text-lg font-semibold">Illustrator</div>
+                                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+
+                                        </div>
+                                    </label>
+                                </li>
                              
                         </ul>
                     </section>
 
-                    <!-- Business Courses section -->
                     <section>
                         <!-- Header -->
                         <div class="p-6 bg-white rounded-md ">
                             <h2 class="font-monteserat text-base tracking-wider">
-                                🖥️ Business Department
+                                Full Course
                             </h2>
                         </div>
                          <!-- Business Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li v-for="course in businessCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" />
-                                    <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                <li>
+                                    <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
+                                    <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
                                         peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                                         dark:text-gray-400 ">                           
                                         <div class="block">
-                                            <div class="w-full text-lg font-semibold">{{ course.CourseDescription }}</div>
+                                            <div class="w-full text-lg font-semibold">Level I </div>
                                         </div>
                                         
                                     </label>
                                     <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
                                 </li>
-                             
-                            </ul>
-                    </section>
-
-                    <!-- English Courses section -->
-                    <section>
-                        <!-- Header -->
-                        <div class="p-6 bg-white rounded-md ">
-                            <h2 class="font-monteserat text-base tracking-wider">
-                                🗣️ Language Skills Department
-                            </h2>
-                        </div>
-                         <!-- English Courses -->
-                        <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li v-for="course in engCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" />
-                                    <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                <li>
+                                    <input type="radio"  v-model="form.departmentCode" id="online" name="online" value="online" class="hidden peer">
+                                    <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
                                         peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                        dark:text-gray-400 ">                           
+                                        dark:text-gray-400 ">
                                         <div class="block">
-                                            <div class="w-full text-lg font-semibold">{{ course.CourseDescription }}</div>
-                                        </div>
-                                        
-                                    </label>
-                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                                            <div class="w-full text-lg font-semibold">Level I </div>
+                                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
+                                        </div>
+                                    </label>
                                 </li>
                              
                             </ul>
                     </section>
-               </div>
+                </div>
 
-                <div class="w-1/4">
+                 <div class="w-1/4">
                     <button type="submit" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                     rounded-full shadow-md 
                                     bg-gradient-to-b from-lime-400 to-green-500 
@@ -180,6 +162,7 @@ function submit(){
                 </div>
             </form>
         </div>
+
 
     </AuthenticatedLayout>
 </template>

@@ -17,6 +17,14 @@ class GeneralQueries extends Model
         return 'QyDimensions';
     }
 
+    public function coursesQuery(){
+        return 'QyCourses';
+    }
+
+    public function unitsQuery(){
+        return 'QyUnits';
+    }
+
     
 
 }

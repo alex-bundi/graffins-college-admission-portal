@@ -20,6 +20,8 @@ class Applicant extends Model
         'allergies',
         'allergy_description',
         'application_date',
+        'application_no',
+        'application_status',
     ];
 
     protected $hidden = [

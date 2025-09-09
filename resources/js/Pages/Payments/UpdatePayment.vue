@@ -18,7 +18,7 @@ const form = useForm({
 function submit(){
 
 
-    router.post('/post-register', form, {
+    router.post('/payments/post-update-payment', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
@@ -97,7 +97,7 @@ function submit(){
 
                     <!-- Password -->
                     <div class="max-w-sm" >
-                        <div class="flex flex-row space-x-2">
+                        <!-- <div class="flex flex-row space-x-2">
                             <FormInputLabel for-input="payment_mode" label-name="Mode of Payment" class="" />
                             <span class="font-josefin tracking-wider font-bold text-base text-red-500">
                                 *
@@ -113,7 +113,55 @@ function submit(){
                             required/> 
                             
                         <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.modeOfPayment">{{ form.errors.modeOfPayment }}</div>
-                        
+                         -->
+
+                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                    <li>
+                        <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
+                        <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                            bg-white border border-gray-200 rounded-lg cursor-pointer  
+                            peer-checked:border-primaryColor
+                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                            dark:text-gray-400 ">                           
+                            <div class="block">
+                                <div class="w-full text-lg font-semibold">MPESA</div>
+                            </div>
+                            
+                        </label>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+
+                    </li>
+                    <li>
+                        <input type="radio"  v-model="form.departmentCode" id="cheque" name="cheque" value="cheque" class="hidden peer">
+                        <label for="cheque" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                            bg-white border border-gray-200 rounded-lg cursor-pointer  
+                            peer-checked:border-primaryColor
+                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                            dark:text-gray-400 ">
+                            <div class="block">
+                                <div class="w-full text-lg font-semibold">CHEQUE</div>
+                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+
+                            </div>
+                        </label>
+                    </li>
+
+                    <li>
+                        <input type="radio"  v-model="form.departmentCode" id="cash" name="cash" value="cash" class="hidden peer">
+                        <label for="cash" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                            bg-white border border-gray-200 rounded-lg cursor-pointer  
+                            peer-checked:border-primaryColor
+                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                            dark:text-gray-400 ">
+                            <div class="block">
+                                <div class="w-full text-lg font-semibold">CASH</div>
+                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+
+                            </div>
+                        </label>
+                    </li>
+                             
+                </ul>
                     </div>
 
                     <div class="max-w-sm" >
