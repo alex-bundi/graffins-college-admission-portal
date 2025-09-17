@@ -28,6 +28,7 @@ class ApplicationController extends Controller
 
     public function getDepartmentPage(){
         try {
+            
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
             $departmentsData = $this->getOdata($departmentsURL);
@@ -82,22 +83,34 @@ class ApplicationController extends Controller
             'online' => 'nullable|string',
         ]);
         try{
-            $applicationNo = session('user_data')['application_no'];
-            
+            // Create an application
+            $application = [
+                'first_name' => session('user_data')['first_name'],
+                'second_name' => session('user_data')['second_name'],
+                'last_name' => session('user_data')['last_name'],
+                'email' => strtolower(session('user_data')['email']),
+            ];
+            $newApplication = Applicant::create($application);
           
+            if($newApplication->exists){
+                session()->put('user_data.application_no', $newApplication->id);
                 
-
                 $applicantCourse = [
                     'mode_of_study' =>$validated['inclass'] != null ? 1 : 2,
-                    'applicant_id' => session('user_data')['applicant_id'],
+                    'applicant_id' => session('user_data')['application_no'],
                 ];
 
                 $newApplicantCourse = ApplicantCourse::create($applicantCourse);
+                            // $applicationNo = session('user_data')['application_no'];
+
 
                 if($newApplicantCourse->exists){
                     session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
                     return redirect()->route('department')->with('success', 'Mode of study created successfully');;
-                }
+                }   
+            }
+
+                
            
 
             
@@ -113,12 +126,20 @@ class ApplicationController extends Controller
 
     public function getPickCoursePage(){
         try{
+            $applicationID =session('user_data')['applicationCourseID'];
+             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+
+            if(!$applicantCourse){
+                return redirect()->route('mode.of.study')->with('success', 'Could not process application. Please contact support');;
+            }
+
             $courseQuery = $this->generalQueries->coursesQuery();
             $coursesURL = config('app.odata') . "{$courseQuery}";
             $courseData = $this->getOdata($coursesURL);
             
             return Inertia::render('Application/PickCourse', [
                 'courses' => $courseData['value'],
+                'department' => $applicantCourse->department_code
             ]);
         }catch(Exception $e){
             return redirect()->route('department')->withErrors([
@@ -127,6 +148,7 @@ class ApplicationController extends Controller
         }
     }
     public function postPickCourse(Request $request){
+        
          $validated = $request->validate([
             'courseCode' => 'required|string',
         ]);

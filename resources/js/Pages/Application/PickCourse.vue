@@ -6,7 +6,9 @@ import Notifications from '@/Layouts/Notifications.vue';
 
 const props = defineProps({
     courses: Object,
+    department: String,
 });
+console.log(props.department);
 
 const itCourses = Object.fromEntries(
     Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WCAPS')
@@ -72,12 +74,12 @@ function submit(){
         <div class="mt-12 ">
             
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div class="">
                     <!-- It Courses section -->
-                    <section>
+                    <section v-show="props.department == 'WCAPS'">
                         <!-- Header -->
                         <div class="p-6 bg-white rounded-md ">
-                            <h2 class="font-monteserat text-base tracking-wider">
+                            <h2 class="flex justify-center font-monteserat text-base tracking-wider">
                                 💼 Technology Department
                             </h2>
                         </div>
@@ -104,7 +106,7 @@ function submit(){
                     </section>
 
                     <!-- Business Courses section -->
-                    <section>
+                    <section v-show="props.department == 'WBM'">
                         <!-- Header -->
                         <div class="p-6 bg-white rounded-md ">
                             <h2 class="font-monteserat text-base tracking-wider">
@@ -133,7 +135,7 @@ function submit(){
                     </section>
 
                     <!-- English Courses section -->
-                    <section>
+                    <section v-show="props.department == 'WENG'">
                         <!-- Header -->
                         <div class="p-6 bg-white rounded-md ">
                             <h2 class="font-monteserat text-base tracking-wider">
