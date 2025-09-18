@@ -4,6 +4,9 @@ import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 
+const props = defineProps({
+    units: Object,
+});
 
 
 const errors = ref({});

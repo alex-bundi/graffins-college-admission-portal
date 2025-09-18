@@ -24,6 +24,12 @@ class GeneralQueries extends Model
     public function unitsQuery(){
         return 'QyUnits';
     }
+    public function unitFeesQuery(){
+        return 'QyUnitFees';
+    }
+    public function classTimeQuery(){
+        return 'QyClassTime';
+    }
 
     
 

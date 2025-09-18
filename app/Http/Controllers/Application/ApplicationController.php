@@ -171,15 +171,30 @@ class ApplicationController extends Controller
 
     public function getCourseTypePage(){
         try{
-            
             $applicationID =session('user_data')['applicationCourseID'];
-            
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicanCourseCode = $applicantCourse->course_code;
+
+            $unitFeesQuery = $this->generalQueries->unitFeesQuery();
+            $unitFeesURL = config('app.odata') . "{$unitFeesQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
+            $unitFeesData = $this->getOdata($unitFeesURL);
+            $unitFees = $unitFeesData['value'];
+            
+            
             if ($applicantCourse->department_code == 'WCAPS'){
-                return Inertia::render('Application/CourseType');
+                return Inertia::render('Application/CourseType', [
+                    'units' => $unitFees,
+                ]);
             } else if ($applicantCourse->department_code == 'WENG'){
-                return Inertia::render('Application/ENGLevels');
+                return Inertia::render('Application/ENGLevels', [
+                    'units' => $unitFees,
+                ]);
+            }else if ($applicantCourse->department_code == 'WBM'){
+                return Inertia::render('Application/WBMCourseLevels', [
+                    'units' => $unitFees,
+                ]);
             }
+
 
             
             
@@ -191,7 +206,35 @@ class ApplicationController extends Controller
         
     }
     public function postCourseType(Request $request){
+        $validated = $request->validate([
+            'courseLevel' => 'nullable|string',
+            'singleSubject' => 'nullable|string',
+        ]);
         try{
+            $courseLevel = '';
+            $courseUnit = '';
+            if ($validated['singleSubject'] != null){
+                $pattern = '/^([^.]+)\.\./';
+                if (preg_match($pattern, $validated['singleSubject'], $matches)) {
+                    $courseLevel = trim($matches[1]);
+                }
+
+                $unitPattern = '/\.\.(.+)$/';
+                if (preg_match($pattern, $validated['singleSubject'] , $matches)) {
+                    $courseUnit = $matches[1];
+                }
+            } else {
+                $courseLevel = $validated['courseLevel'];
+            }
+
+            $applicationID =session('user_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->course_level = $courseLevel;
+            $applicantCourse->unit_code = $courseUnit;
+            $applicantCourse->unit_status = ($validated['singleSubject'] != null) ? 'Single Subject' : 'Full Course';
+            $applicantCourse->save();
+
 
             return redirect()->route('class.start.date');
             
@@ -205,10 +248,29 @@ class ApplicationController extends Controller
 
 
     public function getClassStartDatePage(){
-        return Inertia::render('Application/ClassStartDate');
+        try{
+            return Inertia::render('Application/ClassStartDate');  
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+        
     }
     public function postClassStartDate(Request $request){
+        $validated = $request->validate([
+            'startDate' => 'nullable|date',
+        ]);    
         try{
+             $applicationID =session('user_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->start_date = $validated['startDate'];
+            if (!$applicantCourse->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save the start date. Please try again.'
+                ]);
+            }
 
             return redirect()->route('class.start.time');
             
@@ -222,7 +284,21 @@ class ApplicationController extends Controller
 
 
     public function getClassStartTimePage(){
-        return Inertia::render('Application/ClassTime');
+        try{
+            $classTimeQuery = $this->generalQueries->classTimeQuery();
+            $classTimeURL = config('app.odata') . "{$classTimeQuery}";
+            $classTimeData = $this->getOdata($classTimeURL);
+            $classTimes = $classTimeData['value'];
+
+            
+            return Inertia::render('Application/ClassTime', [
+                'classTime' => $classTimes,
+            ]);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
     public function postClassStartTime(Request $request){
         try{

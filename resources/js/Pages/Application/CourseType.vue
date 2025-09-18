@@ -1,16 +1,30 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 
+const props = defineProps({
+    units: Object,
+});
 
+const uniqueLevels = computed(() => {
+  if (!props.units || !Array.isArray(props.units)) return []
+  
+  const levels = props.units
+    .map(unit => unit.CourseLevel)
+    .filter(Boolean) // removes any null/undefined values
+  
+  return [...new Set(levels)].sort()
+});
+
+// console.log(uniqueLevels.value)
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    inclass: '',
-    online: '',
+    singleSubject: '',
+    courseLevel: '',
 });
 
 function submit(){
@@ -33,7 +47,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Mode of Study" />
+    <Head title="Pick Course" />
     <AuthenticatedLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>
@@ -68,34 +82,20 @@ function submit(){
                         </div>
                          <!-- IT Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li>
-                                    <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
-                                    <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                <li v-for="unit in props.units" :key="unit.UnitCode">
+                                    <input type="radio" v-model="form.singleSubject" :id="unit.UnitCode" :name="unit.UnitCode" :value="unit.CourseLevel + '..' + unit.UnitCode" class="hidden peer" />
+                                    <label :for="unit.UnitCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
                                         peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                                         dark:text-gray-400 ">                           
                                         <div class="block">
-                                            <div class="w-full text-lg font-semibold">Indesign</div>
+                                            <div class="w-full text-lg font-semibold">{{ unit.UnitDescription }}</div>
                                         </div>
                                         
                                     </label>
                                     <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
-                                </li>
-                                <li>
-                                    <input type="radio"  v-model="form.departmentCode" id="online" name="online" value="online" class="hidden peer">
-                                    <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
-                                        peer-checked:border-primaryColor
-                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                        dark:text-gray-400 ">
-                                        <div class="block">
-                                            <div class="w-full text-lg font-semibold">Illustrator</div>
-                                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
-
-                                        </div>
-                                    </label>
                                 </li>
                              
                         </ul>
@@ -110,34 +110,21 @@ function submit(){
                         </div>
                          <!-- Business Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li>
-                                    <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
-                                    <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                <li v-for="level, index in uniqueLevels" :key="index">
+                                   
+                                    <input type="radio" v-model="form.courseLevel" :id="index" :name="index" :value="level" class="hidden peer" />
+                                    <label :for="index" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
                                         peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                                         dark:text-gray-400 ">                           
                                         <div class="block">
-                                            <div class="w-full text-lg font-semibold">Level I </div>
+                                            <div class="w-full text-lg font-semibold">{{ level }} </div>
                                         </div>
                                         
                                     </label>
                                     <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
-                                </li>
-                                <li>
-                                    <input type="radio"  v-model="form.departmentCode" id="online" name="online" value="online" class="hidden peer">
-                                    <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
-                                        peer-checked:border-primaryColor
-                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                        dark:text-gray-400 ">
-                                        <div class="block">
-                                            <div class="w-full text-lg font-semibold">Level I </div>
-                                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
-
-                                        </div>
-                                    </label>
                                 </li>
                              
                             </ul>
