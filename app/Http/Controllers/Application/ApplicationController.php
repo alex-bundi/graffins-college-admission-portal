@@ -289,10 +289,10 @@ class ApplicationController extends Controller
             $classTimeURL = config('app.odata') . "{$classTimeQuery}";
             $classTimeData = $this->getOdata($classTimeURL);
             $classTimes = $classTimeData['value'];
-
+           
             
             return Inertia::render('Application/ClassTime', [
-                'classTime' => $classTimes,
+                'classTimes' => $classTimes,
             ]);
         }catch(Exception $e){
             return redirect()->back()->withErrors([

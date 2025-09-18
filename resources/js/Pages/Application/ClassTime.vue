@@ -10,6 +10,7 @@ import FormInputLabel from '@/Components/FormInputLabel.vue';
 const props = defineProps({
     classTimes: Object,
 });
+console.log(props.classTimes)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
@@ -63,15 +64,15 @@ function submit(){
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
               
                 <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                    <li v-for="classTime in classTimes">
-                        <input type="radio" v-model="form.time" id="inclass" name="inclass" value="inclass" class="hidden peer" />
-                        <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                    <li v-for="classTime in props.classTimes" :key="classTime.Code">
+                        <input type="radio" v-model="form.time" :id="classTime.Code" :name="classTime.Code" :value="classTime.Code" class="hidden peer" />
+                        <label :for="classTime.Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor
                             peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                             dark:text-gray-400 ">                           
                             <div class="block">
-                                <div class="w-full text-lg font-semibold">9 am</div>
+                                <div class="w-full text-lg font-semibold">{{ classTime.Class_Time }}</div>
                             </div>
                             
                         </label>
