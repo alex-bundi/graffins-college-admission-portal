@@ -20,7 +20,8 @@ class ApplicantCourse extends Model
         'end_date',
         'application_date',
         'unit_status',
-        'unit_code'
+        'unit_code',
+        'class_time',
     ];
 
     protected $hidden = [

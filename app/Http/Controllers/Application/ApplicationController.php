@@ -301,7 +301,19 @@ class ApplicationController extends Controller
         }
     }
     public function postClassStartTime(Request $request){
+        $validated = $request->validate([
+            'time' => 'nullable|string',
+        ]);
         try{
+             $applicationID =session('user_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->class_time = trim($validated['time']           );
+            if (!$applicantCourse->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save the class time. Please try again.'
+                ]);
+            }
 
             return redirect()->route('course.summary');
             
@@ -314,7 +326,21 @@ class ApplicationController extends Controller
     }
 
     public function getCourseSummmary(){
-        return Inertia::render('Application/CourseSummary');
+        try{
+            $applicationID =session('user_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+
+            return Inertia::render('Application/CourseSummary', [
+                'applicantCourse' => $applicantCourse,
+            ]);
+
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
     public function postCourseSummmary(Request $request){
         try{

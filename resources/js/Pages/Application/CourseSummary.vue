@@ -5,13 +5,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
+const props = defineProps({
+    applicantCourse: Object,
+});
 
-
+console.log(props.applicantCourse.class_time);
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    startDate: '',
+    courseName: '',
 
 });
 
@@ -58,61 +61,85 @@ function submit(){
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12"> 
-            <div class="flex flex-col space-y-3">
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        Course Name:
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
-                    </p>
+            <form action="">
+                <div class="flex flex-col space-y-3">
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Course Name:
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            Adobe
+                        </p>
+                    </div>
+
+
+
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Course Level:
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            Adobe
+                        </p>
+                    </div>
+
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Department
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            Adobe
+                        </p>
+                    </div>
+
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Duration
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            Adobe
+                        </p>
+                    </div>
+
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Mode of study
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            Adobe
+                        </p>
+                    </div>
+
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Start Date
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            Adobe
+                        </p>
+                    </div>
                 </div>
 
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        Course Level:
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
-                    </p>
+                <div class="max-w-sm" >
+                    <div class="flex flex-row space-x-2">
+                        <FormInputLabel for-input="course_Name" label-name="Course Name:" class="" />
+                        <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                            *
+                        </span>
+                    </div>
+                    <FormInput 
+                        type="text"
+                        id="course_Name"
+                        v-model="form.courseName"
+                        class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                        
+                        required/> 
+                        
+                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.courseName">{{ form.errors.courseName }}</div>
+                    
                 </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        Department
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        Duration
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        Mode of study
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        Start Date
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
-                    </p>
-                </div>
-            </div>
+            </form>
+            
 
             <div class="flex flex-col space-y-3">
                 <div class="flex flex-col space-y-3 items-center">
