@@ -86,7 +86,7 @@ function submit(){
                          <!-- IT Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="course in itCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode + '..' + course.CourseDescription" class="hidden peer" />
                                     <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
@@ -97,7 +97,7 @@ function submit(){
                                         </div>
                                         
                                     </label>
-                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.courseCode">{{ form.errors.courseCode }}</div>
 
                                 </li>
                                
@@ -116,7 +116,7 @@ function submit(){
                          <!-- Business Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="course in businessCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode + '..' + course.CourseDescription" class="hidden peer" />
                                     <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
@@ -127,7 +127,7 @@ function submit(){
                                         </div>
                                         
                                     </label>
-                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.courseCode">{{ form.errors.courseCode }}</div>
 
                                 </li>
                              
@@ -145,7 +145,7 @@ function submit(){
                          <!-- English Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="course in engCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode + '..' + course.CourseDescription" class="hidden peer" />
                                     <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
@@ -156,7 +156,7 @@ function submit(){
                                         </div>
                                         
                                     </label>
-                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.courseCode">{{ form.errors.courseCode }}</div>
 
                                 </li>
                              

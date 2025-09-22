@@ -9,7 +9,7 @@ const props = defineProps({
     applicantCourse: Object,
 });
 
-console.log(props.applicantCourse.class_time);
+console.log(props.applicantCourse);
 
 const errors = ref({});
 const success = ref({});
@@ -68,7 +68,7 @@ function submit(){
                             Course Name:
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
-                            Adobe
+                            {{ applicantCourse.course_description }}
                         </p>
                     </div>
 
@@ -79,7 +79,7 @@ function submit(){
                             Course Level:
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
-                            Adobe
+                            {{ applicantCourse.course_level }}
                         </p>
                     </div>
 
@@ -88,7 +88,7 @@ function submit(){
                             Department
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
-                            Adobe
+                            {{ applicantCourse.department_description }}
                         </p>
                     </div>
 
@@ -120,7 +120,7 @@ function submit(){
                     </div>
                 </div>
 
-                <div class="max-w-sm" >
+                <!-- <div class="max-w-sm" >
                     <div class="flex flex-row space-x-2">
                         <FormInputLabel for-input="course_Name" label-name="Course Name:" class="" />
                         <span class="font-josefin tracking-wider font-bold text-base text-red-500">
@@ -137,7 +137,7 @@ function submit(){
                         
                     <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.courseName">{{ form.errors.courseName }}</div>
                     
-                </div>
+                </div> -->
             </form>
             
 

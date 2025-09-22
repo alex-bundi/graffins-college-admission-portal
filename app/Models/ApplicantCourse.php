@@ -22,6 +22,9 @@ class ApplicantCourse extends Model
         'unit_status',
         'unit_code',
         'class_time',
+        'course_description',
+        'level_description',
+        'department_description',
     ];
 
     protected $hidden = [

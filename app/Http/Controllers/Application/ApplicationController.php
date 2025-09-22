@@ -50,11 +50,25 @@ class ApplicationController extends Controller
             $validated = $request->validate([
                 'departmentCode' => 'required|string',
             ]);
+
+            if($validated['departmentCode'] != null){
+                $departmentCodePtrn = '/^([^.]+)\.\./';
+                $departmentDescriPtrn = '/\.\.(.+)$/';
+                if (preg_match($departmentCodePtrn, $validated['departmentCode'], $matches)) {
+                    $departmentCode = trim($matches[1]);
+                }
+
+                if (preg_match($departmentDescriPtrn, $validated['departmentCode'] , $matches)) {
+                    $departmentDescription = $matches[1];
+                }
+                
+            }
             
             $applicationID =session('user_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->department_code = trim($validated['departmentCode']);
+            $applicantCourse->department_code = trim($departmentCode);
+            $applicantCourse->department_description = trim($departmentDescription);
             $applicantCourse->save();
             
             return redirect()->route('pick.course');
@@ -148,15 +162,27 @@ class ApplicationController extends Controller
         }
     }
     public function postPickCourse(Request $request){
-        
          $validated = $request->validate([
             'courseCode' => 'required|string',
         ]);
         try{
+            if($validated['courseCode'] != null){
+                $courseCodePtrn = '/^([^.]+)\.\./';
+                $courseDescriPtrn = '/\.\.(.+)$/';
+                if (preg_match($courseCodePtrn, $validated['courseCode'], $matches)) {
+                     $courseCode = trim($matches[1]);
+                }
+
+                if (preg_match($courseDescriPtrn, $validated['courseCode'] , $matches)) {
+                    $courseDescription = $matches[1];
+                }
+                
+            }
             $applicationID =session('user_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->course_code = trim($validated['courseCode']);
+            $applicantCourse->course_code = trim($courseCode);
+            $applicantCourse->course_description = trim($courseDescription);
             $applicantCourse->save();
 
             return redirect()->route('course-type');
