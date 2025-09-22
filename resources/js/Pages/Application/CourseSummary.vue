@@ -14,19 +14,18 @@ console.log(props.applicantCourse);
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    courseName: '',
+    courseSummary: '',
 
 });
 
-function submit(){
-
+function submitCourseSummary(){
+    form.courseSummary = 'submitted';
   
-    router.post('/application/post-class-start-date', form, {
+    router.post('/application/post-course-summary', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
             }
-            disableSubmitBtn.value = false;
 
            
         },
@@ -106,7 +105,7 @@ function submit(){
                             Mode of study
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
-                            Adobe
+                            {{ (applicantCourse.mode_of_study == 1) ? 'Inclass' : 'Online'  }}
                         </p>
                     </div>
 
@@ -115,9 +114,19 @@ function submit(){
                             Start Date
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
-                            Adobe
+                            {{ applicantCourse.start_date }}
                         </p>
                     </div>
+                    <!-- Course Type -->
+                    <div v-show="applicantCourse.unit_status ==  'Single Subject'" class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Course Type
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                           Single Subject
+                        </p>
+                    </div>
+                    
                 </div>
 
                 <!-- <div class="max-w-sm" >
@@ -147,10 +156,14 @@ function submit(){
                         If everything looks good, Click <span class="font-monteserat tracking-wider font-bold">“Confirm” </span> to proceed.
                     </p>
 
-                    <div>
-                        <Link class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                            Confirm
-                        </Link>
+                    <div> 
+                        <form action="" method="post" @submit.prevent="submitCourseSummary">
+                            <input class="hidden" type="text" v-model="form.courseSummary" name="courseSummary" id="courseSummary" value="submitted">
+                            <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                Confirm
+                            </button>
+                        </form>
+                        
                     </div>
                 </div>
 

@@ -369,9 +369,22 @@ class ApplicationController extends Controller
         }
     }
     public function postCourseSummmary(Request $request){
+         $validated = $request->validate([
+            'courseSummary' => 'nullable|string',
+        ]);
         try{
+            $applicationID =session('user_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->application_status = $validated['courseSummary'];
+            if (!$applicantCourse->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save the start date. Please try again.'
+                ]);
+            }
 
-            return redirect()->route('department');
+
+            return redirect()->route('start.bio.data');
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([

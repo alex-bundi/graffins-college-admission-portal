@@ -59,8 +59,8 @@ Route::prefix('application')->group(function () {
     Route::get('/start-bio-data', [ApplicationController::class, 'getStartBioData'])->name('start.bio.data');
 
 
-    Route::get('/full-name', [BioDataController::class, 'getFullNamePage'])->name('full.name');
-    Route::post('/post-full-name', [BioDataController::class, 'postFullNamePage'])->name('post.full.name');
+    Route::get('/names', [BioDataController::class, 'getNamesPage'])->name('full.name');
+    Route::post('/post-names', [BioDataController::class, 'postNames'])->name('post.full.name');
 
     Route::get('/contacts', [BioDataController::class, 'getContactPage'])->name('contacts');
     Route::post('/post-contacts', [BioDataController::class, 'postContact'])->name('post.contacts');

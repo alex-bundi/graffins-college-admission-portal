@@ -6,15 +6,45 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Exception;
+use App\Models\User;
+use App\Models\Applicant;
+
+
 
 class BioDataController extends Controller
 {
-     public function getFullNamePage(){
-        return Inertia::render('Application/BioData/FullName');
+     public function getNamesPage(){
+        try{
+            $email = trim(session('user_data')['email']);
+            $user = User::where('email', $email)->first();
+            return Inertia::render('Application/BioData/FullName', [
+                'user' => $user,
+            ]);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+        
     }
 
-    public function postFullNamePage(Request $request){
+    public function postNames(Request $request){
+        $validated = $request->validate([
+            'firstName' => 'required|string',
+            'secondName' => 'required|string',
+            'lastName' => 'required|string',
+        ]);
         try{
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->first_name = $validated['firstName'];
+            $applicant->second_name = $validated['secondName'];
+            $applicant->last_name = $validated['lastName'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+            }
 
             return redirect()->route('contacts');
             
@@ -31,7 +61,18 @@ class BioDataController extends Controller
     }
 
     public function postContact(Request $request){
+        $validated = $request->validate([
+            'phoneNo' => 'required|string',
+        ]);
         try{
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->phone_no = $validated['phoneNo'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+            }
 
             return redirect()->route('nationality');
             
