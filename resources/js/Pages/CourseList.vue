@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 const props = defineProps({
     applications: Object,
 });
+
 console.log(props.applications);
 </script>
 
@@ -53,16 +54,17 @@ console.log(props.applications);
             </div>
         </section>
 
-        <section class=" flex flex-col items-center mt-6">
+        <section v-if="applications != null" class=" flex flex-col items-center mt-6">
             <div>
                 <h2 class="font-monteserat tracking-wider text-black text-base">
                     Your Applications
                 </h2>
             </div>
-            <ul>
+            <ul >
                 
 
-                <li v-for="application in applications" :key="application.Application_No">
+                <li v-for="application in applications" >
+                    
                     <div class="m-5">
                         <div class="group mx-2 mt-10 grid max-w-screen-md grid-cols-12 space-x-8 overflow-hidden bg-white rounded-lg shadow-md border py-8 text-gray-700 transition hover:shadow-lg sm:mx-auto">
                             <a href="#" class="order-2 col-span-1 mt-4 -ml-14 text-left text-gray-600 hover:text-gray-700 sm:-order-1 sm:ml-4">
@@ -76,20 +78,21 @@ console.log(props.applications);
                             </div>
                             </a>
                             <div class="col-span-11 flex flex-col pr-8 text-left sm:pl-4">
-                            <h3 class="text-sm font-josefin font-bold tracking-wider text-gray-600">{{ application.Application_No  }}</h3>
-                            <a href="#" class="mb-3 overflow-hidden pr-7 text-lg font-monteserat tracking-wider font-semibold sm:text-xl"> {{ application.First_Name + ' ' + application.Last_Name }}</a>
+                            <!-- <h3 class="text-sm font-josefin font-bold tracking-wider text-gray-600">{{ application.Application_No  }}</h3> -->
+                            <a href="#" class="mb-3 overflow-hidden pr-7 text-lg font-monteserat tracking-wider font-semibold sm:text-xl"> {{ application.first_name + ' ' + application.last_name }}</a>
                             <p class="overflow-hidden pr-7 text-sm font-josefin font-bold tracking-wider text-gray-600">
-                                {{ application.Email  }}
+                                {{ application.email  }}
                             </p>
 
                             <div class="mt-5 flex flex-col space-y-3 text-sm font-medium text-gray-500 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2">
-                                <div class="">Application Date:<span class="ml-2 mr-3 rounded-full bg-green-100 px-2 py-0.5 text-green-900"> 2 Years </span></div>
-                                <div class="">
+                                <div class="">Application Date:<span class="ml-2 mr-3 rounded-full bg-green-100 px-2 py-0.5 text-green-900"> 2 Years </span>
+                                </div>
+                                <!-- <div class="">
                                     Application Status:
                                     <span class="ml-2 mr-3 rounded-full bg-blue-100 px-2 py-0.5 text-blue-900">
                                     {{ application.Application_Status  }}
                                     </span>
-                            </div>
+                                </div> -->
                             </div>
                             </div>
                         </div>
@@ -97,6 +100,36 @@ console.log(props.applications);
 
                 </li>
             </ul>
+        </section>
+        <section v-else class=" flex flex-col items-center justify-center mt-6">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 0 0-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634Zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 0 1-.189-.866c0-.298.059-.605.189-.866Zm-4.34 7.964a.75.75 0 0 1-1.061-1.06 5.236 5.236 0 0 1 3.73-1.538 5.236 5.236 0 0 1 3.695 1.538.75.75 0 1 1-1.061 1.06 3.736 3.736 0 0 0-2.639-1.098 3.736 3.736 0 0 0-2.664 1.098Z" clip-rule="evenodd" />
+                </svg>
+
+            </div>
+            <div class="flex flex-col items-center space-y-5">
+                <h1 class="font-monteserat tracking-wider text-black text-xl">
+                    Nothing here yet.
+                </h1>
+                <p class="font-monteserat tracking-wider text-black text-base">
+                    Why not start by adding an application?
+                </p>
+
+                <div>
+                    
+
+                    <Link :href="route('mode.of.study')" class="relative inline-block text-lg group">
+                        <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                            <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-primaryColor"></span>
+                            <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                            <span class="relative"> Apply for a Course</span>
+                        </span>
+                        <span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+                    </Link>
+                </div>
+            </div>
+            
         </section>
 
 

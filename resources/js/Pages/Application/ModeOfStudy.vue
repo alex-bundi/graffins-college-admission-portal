@@ -1,20 +1,36 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
+const props = defineProps({
+    applicantCourse: Object,
+});
 
-
+const initialMode = ref(null)
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    inclass: '',
-    online: '',
+    mode_of_study: '',
+});
+
+onMounted(() => {
+    if((props.applicantCourse != null) && (props.applicantCourse.mode_of_study == 1)){
+        form.mode_of_study = 'inclass';
+        initialMode.value = 'inclass'
+    } else if ((props.applicantCourse != null) && (props.applicantCourse.mode_of_study == 2)){
+        form.mode_of_study = 'online';
+        initialMode.value = 'online'
+    }
 });
 
 function submit(){
-
+    console.log(initialMode.value);
+    return;
+    if (form.inclass === initialMode.value) {
+    } else {
+    }
   
     router.post('/application/post-mode-of-study', form, {
         onError : (allErrors) => {
@@ -55,7 +71,7 @@ function submit(){
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                 <ul class="grid w-full gap-6 md:grid-cols-2">
                     <li>
-                        <input type="radio" v-model="form.inclass" id="inclass" name="inclass" value="inclass" class="hidden peer" />
+                        <input type="radio" v-model="form.mode_of_study" id="inclass" name="inclass" value="inclass" class="hidden peer" />
                         <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor
@@ -66,11 +82,11 @@ function submit(){
                             </div>
                             
                         </label>
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.inclass">{{ form.errors.inclass }}</div>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.mode_of_study">{{ form.errors.mode_of_study }}</div>
 
                     </li>
                     <li>
-                        <input type="radio"  v-model="form.inclass" id="online" name="online" value="online" class="hidden peer">
+                        <input type="radio"  v-model="form.mode_of_study" id="online" name="online" value="online" class="hidden peer">
                         <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor
@@ -78,7 +94,7 @@ function submit(){
                             dark:text-gray-400 ">
                             <div class="block">
                                 <div class="w-full text-lg font-semibold">ONLINE</div>
-                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.online">{{ form.errors.online }}</div>
+                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.mode_of_study">{{ form.errors.mode_of_study }}</div>
 
                             </div>
                         </label>

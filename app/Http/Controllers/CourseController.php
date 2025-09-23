@@ -9,6 +9,7 @@ use Exception;
 use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
+use App\Models\Applicant;
 
 
 class CourseController extends Controller
@@ -23,12 +24,23 @@ class CourseController extends Controller
     }
 
     public function getCourseList(){
-        $email = session('user_data')['email'];
-        $applicantsQuery = $this->generalQueries->applicantsQuery();
-        $applicantsURL = config('app.odata') . "{$applicantsQuery}?". '$filter=' . rawurlencode("Email eq '{$email}'");
-        $applicantsData = $this->getOdata($applicantsURL);
-        return Inertia::render('CourseList',[
-            'applications' => $applicantsData['value'],
-        ]);
+        try{
+            $email = session('user_data')['email'];
+            $applications = Applicant::where('email', $email)->get();
+            
+            return Inertia::render('CourseList',[
+                'applications' => $applications,
+            ]);
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        // $applicantsQuery = $this->generalQueries->applicantsQuery();
+        // $applicantsURL = config('app.odata') . "{$applicantsQuery}?". '$filter=' . rawurlencode("Email eq '{$email}'");
+        // $applicantsData = $this->getOdata($applicantsURL);
+        
     }
 }

@@ -82,12 +82,45 @@ class ApplicationController extends Controller
 
     public function getModeOfStudyPage(){
         try {
+            $pendingApplications = $this->ValidateApplications();
 
-            return Inertia::render('Application/ModeOfStudy');
+            if ($pendingApplications == false){
+                return Inertia::render('Application/ModeOfStudy');
+
+            }else if ($pendingApplications == true){
+                $email = session('user_data')['email'];
+                $applications = Applicant::where('email', $email)
+                    ->where('application_status' , 'new')
+                    ->first();
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
+
+                return Inertia::render('Application/ModeOfStudy', [
+                    'applicantCourse' => $applicantCourse,
+                ]);
+
+            }
         }catch(Exception $e){
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
+        }
+    }
+
+    private function ValidateApplications(){
+        try{
+            $email = session('user_data')['email'];
+            $applications = Applicant::where('email', $email)
+                ->where('application_status' , 'new')
+                ->first();
+            
+            if ($applications === null) {
+                return false;
+            } else {
+                return true;
+            }
+
+        }catch(Exception $e){
+            // return false;
         }
     }
 
