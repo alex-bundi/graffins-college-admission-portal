@@ -288,7 +288,7 @@ class ApplicationController extends Controller
             'startDate' => 'nullable|date',
         ]);    
         try{
-             $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('user_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->start_date = $validated['startDate'];

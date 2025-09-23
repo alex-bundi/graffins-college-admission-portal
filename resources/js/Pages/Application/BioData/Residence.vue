@@ -6,6 +6,10 @@ import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
 import { ref, onMounted } from 'vue';
 
+const props = defineProps({
+    residences: Object,
+});
+
 const errors = ref({});
 const success = ref({});
 const form = useForm({
@@ -14,9 +18,6 @@ const form = useForm({
 
 
 function submit(){
-
-
-   
 
     router.post('/application/post-residence', form, {
         onError : (allErrors) => {
@@ -60,34 +61,20 @@ function submit(){
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                 
                 <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                    <li>
-                        <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
-                        <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                    <li v-for="residence in residences" :key="residence.Title_Code">
+                        <input type="radio" v-model="form.residence" :id="residence.Title_Code" :name="residence.Title_Code" :value="residence.Title_Code + '..' + residence.Description" class="hidden peer" />
+                        <label :for="residence.Title_Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor
                             peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                             dark:text-gray-400 ">                           
                             <div class="block">
-                                <div class="w-full text-lg font-semibold">Kenya</div>
+                                <div class="w-full text-lg font-semibold">{{ residence.Description }}</div>
                             </div>
                             
                         </label>
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.residence">{{ form.errors.residence }}</div>
 
-                    </li>
-                    <li>
-                        <input type="radio"  v-model="form.departmentCode" id="online" name="online" value="online" class="hidden peer">
-                        <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                            bg-white border border-gray-200 rounded-lg cursor-pointer  
-                            peer-checked:border-primaryColor
-                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                            dark:text-gray-400 ">
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">Uganda</div>
-                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
-
-                            </div>
-                        </label>
                     </li>
                              
                 </ul>

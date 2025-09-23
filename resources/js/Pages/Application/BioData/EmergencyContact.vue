@@ -80,24 +80,7 @@ function submit(){
                         
                     </div>
 
-                    <div class="max-w-sm" >
-                        <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="relationship" label-name="Relationship" class="" />
-                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                                *
-                            </span>
-                        </div>
-                        <FormInput 
-                            type="text"
-                            id="relationship"
-                            v-model="form.relationship"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
-                            
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.relationship">{{ form.errors.relationship    }}</div>
-                        
-                    </div>
+                    
                     <div class="max-w-sm" >
                         <div class="flex flex-row space-x-2">
                             <FormInputLabel for-input="phone_no" label-name="Phone No" class="" />
@@ -117,6 +100,88 @@ function submit(){
                         
                     </div>
   
+                </div>
+                <div>
+                    <div class="max-w-sm" >
+                        <div class="flex flex-row space-x-2">
+                            <FormInputLabel for-input="relationship" label-name="Relationship" class="" />
+                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                *
+                            </span>
+                        </div>
+                         <ul class="grid w-full grid-cols-1 gap-6 md:grid-cols-3 mt-2">
+                            <li  >
+                                <input type="radio" v-model="form.relationship" id="parent" name="parent" value="parent" class="hidden peer" />
+                                <label for="parent" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">                           
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">Parent</div>
+                                    </div>
+                                    
+                                </label>
+
+                            </li>
+
+                            <li>
+                                <input type="radio" v-model="form.relationship" id="sibling" name="sibling" value="sibling" class="hidden peer" />
+                                <label for="sibling" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">                           
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">Sibling</div>
+                                    </div>
+                                    
+                                </label>
+
+                            </li>
+                            
+                            <li>
+                                <input type="radio" v-model="form.relationship" id="relative" name="relative" value="relative" class="hidden peer" />
+                                <label for="relative" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">                           
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">Relative</div>
+                                    </div>
+                                    
+                                </label>
+
+                            </li> 
+                            <li>
+                                <input type="radio" v-model="form.relationship" id="spouse" name="spouse" value="spouse" class="hidden peer" />
+                                <label for="spouse" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">                           
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">Spouse</div>
+                                    </div>
+                                    
+                                </label>
+
+                            </li> 
+                                    
+                        </ul>
+                       
+                        <!-- <FormInput 
+                            type="text"
+                            id="relationship"
+                            v-model="form.relationship"
+                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                            
+                            required/>  -->
+                            
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.relationship">{{ form.errors.relationship    }}</div>
+                        
+                    </div>
                 </div>
 
                 <div class="w-1/4">

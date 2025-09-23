@@ -30,6 +30,15 @@ class GeneralQueries extends Model
     public function classTimeQuery(){
         return 'QyClassTime';
     }
+    public function countriesQuery(){
+        return 'QyCountries';
+    }
+    public function residenceQuery(){
+        return 'QyAcadCentralSetups';
+    }
+    public function marketingQuery(){
+        return 'QyMarketingArea';
+    }
 
     
 

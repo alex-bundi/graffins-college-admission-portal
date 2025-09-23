@@ -9,7 +9,7 @@ import { ref, onMounted } from 'vue';
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    passportImage: '',
+    passport_id_file: '',
 });
 
 
@@ -35,7 +35,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="Upload Passport/ID" />
     <ApplicationLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>
@@ -61,13 +61,13 @@ function submit(){
                 <div class="grid gap-4 md:grid-cols-2">
                     <div class="max-w-sm" >
                         <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="pharmacy_image" label-name="Passport/National ID Scan" class="" />
+                            <FormInputLabel for-input="passport_file" label-name="Passport/National ID Scan" class="" />
                             
                         </div>
-                        <input @input="form.passportImage = $event.target.files[0]" id="pharmacy_image" type="file" class="py-2.5 sm:py-3 px-4 block w-full text-sm text-gray-600 
+                        <input @input="form.passport_id_file = $event.target.files[0]" id="passport_file" type="file" class="py-2.5 sm:py-3 px-4 block w-full text-sm text-gray-600 
                         bg-white border border-gray-200 rounded-lg file:bg-gray-200 file:text-gray-700 file:text-sm 
                             file:px-4 file:py-1 file:border-none file:rounded-full placeholder-gray-400/70 focus:outline-none 
-                            focus:ring-1 focus:ring-opacity-40  focus:ring-primaryColor focus:border-primaryColor  " accept="image/png, image/jpeg"/>
+                            focus:ring-1 focus:ring-opacity-40  focus:ring-primaryColor focus:border-primaryColor  " accept="application/pdf"/>
                             
 
                     </div>

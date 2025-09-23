@@ -9,7 +9,7 @@ import { ref, onMounted } from 'vue';
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    residence: '',
+    allergy: '',
 });
 
 
@@ -61,8 +61,8 @@ function submit(){
                 
                 <ul class="grid w-full gap-6 md:grid-cols-2 mt-2">
                     <li>
-                        <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
-                        <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                        <input type="radio" v-model="form.allergy" id="yes" name="yes" value="yes" class="hidden peer" />
+                        <label for="yes" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor
                             peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
@@ -72,19 +72,19 @@ function submit(){
                             </div>
                             
                         </label>
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.allergy">{{ form.errors.allergy }}</div>
 
                     </li>
                     <li>
-                        <input type="radio"  v-model="form.departmentCode" id="online" name="online" value="online" class="hidden peer">
-                        <label for="online" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                        <input type="radio"  v-model="form.allergy" id="no" name="no" value="no" class="hidden peer">
+                        <label for="no" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor
                             peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                             dark:text-gray-400 ">
                             <div class="block">
                                 <div class="w-full text-lg font-semibold">No</div>
-                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.allergy">{{ form.errors.allergy }}</div>
 
                             </div>
                         </label>

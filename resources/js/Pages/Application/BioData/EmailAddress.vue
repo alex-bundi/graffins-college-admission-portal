@@ -5,18 +5,17 @@ import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
 import { ref, onMounted } from 'vue';
-
+const props = defineProps({
+    user: Object,
+});
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    email: '',
+    email: props.user ? props.user.email : null,
 });
 
 
 function submit(){
-
-
-   
 
     router.post('/application/post-email-address', form, {
         onError : (allErrors) => {

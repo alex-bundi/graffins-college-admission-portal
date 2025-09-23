@@ -22,6 +22,9 @@ class Applicant extends Model
         'application_date',
         'application_no',
         'application_status',
+        'country_name',
+        'residence_description',
+        'marketing_description',
     ];
 
     protected $hidden = [
