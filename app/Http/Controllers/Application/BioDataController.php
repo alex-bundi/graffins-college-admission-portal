@@ -477,8 +477,28 @@ class BioDataController extends Controller
     }
 
     public function postUploadPhoto(Request $request){
+         $validated = $request->validate([  
+            'passportImage' => 'required|image|mimes:jpeg,png',
+        ]);
         try{
+            if($request->hasFile('passportImage')){
+                if ($request->file('passportImage')->isValid()) {
+                 
+                    $applicationID =session('user_data')['application_no'];
+                    $safeEmail = Str::slug(Str::before(session('user_data')['email'], '@'));
+                    $file = $request->file('passportImage');
+                    $filename = $applicationID . '_' . $safeEmail.'.'. $file->getClientOriginalExtension();
 
+                    $destination = storage_path('app\student_images');
+                    if (!is_dir($destination)) {
+                        mkdir($destination, 0755, true);
+                    }
+                    $file->move($destination, $filename);
+                    $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
+                    
+
+                }
+            }
             return redirect()->route('page.one');
             
         }catch(Exception $e){
@@ -490,8 +510,44 @@ class BioDataController extends Controller
     }
 
     public function getBiodataSummary(){
-        return Inertia::render('Application/BioData/BioDataSummary');
+        try{
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
+            return Inertia::render('Application/BioData/BioDataSummary', [
+                'applicantData' => $applicant,
+                'emergencyContact'=> $emergencyContact
+            ]);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
         
+    }
+
+    public function postBiodataSummary(Request $request){
+        $validated = $request->validate([  
+            'personalDataSummary' => 'nullable|string',
+        ]);
+        try{
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->application_status = 'submitted';
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+            }
+            return redirect()->route('amount.payable');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    
     }
 
 }

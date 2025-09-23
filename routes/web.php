@@ -93,6 +93,7 @@ Route::prefix('application')->group(function () {
     Route::post('/post-upload-photo', [BioDataController::class, 'postUploadPhoto'])->name('post.upload.photo');
 
     Route::get('/personal-information-summary', [BioDataController::class, 'getBiodataSummary'])->name('bio.data.summary');
+    Route::post('/post-personal-information-summary', [BioDataController::class, 'postBiodataSummary'])->name('post.bio.data.summary');
     
     Route::get('/student-id', [ApplicationController::class, 'getStudentIDPage'])->name('student.id');
     Route::post('/post-student-id', [ApplicationController::class, 'postStudentID'])->name('post.upload.photo');

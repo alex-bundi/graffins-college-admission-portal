@@ -5,20 +5,21 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-
-
-
+const props = defineProps({
+    applicantData: Object,
+    emergencyContact: Object,
+});
+console.log(props.emergencyContact)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    startDate: '',
+    personalDataSummary: '',
 
 });
 
-function submit(){
-
-  
-    router.post('/application/post-class-start-date', form, {
+function confirmPersonalData(){
+    form.personalDataSummary ='submitted';
+    router.post('/application/post-personal-information-summary', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
@@ -64,7 +65,7 @@ function submit(){
                         👤 Full Name: 
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                       {{ applicantData.first_name + ' ' + applicantData.second_name + ' ' + applicantData.last_name }}
                     </p>
                 </div>
 
@@ -73,7 +74,7 @@ function submit(){
                         📞 Phone Number: 
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                       {{ applicantData.phone_no }}
                     </p>
                 </div>
 
@@ -82,7 +83,7 @@ function submit(){
                         🌍 Nationality: 
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                        {{ applicantData.nationality }}
                     </p>
                 </div>
 
@@ -91,7 +92,7 @@ function submit(){
                         📧 Email Address: 
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                        {{ applicantData.email }}
                     </p>
                 </div>
 
@@ -100,7 +101,7 @@ function submit(){
                         📍 Lives in Nairobi: 
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                        {{ applicantData.residence_description }}
                     </p>
                 </div>
 
@@ -109,7 +110,7 @@ function submit(){
                         📣 Heard About Us From: 
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                        {{ applicantData.marketing_description }}
                     </p>
                 </div>
                 <div class="flex flex-row space-x-3">
@@ -117,7 +118,7 @@ function submit(){
                         ⚠️ Allergies: 
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                         {{ applicantData.allergies == 1 ? 'Yes' : 'No' }}
                     </p>
                 </div>
 
@@ -126,7 +127,7 @@ function submit(){
                         🚨 Emergency Contact:
                     </h3>
                     <p class="font-josefin font-bold text-base  tracking-wider">
-                        Adobe
+                       {{ emergencyContact.full_name }}
                     </p>
                 </div>
 
@@ -148,9 +149,14 @@ function submit(){
                     </p>
 
                     <div>
-                        <Link class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                            Confirm
-                        </Link>
+                        <form action="" @submit.prevent="confirmPersonalData">
+                            <input class="hidden" type="text" v-model="form.personalDataSummary" name="personalDataSummary" id="personalDataSummary" value="submitted">
+
+                            <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                Confirm
+                            </button>
+                        </form>
+                        
                     </div>
                 </div>
 

@@ -9,7 +9,6 @@ import { ref, onMounted } from 'vue';
 const props = defineProps({
     user: Object,
 });
-console.log(props.user)
 
 const errors = ref({});
 const success = ref({});
