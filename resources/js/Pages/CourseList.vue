@@ -6,7 +6,6 @@ const props = defineProps({
     applications: Object,
 });
 
-console.log(props.applications);
 </script>
 
 <template>
@@ -54,7 +53,7 @@ console.log(props.applications);
             </div>
         </section>
 
-        <section v-if="applications != null" class=" flex flex-col items-center mt-6">
+        <section v-if="applications.length > 0" class=" flex flex-col items-center mt-6">
             <div>
                 <h2 class="font-monteserat tracking-wider text-black text-base">
                     Your Applications

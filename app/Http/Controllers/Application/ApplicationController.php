@@ -126,36 +126,57 @@ class ApplicationController extends Controller
 
     public function postModeOfStudy(Request $request){
         $validated = $request->validate([
-            'inclass' => 'nullable|string',
-            'online' => 'nullable|string',
+            'mode_of_study' => 'required|string',
         ]);
         try{
-            // Create an application
-            $application = [
-                'first_name' => session('user_data')['first_name'],
-                'second_name' => session('user_data')['second_name'],
-                'last_name' => session('user_data')['last_name'],
-                'email' => strtolower(session('user_data')['email']),
-            ];
-            $newApplication = Applicant::create($application);
-          
-            if($newApplication->exists){
-                session()->put('user_data.application_no', $newApplication->id);
-                
-                $applicantCourse = [
-                    'mode_of_study' =>$validated['inclass'] != null ? 1 : 2,
-                    'applicant_id' => session('user_data')['application_no'],
+            $pendingApplications = $this->ValidateApplications();
+
+            if ($pendingApplications == false){
+                $application = [
+                    'first_name' => session('user_data')['first_name'],
+                    'second_name' => session('user_data')['second_name'],
+                    'last_name' => session('user_data')['last_name'],
+                    'email' => strtolower(session('user_data')['email']),
                 ];
+                $newApplication = Applicant::create($application);
+                if($newApplication->exists){
+                    session()->put('user_data.application_no', $newApplication->id);
+                    
+                    $applicantCourse = [
+                        'mode_of_study' =>$validated['mode_of_study'] == 'inclass' ? 1 : 2,
+                        'applicant_id' => session('user_data')['application_no'],
+                    ];
 
-                $newApplicantCourse = ApplicantCourse::create($applicantCourse);
-                            // $applicationNo = session('user_data')['application_no'];
+                    $newApplicantCourse = ApplicantCourse::create($applicantCourse);
+                                // $applicationNo = session('user_data')['application_no'];
 
 
-                if($newApplicantCourse->exists){
-                    session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
-                    return redirect()->route('department')->with('success', 'Mode of study created successfully');;
-                }   
+                    if($newApplicantCourse->exists){
+                        session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
+                        return redirect()->route('department');
+                    }   
+                }
+            } else if ($pendingApplications == true){
+                $email = session('user_data')['email'];
+                $applications = Applicant::where('email', $email)
+                    ->where('application_status' , 'new')
+                    ->first();
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
+                $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
+                if (!$applicantCourse->save()) {
+                    return redirect()->back()->withErrors([
+                        'error' => 'Failed to save the mode of study. Please try again.'
+                    ]);
+                }
+                session()->put('user_data.applicationCourseID', $applicantCourse->id);
+                return redirect()->route('department');
+                
+
             }
+            // Create an application
+            
+          
+            
 
                 
            

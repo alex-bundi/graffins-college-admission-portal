@@ -26,23 +26,25 @@ onMounted(() => {
 });
 
 function submit(){
-    console.log(initialMode.value);
-    return;
-    if (form.inclass === initialMode.value) {
+    
+    if (form.mode_of_study === initialMode.value) {
+        router.visit('/application/department')
     } else {
+        router.post('/application/post-mode-of-study', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
+
+            
+            },
+
+        });
+
     }
   
-    router.post('/application/post-mode-of-study', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
+    
 
  
 }
