@@ -9,7 +9,7 @@ import { ref, onMounted,computed } from 'vue';
 const props = defineProps({
     applicant: Object,
 });
-console.log(props.applicant);
+
 let allergyStatus = ref(null);
 if((props.applicant.allergies != null) && (props.applicant.allergies == 1)){
     allergyStatus = 'yes';

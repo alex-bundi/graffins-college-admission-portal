@@ -438,8 +438,19 @@ class BioDataController extends Controller
     }
 
     public function getEmergencyContactPage(){
+        try{
+             $applicationID =session('user_data')['application_no'];
+            $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
+            return Inertia::render('Application/BioData/EmergencyContact', [
+                'emergencyContact' => $emergencyContact,
+            ]);
 
-        return Inertia::render('Application/BioData/EmergencyContact');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
     }
 
     public function postEmergencyContact(Request $request){

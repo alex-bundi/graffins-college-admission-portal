@@ -4,33 +4,64 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+
+const props = defineProps({
+    emergencyContact: Object,
+});
+
+let relationshipStatus = ref(null);
+if((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 1)){
+    relationshipStatus = 'parent';
+} else if ((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 3)){
+    relationshipStatus = 'sibling';
+}else if ((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 4)){
+    relationshipStatus = 'relative';
+}else if ((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 5)){
+    relationshipStatus = 'spouse';
+
+}
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    fullName: '',
-    relationship: '',
-    phoneNo: '',
+    fullName: props.emergencyContact.full_name,
+    relationship: relationshipStatus,
+    phoneNo: props.emergencyContact.phone_no,
+});
+
+const hasChanged = computed(() => {
+    return (
+        form.fullName !== (props.emergencyContact.full_name ?? null) ||
+        form.relationship !== (relationshipStatus ?? null) ||
+        form.phoneNo !== (props.emergencyContact.phone_no ?? null)
+    );
 });
 
 
 function submit(){
 
+    if (hasChanged.value == true) {
+        router.post('/application/post-emergency-contact', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
 
+            
+            },
+
+        });
+    } else {
+        router.visit('/application/upload-id-passport');
+
+
+        
+    }
    
 
-    router.post('/application/post-emergency-contact', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
+    
 
  
 }
