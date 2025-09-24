@@ -34,8 +34,12 @@ class ApplicationController extends Controller
             $departmentsData = $this->getOdata($departmentsURL);
             $departments = $departmentsData['value'];
 
+            $applicationID =session('user_data')['applicationCourseID'];
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+
             return Inertia::render('Application/Department', [
                 'departments' => $departments,
+                'applicantCourse' => $applicantCourse,
             ]);
 
         }catch(Exception $e){
@@ -173,15 +177,7 @@ class ApplicationController extends Controller
                 
 
             }
-            // Create an application
-            
-          
-            
 
-                
-           
-
-            
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -207,7 +203,8 @@ class ApplicationController extends Controller
             
             return Inertia::render('Application/PickCourse', [
                 'courses' => $courseData['value'],
-                'department' => $applicantCourse->department_code
+                'department' => $applicantCourse->department_code,
+                'applicantCourse' => $applicantCourse,
             ]);
         }catch(Exception $e){
             return redirect()->route('department')->withErrors([
@@ -249,6 +246,16 @@ class ApplicationController extends Controller
 
     }
 
+    // public function getCourseLevels(){
+    //    try{
+    //          $unitFeesQuery = $this->generalQueries->unitFeesQuery();
+    //     $unitFeesURL = config('app.odata') . "{$unitFeesQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
+    //     $unitFeesData = $this->getOdata($unitFeesURL);
+    //     $unitFees = $unitFeesData['value'];
+    //    }
+            
+    // }
+
     public function getCourseTypePage(){
         try{
             $applicationID =session('user_data')['applicationCourseID'];
@@ -284,6 +291,33 @@ class ApplicationController extends Controller
             ]);
         }
         
+    }
+
+    public function postCourseLevel(Request $request){
+        $validated = $request->validate([
+            'courseLevel' => 'required|string',
+        ]);
+
+        try{
+            $applicationID =session('user_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->course_level = trim($validated['courseLevel']);
+            $applicantCourse->unit_code = '';
+            $applicantCourse->unit_status = 'Full Course';
+            if (!$applicantCourse->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save the mode of study. Please try again.'
+                ]);
+            }
+
+
+            return redirect()->route('class.start.date');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
     public function postCourseType(Request $request){
         $validated = $request->validate([
@@ -329,7 +363,11 @@ class ApplicationController extends Controller
 
     public function getClassStartDatePage(){
         try{
-            return Inertia::render('Application/ClassStartDate');  
+            $applicationID =session('user_data')['applicationCourseID'];
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            return Inertia::render('Application/ClassStartDate',[
+                'applicantCourse' => $applicantCourse,
+            ]);  
         }catch(Exception $e){
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
@@ -370,9 +408,11 @@ class ApplicationController extends Controller
             $classTimeData = $this->getOdata($classTimeURL);
             $classTimes = $classTimeData['value'];
            
-            
+            $applicationID =session('user_data')['applicationCourseID'];
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             return Inertia::render('Application/ClassTime', [
                 'classTimes' => $classTimes,
+                'applicantCourse' => $applicantCourse,
             ]);
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -388,7 +428,8 @@ class ApplicationController extends Controller
              $applicationID =session('user_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->class_time = trim($validated['time']           );
+            $applicantCourse->class_time = trim($validated['time']);
+            $applicantCourse->application_date = date('Y-m-d');
             if (!$applicantCourse->save()) {
                 return redirect()->back()->withErrors([
                     'error' => 'Failed to save the class time. Please try again.'

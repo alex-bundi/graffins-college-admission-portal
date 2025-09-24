@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -7,8 +7,8 @@ import Notifications from '@/Layouts/Notifications.vue';
 const props = defineProps({
     courses: Object,
     department: String,
+    applicantCourse: Object,
 });
-console.log(props.department);
 
 const itCourses = Object.fromEntries(
     Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WCAPS')
@@ -28,21 +28,34 @@ const success = ref({});
 const form = useForm({
     courseCode: '',
 });
+const initialMode = ref(null);
+
+onMounted(() => {
+    if((props.applicantCourse != null)){
+        form.courseCode = props.applicantCourse.course_code + '..' + props.applicantCourse.course_description;
+        initialMode.value = props.applicantCourse.course_code + '..' + props.applicantCourse.course_description;
+    } 
+});
 
 function submit(){
+    if (form.courseCode === initialMode.value) {
+        router.visit('/application/course-type')
+    } else {
+        router.post('/application/post-pick-course', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
 
+            
+            },
+
+        });
+
+    }
   
-    router.post('/application/post-pick-course', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
+    
 
  
 }

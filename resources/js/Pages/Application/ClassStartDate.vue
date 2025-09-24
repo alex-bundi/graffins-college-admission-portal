@@ -1,13 +1,14 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
 
-
-
+const props = defineProps({
+    applicantCourse: Object,
+});
 const errors = ref({});
 const success = ref({});
 const form = useForm({
@@ -15,20 +16,34 @@ const form = useForm({
 
 });
 
+const initialMode = ref(null);
+
+onMounted(() => {
+
+    if((props.applicantCourse != null)){
+        form.startDate = props.applicantCourse.start_date ;
+        initialMode.value = props.applicantCourse.start_date ;
+    } 
+});
+
+
 function submit(){
+    if (form.startDate === initialMode.value) {
+        router.visit('/application/class-start-time')
+    } else {
+        router.post('/application/post-class-start-date', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+            
+            },
 
+        });
+
+    }
   
-    router.post('/application/post-class-start-date', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
+    
 
  
 }

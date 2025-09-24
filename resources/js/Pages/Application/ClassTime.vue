@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -9,29 +9,42 @@ import FormInputLabel from '@/Components/FormInputLabel.vue';
 
 const props = defineProps({
     classTimes: Object,
+    applicantCourse: Object,
 });
-console.log(props.classTimes)
+
 const errors = ref({});
 const success = ref({});
 const form = useForm({
     time: '',
 
 });
+const initialMode = ref(null);
+onMounted(() => {
+
+    if((props.applicantCourse != null)){
+        form.time = props.applicantCourse.class_time ;
+        initialMode.value = props.applicantCourse.class_time ;
+    } 
+});
 
 function submit(){
+    if (form.time === initialMode.value) {
+        router.visit('/application/course-summary')
+    } else {
+        router.post('/application/post-class-start-time', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
 
+            
+            },
+
+        });
+
+    }
   
-    router.post('/application/post-class-start-time', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
+    
 
  
 }

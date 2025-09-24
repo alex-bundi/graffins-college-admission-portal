@@ -7,7 +7,7 @@ const props = defineProps({
     applicantCourse: Object,
 });
 
-const initialMode = ref(null)
+const initialMode = ref(null);
 
 const errors = ref({});
 const success = ref({});
