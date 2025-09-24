@@ -105,6 +105,9 @@ Route::prefix('application')->group(function () {
     Route::get('/admission-letter', [ApplicationController::class, 'getAdmissionLetterPage'])->name('admission.letter');
     Route::get('/final', [ApplicationController::class, 'getFinalPage'])->name('final');
 
+    // Application Processing
+    Route::get('/application-processing', [ApplicationController::class, 'getApplicationProcessingPage'])->name('application.processing');
+    Route::get('/processing-bio-data', [ApplicationController::class, 'CreateApplicantInERP']);
 
 
 });

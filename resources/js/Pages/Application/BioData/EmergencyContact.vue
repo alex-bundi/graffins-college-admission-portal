@@ -9,15 +9,15 @@ import { ref, onMounted, computed } from 'vue';
 const props = defineProps({
     emergencyContact: Object,
 });
-
+console.log(props.emergencyContact)
 let relationshipStatus = ref(null);
-if((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 1)){
+if((props.emergencyContact != null) && (props.emergencyContact.relationship == 1)){
     relationshipStatus = 'parent';
-} else if ((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 3)){
+} else if ((props.emergencyContact != null) && (props.emergencyContact.relationship == 3)){
     relationshipStatus = 'sibling';
-}else if ((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 4)){
+}else if ((props.emergencyContact != null) && (props.emergencyContact.relationship == 4)){
     relationshipStatus = 'relative';
-}else if ((props.emergencyContact.relationship != null) && (props.emergencyContact.relationship == 5)){
+}else if ((props.emergencyContact != null) && (props.emergencyContact.relationship == 5)){
     relationshipStatus = 'spouse';
 
 }
@@ -25,16 +25,17 @@ if((props.emergencyContact.relationship != null) && (props.emergencyContact.rela
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    fullName: props.emergencyContact.full_name,
+    fullName: props.emergencyContact ? props.emergencyContact.full_name : null,
     relationship: relationshipStatus,
-    phoneNo: props.emergencyContact.phone_no,
+    phoneNo: props.emergencyContact ? props.emergencyContact.phone_no : null,
 });
 
 const hasChanged = computed(() => {
     return (
-        form.fullName !== (props.emergencyContact.full_name ?? null) ||
+        
+        form.fullName !== (props.emergencyContact?.full_name ?? null) ||
         form.relationship !== (relationshipStatus ?? null) ||
-        form.phoneNo !== (props.emergencyContact.phone_no ?? null)
+        form.phoneNo !== (props.emergencyContact?.phone_no ?? null)
     );
 });
 
@@ -47,7 +48,6 @@ function submit(){
                 for(let error in allErrors){
                 errors.value[error] = allErrors[error]
                 }
-                disableSubmitBtn.value = false;
 
             
             },

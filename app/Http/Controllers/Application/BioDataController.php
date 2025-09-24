@@ -611,7 +611,8 @@ class BioDataController extends Controller
                     'error' => 'Failed to save. Please try again.'
                 ]);
             }
-            return redirect()->route('amount.payable');
+            //return redirect()->route('amount.payable');
+            return redirect()->route('application.processing');
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([

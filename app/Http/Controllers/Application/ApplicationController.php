@@ -560,9 +560,58 @@ class ApplicationController extends Controller
 
     }
 
+    public function getApplicationProcessingPage(){
+        try{
+            return Inertia::render('Application/ApplicationProcessing');
+
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     // public function getSingleSubjectUnits($course){
     //     $unitsQuery = $this->generalQueries->unitsQuery();
     //     $applicantsURL = config('app.odata') . "{$unitsQuery}?". '$filter=' . rawurlencode("Email eq '{$email}'");
     //     $applicantsData = $this->getOdata($applicantsURL);
     // }
+
+
+    public function CreateApplicantInERP(){
+        try{
+            
+            // Get Applicant data
+            // $applicationID =session('user_data')['application_no'];
+            // $applicant = Applicant::where('id', $applicationID)
+            //     ->where('application_status', 'submitted')
+            //     ->first();
+             return response()->json([
+                'success' => true,
+                'data' => 'hello'
+            ], 200);
+            
+
+            // if (!$applicant) {
+            // return response()->json([
+            //         'success' => false,
+            //         'message' => 'Applicant not found'
+            //     ], 404);
+            // }
+
+            // // If applicant found, return it as JSON
+            // return response()->json([
+            //     'success' => true,
+            //     'data' => $applicant
+            // ], 200);
+
+            
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }
