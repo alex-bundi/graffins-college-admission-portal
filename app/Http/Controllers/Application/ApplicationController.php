@@ -322,11 +322,25 @@ class ApplicationController extends Controller
         ]);
 
         try{
+            $courseLevel = '';
+            $courseDescri = '';
+            if ($validated['courseLevel'] != null){
+                $courseCodePtrn = '/^([^.]+)\.\./';
+                $courseDescriPattern = '/\.\.(.+)$/';
+
+                if (preg_match($courseCodePtrn, $validated['courseLevel'], $matches)) {
+                    $courseLevel = trim($matches[1]);
+                }
+
+                if (preg_match($courseDescriPattern, $validated['courseLevel'] , $matches)) {
+                    $courseDescri = $matches[1];
+                }
+            } 
             $applicationID =session('user_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->course_level = trim($validated['courseLevel']);
-            $applicantCourse->unit_code = '';
+            $applicantCourse->course_level = trim($courseLevel);
+            $applicantCourse->course_description = $courseDescri;
             $applicantCourse->unit_status = 'Full Course';
             if (!$applicantCourse->save()) {
                 return redirect()->back()->withErrors([

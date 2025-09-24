@@ -17,11 +17,22 @@ const form = useForm({
     secondName: props.user ? props.user.second_name : null,
     lastName: props.user ? props.user.last_name : null,
 });
+const initialMode = ref({});
+
+onMounted(() => {
+    if((props.user != null)){
+        initialMode.value = {
+            'first_name' : props.user.first_name,
+            'second_name' : props.user.second_name,
+            'last_name' : props.user.last_name,
+        }
+    } 
+})
 
 
 function submit(){
    
-
+    
     router.post('/application/post-names', form, {
         onError : (allErrors) => {
             for(let error in allErrors){

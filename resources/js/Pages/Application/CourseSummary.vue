@@ -91,14 +91,14 @@ function submitCourseSummary(){
                         </p>
                     </div>
 
-                    <div class="flex flex-row space-x-3">
+                    <!-- <div class="flex flex-row space-x-3">
                         <h3 class="font-monteserat text-base tracking-wider ">
                             Duration
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
                             Adobe
                         </p>
-                    </div>
+                    </div> -->
 
                     <div class="flex flex-row space-x-3">
                         <h3 class="font-monteserat text-base tracking-wider ">
