@@ -11,6 +11,7 @@ use App\Models\ApplicantCourse;
 use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
+use App\Models\EmergencyContact;
 
 
 class ApplicationController extends Controller
@@ -629,6 +630,134 @@ class ApplicationController extends Controller
                 $params->studentImageBase64 = $base64;
             
                 $result = $soapClient->CreateApplicantAccount($params);
+
+                if($result){
+                    return response()->json([
+                        'success' => true,
+                        'data' => $result,
+                    ], 200);
+            
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'BC insert error'
+                    ], 404);
+                }
+
+          
+        }catch(Exception $e){
+            return response()->json([
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ], 404);
+            // return redirect()->back()->withErrors([
+            //     'error' => $e->getMessage()
+            // ]);
+        }
+    }
+
+    public function InsertEmergencyContacts($applicantNo){
+        try{
+            
+            // Get Applicant data
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)
+                ->where('application_status', 'submitted')
+                ->first();
+
+            $emergencyContact = EmergencyContact::where('applicant_id', $applicant->id)->first();
+
+            if (!$emergencyContact) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Applicant not found'
+                ], 404);
+            } 
+
+
+                $context = $this->initializeSoapProcess();
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context,
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+
+                $params = new \stdClass();
+                $params->applicationNo = trim($applicantNo);
+                $params->fullName = trim(ucfirst($emergencyContact->full_name));
+                $params->phoneNo = trim(($emergencyContact->phone_no));
+                $params->relationship = ($emergencyContact->relationship);
+               
+                
+                $result = $soapClient->InsertEmergencyContacts($params);
+
+                if($result){
+                    return response()->json([
+                        'success' => true,
+                        'data' => $result,
+                    ], 200);
+            
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'BC insert error'
+                    ], 404);
+                }
+
+          
+        }catch(Exception $e){
+            return response()->json([
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ], 404);
+            // return redirect()->back()->withErrors([
+            //     'error' => $e->getMessage()
+            // ]);
+        }
+    }
+
+    public function InsertApplicantCourse($applicantNo){
+        try{
+            
+            // Get Applicant data
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)
+                ->where('application_status', 'submitted')
+                ->first();
+
+            $emergencyContact = EmergencyContact::where('applicant_id', $applicant->id)->first();
+
+            if (!$emergencyContact) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Applicant not found'
+                ], 404);
+            } 
+
+
+                $context = $this->initializeSoapProcess();
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context,
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+
+                $params = new \stdClass();
+                $params->applicationNo = trim($applicantNo);
+                $params->fullName = trim(ucfirst($emergencyContact->full_name));
+                $params->phoneNo = trim(($emergencyContact->phone_no));
+                $params->relationship = ($emergencyContact->relationship);
+               
+                
+                $result = $soapClient->InsertEmergencyContacts($params);
 
                 if($result){
                     return response()->json([

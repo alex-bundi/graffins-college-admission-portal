@@ -7,20 +7,39 @@ import Notifications from '@/Layouts/Notifications.vue';
 
 const errors = ref({});
 const success = ref({});
-
+let processed = false;
 onMounted(async () => {
     // Process Bio data
-     processBioData()
+    if (!processed) {
+        let x = processBioData();
+        console.log(x)
+        processed = true;
+    }
+    
 });
 
 async function processBioData(){
     try {
         const response = await fetch('/application/processing-bio-data');
         const data = await response.json();
-        console.log(data); // 👈 this will show the JSON
+        if(data){
+            if((data.success === true)){
+                processEmergencyContacts(data.data.return_value);
+            }
+        }
+        return data;
     } catch (error) {
         console.error('Error fetching data:', error);
         // console.error(error.response?.data || error.message);
+    }
+}
+
+async function processEmergencyContacts(applicantNo){
+    try {
+        const response = await fetch(`/application/processing-emergency-contacts/${applicantNo}`);
+        const data = await response.json();
+    } catch (error) {
+        console.error('Error fetching data:', error);
     }
 }
 
