@@ -50,6 +50,7 @@ class BioDataController extends Controller
             'lastName' => 'required|string',
         ]);
         try{
+            
             $applicationID =session('user_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->first_name = $validated['firstName'];
@@ -59,6 +60,19 @@ class BioDataController extends Controller
                 return redirect()->back()->withErrors([
                     'error' => 'Failed to save. Please try again.'
                 ]);
+
+            }
+
+            $email = trim(session('user_data')['email']);
+            $user = User::where('email', $email)->first();
+            $user->first_name = $validated['firstName'];
+            $user->second_name = $validated['secondName'];
+            $user->last_name = $validated['lastName'];
+            if (!$user->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+
             }
 
             return redirect()->route('contacts');
@@ -72,7 +86,18 @@ class BioDataController extends Controller
     }
 
     public function getContactPage(){
-        return Inertia::render('Application/BioData/Contacts');
+        try{
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            return Inertia::render('Application/BioData/Contacts', [
+                'applicant' => $applicant,
+            ]);
+
+        } catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function postContact(Request $request){
@@ -101,6 +126,9 @@ class BioDataController extends Controller
 
     public function getNationalityPage(){
         try{
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            
             $countriesQuery = $this->generalQueries->countriesQuery();
             $countriesURL = config('app.odata') . "{$countriesQuery}";
             $countriesData = $this->getOdata($countriesURL);
@@ -108,6 +136,7 @@ class BioDataController extends Controller
             
             return Inertia::render('Application/BioData/Nationality', [
                 'countries' => $countries,
+                'applicant' => $applicant,
             ]);
 
             
@@ -185,6 +214,16 @@ class BioDataController extends Controller
                 ]);
             }
 
+            $email = trim(session('user_data')['email']);
+            $user = User::where('email', $email)->first();
+            $user->email = trim($validated['email']);
+            if (!$user->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+
+            }
+
             return redirect()->route('residence');
             
         }catch(Exception $e){
@@ -197,6 +236,9 @@ class BioDataController extends Controller
 
     public function getResidencePage(){
         try{
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+
             $residenceQuery = $this->generalQueries->residenceQuery();
             $residenceURL = config('app.odata') . "{$residenceQuery}?" . '$filter=' . rawurlencode("Type eq 'Location'");
             $residenceData = $this->getOdata($residenceURL);
@@ -205,6 +247,7 @@ class BioDataController extends Controller
             
             return Inertia::render('Application/BioData/Residence', [
                 'residences' => $residence,
+                'applicant' => $applicant,
             ]);
 
             
@@ -254,12 +297,16 @@ class BioDataController extends Controller
 
     public function getMarketingPage(){
          try{
+             $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+
             $marketingQuery = $this->generalQueries->marketingQuery();
             $marketingURL = config('app.odata') . "{$marketingQuery}";
             $marketingData = $this->getOdata($marketingURL);
             $marketing = $marketingData['value'];
             return Inertia::render('Application/BioData/Marketing', [
-                'marketingAreas' => $marketing
+                'marketingAreas' => $marketing,
+                'applicant' => $applicant,
             ]);
             
         }catch(Exception $e){
@@ -310,8 +357,11 @@ class BioDataController extends Controller
 
     public function getAllergiesPage(){
         try{
-
-            return Inertia::render('Application/BioData/Allergies');
+             $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            return Inertia::render('Application/BioData/Allergies', [
+                'applicant' => $applicant,
+            ]);
 
             
         }catch(Exception $e){
@@ -350,7 +400,18 @@ class BioDataController extends Controller
     }
 
      public function getAllergyDescriptionPage(){
-        return Inertia::render('Application/BioData/AllergyDescription');
+        try{
+             $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            return Inertia::render('Application/BioData/AllergyDescription', [
+                'applicant' => $applicant,
+            ]);
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function postAllergyDescription(Request $request){

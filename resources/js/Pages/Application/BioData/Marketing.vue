@@ -4,34 +4,45 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const props = defineProps({
     marketingAreas: Object,
+    applicant: Object,
 });
+
+const marketingArea = ref((props.applicant ? (props.applicant.marketing + '..' + props.applicant.marketing_description) : null));
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    aboutUs: '',
+    aboutUs: marketingArea,
 });
 
-
+const hasChanged = computed(() => {
+    return (
+        form.aboutUs !== (marketingArea.value ?? null)
+    );
+});
 function submit(){
 
+    if (hasChanged.value == true) {
+        router.post('/application/post-marketing', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
 
+            
+            },
+
+        });
+    } else {
+        router.visit('/application/allergies');
+    }
    
 
-    router.post('/application/post-marketing', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
+    
 
  
 }

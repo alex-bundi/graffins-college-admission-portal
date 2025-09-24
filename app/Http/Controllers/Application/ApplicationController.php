@@ -29,6 +29,7 @@ class ApplicationController extends Controller
     public function getDepartmentPage(){
         try {
             
+
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
             $departmentsData = $this->getOdata($departmentsURL);
@@ -36,7 +37,8 @@ class ApplicationController extends Controller
 
             $applicationID =session('user_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-
+            session()->put('user_data.application_no', $applicantCourse->applicant_id);
+            
             return Inertia::render('Application/Department', [
                 'departments' => $departments,
                 'applicantCourse' => $applicantCourse,
@@ -175,6 +177,7 @@ class ApplicationController extends Controller
 
                     $newApplicantCourse = ApplicantCourse::create($applicantCourse);
                     session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
+                    session()->put('user_data.application_no', $applications->id);
                 } else {
                     $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
                     if (!$applicantCourse->save()) {
@@ -183,6 +186,7 @@ class ApplicationController extends Controller
                         ]);
                     }
                     session()->put('user_data.applicationCourseID', $applicantCourse->id);
+                    session()->put('user_data.application_no', $applications->id);
                 }
                 
                 

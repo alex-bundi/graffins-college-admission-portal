@@ -4,32 +4,42 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const props = defineProps({
     residences: Object,
+    applicant:Object,
 });
 
+const placeOfResidence = ref(props.applicant ? (props.applicant.residence + '..' + props.applicant.residence_description) : null)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    residence: '',
+    residence: placeOfResidence,
 });
 
-
+const hasChanged = computed(() => {
+    return (
+        form.residence !== (placeOfResidence.value ?? null)
+    );
+});
 function submit(){
+    if (hasChanged.value == true) {
+        router.post('/application/post-residence', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
 
-    router.post('/application/post-residence', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
+            
+            },
 
-           
-        },
-
-    });
+        });
+    } else {
+        router.visit('/application/marketing');
+    }
+    
 
  
 }

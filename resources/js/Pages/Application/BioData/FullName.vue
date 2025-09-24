@@ -4,7 +4,7 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const props = defineProps({
     user: Object,
@@ -17,33 +17,36 @@ const form = useForm({
     secondName: props.user ? props.user.second_name : null,
     lastName: props.user ? props.user.last_name : null,
 });
-const initialMode = ref({});
 
-onMounted(() => {
-    if((props.user != null)){
-        initialMode.value = {
-            'first_name' : props.user.first_name,
-            'second_name' : props.user.second_name,
-            'last_name' : props.user.last_name,
-        }
-    } 
-})
+const hasChanged = computed(() => {
+    return (
+        form.firstName !== (props.user?.first_name ?? null) ||
+        form.secondName !== (props.user?.second_name ?? null) ||
+        form.lastName !== (props.user?.last_name ?? null)
+    );
+});
+
+
 
 
 function submit(){
-   
+
+    if (hasChanged.value == true) {
+        router.post('/application/post-names', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
+
+            
+            },
+
+        });
+    } else {
+        router.visit('/application/contacts');
+    }
     
-    router.post('/application/post-names', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
 
  
 }
