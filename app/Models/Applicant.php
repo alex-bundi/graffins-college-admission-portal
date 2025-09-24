@@ -25,6 +25,8 @@ class Applicant extends Model
         'country_name',
         'residence_description',
         'marketing_description',
+        'passport_file_path',
+        'student_image_file_path',
     ];
 
     protected $hidden = [

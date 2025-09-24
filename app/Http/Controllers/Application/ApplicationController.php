@@ -583,35 +583,75 @@ class ApplicationController extends Controller
         try{
             
             // Get Applicant data
-            // $applicationID =session('user_data')['application_no'];
-            // $applicant = Applicant::where('id', $applicationID)
-            //     ->where('application_status', 'submitted')
-            //     ->first();
-             return response()->json([
-                'success' => true,
-                'data' => 'hello'
-            ], 200);
+            $applicationID =session('user_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)
+                ->where('application_status', 'submitted')
+                ->first();
+
+            if (!$applicant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Applicant not found'
+                ], 404);
+            } 
+
+
+                $context = $this->initializeSoapProcess();
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context,
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+
+                $params = new \stdClass();
+                $params->firstName = trim(ucfirst($applicant->first_name));
+                $params->secondName = trim(ucfirst($applicant->second_name));
+                $params->lastName = trim(ucfirst($applicant->last_name));
+                $params->email = strtolower(trim($applicant->email));
+                $params->portalPassword = strtolower(trim('1234'));
+                $params->nationality = trim($applicant->nationality);
+                $params->residence = (trim($applicant->residence));
+                $params->marketing = trim($applicant->marketing);
+                $params->allergies = trim($applicant->allergies);
+                $params->allergyDescription = trim($applicant->allergy_description);
+
+                $imageFilePath = $applicant->passport_file_path;
+                if($imageFilePath && file_exists($imageFilePath)){
+                    $fileContent = file_get_contents($imageFilePath);
+                    $base64 = base64_encode($fileContent);
+
+                    
+                }
+                $params->studentImageBase64 = $base64;
             
+                $result = $soapClient->CreateApplicantAccount($params);
 
-            // if (!$applicant) {
-            // return response()->json([
-            //         'success' => false,
-            //         'message' => 'Applicant not found'
-            //     ], 404);
-            // }
-
-            // // If applicant found, return it as JSON
-            // return response()->json([
-            //     'success' => true,
-            //     'data' => $applicant
-            // ], 200);
-
+                if($result){
+                    return response()->json([
+                        'success' => true,
+                        'data' => $result,
+                    ], 200);
             
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'BC insert error'
+                    ], 404);
+                }
 
+          
         }catch(Exception $e){
-            return redirect()->back()->withErrors([
-                'error' => $e->getMessage()
-            ]);
+            return response()->json([
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ], 404);
+            // return redirect()->back()->withErrors([
+            //     'error' => $e->getMessage()
+            // ]);
         }
     }
 }

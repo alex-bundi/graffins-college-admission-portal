@@ -27,6 +27,7 @@ trait GeneralTrait {
             } else {
                 $accessToken = $auth->getAccessToken(); 
             }
+            // $accessToken = $auth->getAccessToken();  // use only when you encounter the error SOAP-ERROR: Parsing WSDL: Couldn't load from 'https://api.businesscentral.dynamics.com/v2.0/9db19b6a-d4cf-4625-b29e-0f5028f72d99/Graffins-
             // It is getting the access token
             
             //-----------------------------------------------------------------------------------

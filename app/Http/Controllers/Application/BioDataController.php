@@ -530,7 +530,14 @@ class BioDataController extends Controller
                     $file->move($destination, $filename);
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
                     
-
+                    $applicationID =session('user_data')['application_no'];
+                    $applicant = Applicant::where('id', $applicationID)->first();
+                    $applicant->student_image_file_path = $fullPath;
+                    if (!$applicant->save()) {
+                        return redirect()->back()->withErrors([
+                            'error' => 'Failed to save. Please try again.'
+                        ]);
+                    }
                 }
             }
 
@@ -567,7 +574,14 @@ class BioDataController extends Controller
                     }
                     $file->move($destination, $filename);
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
-                    
+                    $applicationID =session('user_data')['application_no'];
+                    $applicant = Applicant::where('id', $applicationID)->first();
+                    $applicant->passport_file_path = $fullPath;
+                    if (!$applicant->save()) {
+                        return redirect()->back()->withErrors([
+                            'error' => 'Failed to save. Please try again.'
+                        ]);
+                    }
 
                 }
             }
