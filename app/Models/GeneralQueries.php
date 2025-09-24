@@ -39,6 +39,9 @@ class GeneralQueries extends Model
     public function marketingQuery(){
         return 'QyMarketingArea';
     }
+     public function courseLevelsQuery(){
+        return 'QyCourseLevels';
+    }
 
     
 

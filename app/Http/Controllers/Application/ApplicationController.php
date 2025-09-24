@@ -166,13 +166,27 @@ class ApplicationController extends Controller
                     ->where('application_status' , 'new')
                     ->first();
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
-                $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
-                if (!$applicantCourse->save()) {
-                    return redirect()->back()->withErrors([
-                        'error' => 'Failed to save the mode of study. Please try again.'
-                    ]);
+                
+                if($applicantCourse == null){
+                     $applicantCourse = [
+                        'mode_of_study' =>$validated['mode_of_study'] == 'inclass' ? 1 : 2,
+                        'applicant_id' => $applications->id,
+                    ];
+
+                    $newApplicantCourse = ApplicantCourse::create($applicantCourse);
+                    session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
+                } else {
+                    $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
+                    if (!$applicantCourse->save()) {
+                        return redirect()->back()->withErrors([
+                            'error' => 'Failed to save the mode of study. Please try again.'
+                        ]);
+                    }
+                    session()->put('user_data.applicationCourseID', $applicantCourse->id);
                 }
-                session()->put('user_data.applicationCourseID', $applicantCourse->id);
+                
+                
+                
                 return redirect()->route('department');
                 
 
@@ -261,24 +275,33 @@ class ApplicationController extends Controller
             $applicationID =session('user_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicanCourseCode = $applicantCourse->course_code;
-
-            $unitFeesQuery = $this->generalQueries->unitFeesQuery();
-            $unitFeesURL = config('app.odata') . "{$unitFeesQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
-            $unitFeesData = $this->getOdata($unitFeesURL);
-            $unitFees = $unitFeesData['value'];
-            
             
             if ($applicantCourse->department_code == 'WCAPS'){
+                $unitFeesQuery = $this->generalQueries->unitFeesQuery();
+                $unitFeesURL = config('app.odata') . "{$unitFeesQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
+                $unitFeesData = $this->getOdata($unitFeesURL);
+                $unitFees = $unitFeesData['value'];
                 return Inertia::render('Application/CourseType', [
                     'units' => $unitFees,
                 ]);
             } else if ($applicantCourse->department_code == 'WENG'){
+                $courseLevelsQuery = $this->generalQueries->courseLevelsQuery();
+                $courseLevelsURL = config('app.odata') . "{$courseLevelsQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
+                $courseLevelsData = $this->getOdata($courseLevelsURL);
+                $courseLevels = $courseLevelsData['value'];
+                
+
                 return Inertia::render('Application/ENGLevels', [
-                    'units' => $unitFees,
+                    'courseLevels' => $courseLevels,
                 ]);
             }else if ($applicantCourse->department_code == 'WBM'){
+                $courseLevelsQuery = $this->generalQueries->courseLevelsQuery();
+                $courseLevelsURL = config('app.odata') . "{$courseLevelsQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
+                $courseLevelsData = $this->getOdata($courseLevelsURL);
+                $courseLevels = $courseLevelsData['value'];
+
                 return Inertia::render('Application/WBMCourseLevels', [
-                    'units' => $unitFees,
+                    'courseLevels' => $courseLevels,
                 ]);
             }
 

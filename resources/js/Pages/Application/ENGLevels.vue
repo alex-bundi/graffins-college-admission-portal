@@ -5,7 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 
 const props = defineProps({
-    units: Object,
+    courseLevels: Object,
 });
 
 
@@ -72,15 +72,15 @@ function submit(){
                         </div>
                          <!-- English Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li v-for="level in units" :key="level.CourseLevel">
-                                    <input type="radio" v-model="form.courseLevel" :id="level.CourseLevel" :name="level.CourseLevel" :value="level.CourseLevel" class="hidden peer" />
-                                    <label :for="level.CourseLevel" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                <li v-for="level in courseLevels" :key="level.CourseLevelCode">
+                                    <input type="radio" v-model="form.courseLevel" :id="level.CourseLevelCode" :name="level.CourseLevelCode" :value="level.CourseLevelCode + '..' + level.CourseLevelDescription" class="hidden peer" />
+                                    <label :for="level.CourseLevelCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
                                         peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
                                         dark:text-gray-400 ">                           
                                         <div class="block">
-                                            <div class="w-full text-lg font-semibold">{{ level.CourseLevel }}</div>
+                                            <div class="w-full text-lg font-semibold">{{ level.CourseLevelDescription }}</div>
                                         </div>
                                         
                                     </label>
