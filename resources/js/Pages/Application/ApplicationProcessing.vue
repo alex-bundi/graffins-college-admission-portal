@@ -9,38 +9,43 @@ const errors = ref({});
 const success = ref({});
 let processed = false;
 onMounted(async () => {
-    // Process Bio data
     if (!processed) {
-        let x = processBioData();
-        console.log(x)
-        processed = true;
+        try {
+            // First operation
+            const bioData = await processBioData();
+            console.log('Bio data:', bioData);
+            
+            // Second operation (dependent on first)
+            if (bioData?.success === true) {
+                const emergencyData = await processEmergencyContacts(bioData.data.return_value);
+                console.log('Emergency data:', emergencyData);
+
+                    if(emergencyData?.success === true){
+                        const courseData = await processApplicantCourse(bioData.data.return_value);
+                         console.log('Course data:', courseData);
+                    }
+            }
+            
+            processed = true;
+        } catch (error) {
+            console.error('Error in onMounted:', error);
+        }
     }
-    
 });
 
-async function processBioData(){
-    try {
-        const response = await fetch('/application/processing-bio-data');
-        const data = await response.json();
-        if(data){
-            if((data.success === true)){
-                processEmergencyContacts(data.data.return_value);
-            }
-        }
-        return data;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        // console.error(error.response?.data || error.message);
-    }
+// Simplified functions that just handle their specific logic
+async function processBioData() {
+    const response = await fetch('/application/processing-bio-data');
+    return await response.json();
 }
 
-async function processEmergencyContacts(applicantNo){
-    try {
-        const response = await fetch(`/application/processing-emergency-contacts/${applicantNo}`);
-        const data = await response.json();
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
+async function processEmergencyContacts(applicantNo) {
+    const response = await fetch(`/application/processing-emergency-contacts/${applicantNo}`);
+    return await response.json();
+}
+async function processApplicantCourse(applicantNo) {
+    const response = await fetch(`/application/processing-applicant-coourse/${applicantNo}`);
+    return await response.json();
 }
 
 

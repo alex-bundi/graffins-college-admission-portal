@@ -391,7 +391,6 @@ class ApplicationController extends Controller
             $applicantCourse->unit_status = ($validated['singleSubject'] != null) ? 'Single Subject' : 'Full Course';
             $applicantCourse->save();
 
-
             return redirect()->route('class.start.date');
             
         }catch(Exception $e){
@@ -619,6 +618,7 @@ class ApplicationController extends Controller
                 $params->marketing = trim($applicant->marketing);
                 $params->allergies = trim($applicant->allergies);
                 $params->allergyDescription = trim($applicant->allergy_description);
+                $params->phoneNo = trim($applicant->phone_no);
 
                 $imageFilePath = $applicant->passport_file_path;
                 if($imageFilePath && file_exists($imageFilePath)){
@@ -729,9 +729,9 @@ class ApplicationController extends Controller
                 ->where('application_status', 'submitted')
                 ->first();
 
-            $emergencyContact = EmergencyContact::where('applicant_id', $applicant->id)->first();
+            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
 
-            if (!$emergencyContact) {
+            if (!$applicantCourse) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Applicant not found'
@@ -752,12 +752,18 @@ class ApplicationController extends Controller
 
                 $params = new \stdClass();
                 $params->applicationNo = trim($applicantNo);
-                $params->fullName = trim(ucfirst($emergencyContact->full_name));
-                $params->phoneNo = trim(($emergencyContact->phone_no));
-                $params->relationship = ($emergencyContact->relationship);
+                $params->department = ($applicantCourse->department_code);
+                $params->modeOfStudy = (int) ($applicantCourse->mode_of_study);
+                $params->courseCode = $applicantCourse->course_code;
+                $params->courseLevel = $applicantCourse->course_level;
+                $params->startDate = $applicantCourse->start_date;
+                $params->classTime = $applicantCourse->class_time;
+                $params->courseType = $applicantCourse->unit_status;
+                $params->unitCode = $applicantCourse->unit_code;
+
                
                 
-                $result = $soapClient->InsertEmergencyContacts($params);
+                $result = $soapClient->InsertApplicantCourse($params);
 
                 if($result){
                     return response()->json([
@@ -778,9 +784,8 @@ class ApplicationController extends Controller
                         'success' => false,
                         'message' => $e->getMessage()
                     ], 404);
-            // return redirect()->back()->withErrors([
-            //     'error' => $e->getMessage()
-            // ]);
         }
     }
+
+    
 }
