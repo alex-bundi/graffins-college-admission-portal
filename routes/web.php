@@ -110,6 +110,7 @@ Route::prefix('application')->group(function () {
     Route::get('/processing-bio-data', [ApplicationController::class, 'CreateApplicantInERP']);
     Route::get('/processing-emergency-contacts/{applicantNo}', [ApplicationController::class, 'InsertEmergencyContacts']);
     Route::get('/processing-applicant-coourse/{applicantNo}', [ApplicationController::class, 'InsertApplicantCourse']);
+    Route::get('/processing-converting-application/{applicantNo}', [ApplicationController::class, 'ConvertApplicationToCustomer']);
 
 
 });

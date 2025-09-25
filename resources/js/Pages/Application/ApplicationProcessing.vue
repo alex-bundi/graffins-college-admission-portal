@@ -23,6 +23,13 @@ onMounted(async () => {
                     if(emergencyData?.success === true){
                         const courseData = await processApplicantCourse(bioData.data.return_value);
                          console.log('Course data:', courseData);
+
+                         if(courseData?.success === true){
+                            const applicationConversion = await processApplicationConversion(bioData.data.return_value);
+                            console.log('Conversion data:', applicationConversion);
+                            return;
+                            router.visit('/payments/amount-payable')
+                         }
                     }
             }
             
@@ -45,6 +52,11 @@ async function processEmergencyContacts(applicantNo) {
 }
 async function processApplicantCourse(applicantNo) {
     const response = await fetch(`/application/processing-applicant-coourse/${applicantNo}`);
+    return await response.json();
+}
+
+async function processApplicationConversion(applicantNo) {
+    const response = await fetch(`/application/processing-converting-application/${applicantNo}`);
     return await response.json();
 }
 

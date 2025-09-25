@@ -787,5 +787,44 @@ class ApplicationController extends Controller
         }
     }
 
+    public function ConvertApplicationToCustomer($applicantNo){
+        try{
+            $context = $this->initializeSoapProcess();
+            $soapClient = new \SoapClient(
+                config('app.webService'), 
+                [
+                    'stream_context' => $context,
+                    'trace' => 1,
+                    'exceptions' => 1
+                    
+                ]
+            );
+
+            $params = new \stdClass();
+            $params->applicationNo = trim($applicantNo);
+
+            $result = $soapClient->ConvertApplicantToStudent($params);
+
+                if($result){
+                    return response()->json([
+                        'success' => true,
+                        'data' => $result,
+                    ], 200);
+            
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'BC insert error'
+                    ], 404);
+                }
+
+        }catch(Exception $e){
+            return response()->json([
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ], 404);
+        }
+    }
+
     
 }
