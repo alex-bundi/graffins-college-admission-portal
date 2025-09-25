@@ -4,27 +4,45 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+
+const props = defineProps({
+    studentsData: Object,
+});
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    studentPortalPWD: null,
-    idVerificationURL: '',
+    studentPortalPWD: props.studentsData ? props.studentsData.Student_Portal_Password : null,
+    idVerificationURL: props.studentsData ? props.studentsData.ID_verification_Code : null,
+});
+const hasChanged = computed(() => {
+    return (
+        
+        form.studentPortalPWD !== (props.studentsData?.Student_Portal_Password ?? null) ||
+        form.idVerificationURL !== (props.studentsData?.ID_verification_Code ?? null) 
+    );
 });
 
 function submit(){
+    if (hasChanged.value == true) {
+        router.post('/application/post-student-id', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+            
+            },
+
+        });
+    } else {
+        router.visit('/application/admission-letter');
 
 
-    router.post('/application/post-student-id', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-           
-        },
+        
+    }
 
-    });
+    
 
  
 }

@@ -43,6 +43,18 @@ class GeneralQueries extends Model
         return 'QyCourseLevels';
     }
 
+    public function studentUnitsQuery(){
+        return 'QyStudentUnits';
+    }
+
+    public function studentPaymentsQuery(){
+        return 'QyStudentPayments';
+    }
+
+    public function studentsQuery(){
+        return 'QyStudentDetails';
+    }
+
     
 
 }

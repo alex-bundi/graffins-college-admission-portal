@@ -536,7 +536,14 @@ class ApplicationController extends Controller
 
     public function getStudentIDPage(){
         try{
-            return Inertia::render('Application/AccessStudentID');
+            $studentNo = session('user_data')['student_no'];
+            $studentQuery = $this->generalQueries->studentsQuery();
+            $studentURL = config('app.odata') . "{$studentQuery}?". '$filter=' . rawurlencode("No eq '{$studentNo}'");
+            $students= $this->getOdata($studentURL);
+            $studentsData = $students['value'][0];
+            return Inertia::render('Application/AccessStudentID', [
+                'studentsData' => $studentsData,
+            ]);
 
         }catch(Exception $e){
             return redirect()->back()->withErrors([

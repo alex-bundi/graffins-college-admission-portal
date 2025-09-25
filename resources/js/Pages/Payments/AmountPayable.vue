@@ -5,7 +5,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 
 
+const props = defineProps({
+    applicantCourse: Object,
+    totalFees: Number,
+    studentUnits: Object,
+});
 
+console.log(props.applicantCourse)
+console.log(props.totalFees)
+console.log(props.studentUnits)
 
 const errors = ref({});
 const success = ref({});
@@ -37,7 +45,9 @@ const success = ref({});
       
         <div class="mt-4">
             <p class="font-josefin font-bold text-base tracking-wider">
-                <span class="font-monteserat font-extrabold">🧾 Total Invoice Amount: KES [Amount]:</span> 
+                <span class="font-monteserat font-extrabold">🧾 Total Invoice Amount: KES <span class="text-primaryColor text-xl">
+                    {{ totalFees }}
+                </span>:</span> 
 
             </p>
             <ul>
@@ -52,20 +62,41 @@ const success = ref({});
                             - Summary: 
                         </li>
                         <li>
-                            - Department:
+                            <h3>
+                                Department:
+                            </h3>
+                            <p class="font-monteserat text-black font-bold pl-4 pt-3">
+                                {{ applicantCourse.department_description }}
+                            </p>
                         </li>
                         <li>
                             - Course:
+
+                            <p class="font-monteserat text-black font-bold pl-4 pt-3">
+                                {{ applicantCourse.course_description }}
+                            </p>
                         </li>
                         <li>
                             - Level:
+                            <p class="font-monteserat text-black font-bold pl-4 pt-3">
+                                {{ applicantCourse.level_description }}
+                            </p>
                         </li>
                         <li>
                             - Units:
+                            <ul>
+                                <li v-for="unit in studentUnits" class="font-monteserat text-black font-bold pl-4 pt-3">
+                                   -> {{ unit.Unit_Code }}
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
             </ul>
+
+            <div>
+
+            </div>
         </div>
 
         

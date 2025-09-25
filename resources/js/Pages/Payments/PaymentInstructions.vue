@@ -5,7 +5,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 
 
-
+const props = defineProps({
+    totalFees: Number,
+});
 
 const errors = ref({});
 const success = ref({});
@@ -61,7 +63,9 @@ const success = ref({});
                            </span> 300 001 7028 
                         </li>
                         <li>
-                           <span class="font-monteserat"> Amount:</span> KES [Enter course fee]
+                           <span class="font-monteserat"> Amount:</span> KES <span class="text-primaryColor text-xl">
+                                {{ totalFees }}
+                            </span>
                         </li>
                         <li>
                             Enter your MPESA PIN and confirm.

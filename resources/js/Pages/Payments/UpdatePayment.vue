@@ -4,30 +4,60 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+
+const props = defineProps({
+    studentPayments: Object,
+});
+
+let paymentMode = ref(null);
+
+if((props.studentPayments != null) && (props.studentPayments.Payment_Mode == 'Bank')){
+    paymentMode = 1;
+} else if((props.studentPayments != null) && (props.studentPayments.Payment_Mode == 'Mpesa')){
+    paymentMode = 2;
+}else if((props.studentPayments != null) && (props.studentPayments.Payment_Mode == 'Cheque')){
+    paymentMode = 3;
+}
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    amountPaid: null,
-    datePaid: '',
-    modeOfPayment: '',
-    paymentReference: '',
+    amountPaid: props.studentPayments ? props.studentPayments.Amount_to_pay : null,
+    datePaid: props.studentPayments ? props.studentPayments.Payment_Date : null,
+    modeOfPayment: paymentMode,
+    paymentReference: props.studentPayments ? props.studentPayments.Payment_Reference_No : null,
 });
 
+const hasChanged = computed(() => {
+    return (
+        
+        form.amountPaid !== (props.studentPayments?.Amount_to_pay ?? null) ||
+        form.datePaid !== (props.studentPayments?.Payment_Date ?? null) ||
+        form.modeOfPayment !== (paymentMode ?? null) ||
+        form.paymentReference !== (props.studentPayments?.Payment_Reference_No ?? null) 
+    );
+});
 function submit(){
+    if (hasChanged.value == true) {
+        router.post('/payments/post-update-payment', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+
+            
+            },
+
+        });
+    } else {
+        router.visit('/application/student-id');
 
 
-    router.post('/payments/post-update-payment', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
+        
+    }
 
-           
-        },
-
-    });
+    
 
  
 }
