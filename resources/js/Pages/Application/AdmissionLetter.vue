@@ -5,32 +5,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 
 
-
+const props = defineProps({
+    studentNo: String,
+});
+console.log(props.studentNo);
 
 const errors = ref({});
 const success = ref({});
-const form = useForm({
-    startDate: '',
-
-});
-
-function submit(){
-
-  
-    router.post('/application/post-class-start-date', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
-
-           
-        },
-
-    });
-
- 
-}
 
 </script>
 
@@ -61,11 +42,9 @@ function submit(){
                 <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
                     Click below to download your official Admission Letter.
                 </p>
-                <Link :href="route('admission.letter')" class="flex items-center gap-2 px-6 py-3 text-black text-xl font-josefin tracking-wider font-bold  mb-4 hover:text-green-600">
+                <a :href="route('download.admission.letter', props.studentNo)" class="flex items-center gap-2 px-6 py-3 text-black text-xl font-josefin tracking-wider font-bold  mb-4 hover:text-green-600">
                     [Download Admission Letter]
-
-                
-                </Link>
+                </a>
         </div>
 
         

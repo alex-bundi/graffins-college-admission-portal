@@ -10,7 +10,7 @@ const errors = ref({});
 const success = ref({});
 const form = useForm({
     studentPortalPWD: null,
-    idVerificationCode: '',
+    idVerificationURL: '',
 });
 
 function submit(){
@@ -21,8 +21,6 @@ function submit(){
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
             }
-            disableSubmitBtn.value = false;
-
            
         },
 
@@ -76,21 +74,19 @@ function submit(){
 
                     <div class="max-w-sm" >
                         <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="id_verification_code" label-name="ID Verification Code" class="" />
+                            <FormInputLabel for-input="id_verification_url" label-name="ID Verification URL" class="" />
                             <span class="font-josefin tracking-wider font-bold text-base text-red-500">
                                 *
                             </span>
                         </div>
                         
-                        <FormInput 
-                            type="text"
-                            id="id_verification_code"
-                            v-model="form.idVerificationCode"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                        
+
+                        <textarea v-model="form.idVerificationURL" id="id_verification_url" rows="4" 
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 
+                                    focus:border-blue-500  " placeholder="url..."></textarea>
                             
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.idVerificationCode">{{ form.errors.idVerificationCode }}</div>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.idVerificationURL">{{ form.errors.idVerificationURL }}</div>
                         
                     </div>
 

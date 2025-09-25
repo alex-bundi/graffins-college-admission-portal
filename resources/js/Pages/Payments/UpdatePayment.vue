@@ -23,7 +23,6 @@ function submit(){
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
             }
-            disableSubmitBtn.value = false;
 
            
         },
@@ -116,52 +115,67 @@ function submit(){
                          -->
 
                          <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                    <li>
-                        <input type="radio" v-model="form.departmentCode" id="inclass" name="inclass" value="inclass" class="hidden peer" />
-                        <label for="inclass" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                            bg-white border border-gray-200 rounded-lg cursor-pointer  
-                            peer-checked:border-primaryColor
-                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                            dark:text-gray-400 ">                           
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">MPESA</div>
-                            </div>
-                            
-                        </label>
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                            <li>
+                                <input type="radio" v-model="form.modeOfPayment" id="bank" name="bank" value="1" class="hidden peer" />
+                                <label for="bank" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">                           
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">BANK</div>
+                                    </div>
+                                    
+                                </label>
+                                <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
-                    </li>
-                    <li>
-                        <input type="radio"  v-model="form.departmentCode" id="cheque" name="cheque" value="cheque" class="hidden peer">
-                        <label for="cheque" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                            bg-white border border-gray-200 rounded-lg cursor-pointer  
-                            peer-checked:border-primaryColor
-                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                            dark:text-gray-400 ">
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">CHEQUE</div>
-                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                            </li>
+                            <li>
+                                <input type="radio" v-model="form.modeOfPayment" id="mpesa" name="mpesa" value="2" class="hidden peer" />
+                                <label for="mpesa" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">                           
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">MPESA</div>
+                                    </div>
+                                    
+                                </label>
+                                <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
-                            </div>
-                        </label>
-                    </li>
+                            </li>
+                            <li>
+                                <input type="radio"  v-model="form.modeOfPayment" id="cheque" name="cheque" value="3" class="hidden peer">
+                                <label for="cheque" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">CHEQUE</div>
+                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
-                    <li>
-                        <input type="radio"  v-model="form.departmentCode" id="cash" name="cash" value="cash" class="hidden peer">
-                        <label for="cash" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                            bg-white border border-gray-200 rounded-lg cursor-pointer  
-                            peer-checked:border-primaryColor
-                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                            dark:text-gray-400 ">
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">CASH</div>
-                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+                                    </div>
+                                </label>
+                            </li>
 
-                            </div>
-                        </label>
-                    </li>
-                             
-                </ul>
+                            <li>
+                                <input type="radio"  v-model="form.modeOfPayment" id="cash" name="cash" value="cash" class="hidden peer">
+                                <label for="cash" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">CASH</div>
+                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+
+                                    </div>
+                                </label>
+                            </li>
+                                    
+                        </ul>
                     </div>
 
                     <div class="max-w-sm" >
@@ -176,7 +190,7 @@ function submit(){
                             type="text"
                             id="payment_ref"
                             v-model="form.paymentReference"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider uppercase"
                             
                             required/> 
                             

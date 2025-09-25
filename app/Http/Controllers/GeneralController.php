@@ -53,7 +53,8 @@ class GeneralController extends Controller
     }
     public function postLogin(Request $request){
         $validated = $request->validate([
-            'email' => 'required|email:rfc,dns',
+            // 'email' => 'required|email:rfc,dns',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 

@@ -535,14 +535,51 @@ class ApplicationController extends Controller
     }
 
     public function getStudentIDPage(){
-        return Inertia::render('Application/AccessStudentID');
+        try{
+            return Inertia::render('Application/AccessStudentID');
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
 
     }
 
     public function postStudentID(Request $request){
+        $validated = $request->validate([
+            'studentPortalPWD' => 'required|string',
+            'idVerificationURL' => 'required|string',
+        ]);
         try{
+            $studentNo = session('user_data')['student_no'];
+            $context = $this->initializeSoapProcess();
+            $soapClient = new \SoapClient(
+                config('app.webService'), 
+                [
+                    'stream_context' => $context,
+                    'trace' => 1,
+                    'exceptions' => 1
+                    
+                ]
+            );
 
-            return redirect()->route('admission.letter');
+            $params = new \stdClass();
+            $params->studentNo = $studentNo;
+            $params->studentPortalPWD = trim($validated['studentPortalPWD']);
+            $params->iDVerificationUrl = trim(($validated['idVerificationURL']));
+            $result = $soapClient->InsertStudentIDDetails($params);
+
+            if($result){
+                if($result->return_value){
+                    return redirect()->route('admission.letter')->with('success', 'Student ID details captured successfully');
+
+                } else{
+                    return redirect()->back()->withErrors([
+                        'error' => 'There was an error capturing the payment reference',
+                    ]);
+                }
+            }
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -552,8 +589,61 @@ class ApplicationController extends Controller
     }
 
     public function getAdmissionLetterPage(){
-        return Inertia::render('Application/AdmissionLetter');
+        try{
+            $studentNo = session('user_data')['student_no'];
+            return Inertia::render('Application/AdmissionLetter', [
+                'studentNo' => $studentNo,
+            ]);
 
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+    public function downloadAdmissionLetter($studentNo){
+        try{
+            $context = $this->initializeSoapProcess();
+            $soapClient = new \SoapClient(
+                config('app.webService'), 
+                [
+                    'stream_context' => $context,
+                    'trace' => 1,
+                    'exceptions' => 1
+                    
+                ]
+            );
+            $studentNo = session('user_data')['student_no'];
+            $params = new \stdClass();
+            $params->studentNo = $studentNo;
+            
+            $result = $soapClient->GetAdmissionLetter($params);
+            if($result){
+                if($result->return_value === 'Could Not find student'){
+                    return redirect()->back()->with('error', 'Could Not find student');
+                }
+                if($this->is_base64($result->return_value)){
+                    $base64Data = $result->return_value;
+                    $pdf_decoded = base64_decode ($base64Data);
+
+                    $fileName = 'Admission_letter' . '_' . $studentNo . '_' . '.pdf';
+                    file_put_contents($fileName, $pdf_decoded);
+
+                    return response($pdf_decoded)
+                        ->header('Content-Type', 'application/pdf')
+                        ->header('Content-Disposition', "attachment; filename=\"$fileName\"");
+                } else {
+                    return redirect()->back()->with('error', 'The result is not a valid base64 string.');
+
+                }
+            }
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
      public function getFinalPage(){
         return Inertia::render('Application/Final');
@@ -806,6 +896,7 @@ class ApplicationController extends Controller
             $result = $soapClient->ConvertApplicantToStudent($params);
 
                 if($result){
+                    session()->put('user_data.student_no', $result->return_value);
                     return response()->json([
                         'success' => true,
                         'data' => $result,
@@ -826,5 +917,23 @@ class ApplicationController extends Controller
         }
     }
 
+    function is_base64($s){
+        // Check if there are valid base64 characters
+        if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $s)){ 
+            return false;
+        }
     
+        // Decode the string in strict mode and check the results
+        $decoded = base64_decode($s, true);
+        if(false === $decoded) {
+            return false;
+        }
+    
+        // Encode the string again
+        if(base64_encode($decoded) != $s) {
+            return false;
+        }
+    
+        return true;
+    }
 }

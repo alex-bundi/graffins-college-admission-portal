@@ -23,7 +23,6 @@ function submit(){
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
             }
-            disableSubmitBtn.value = false;
 
            
         },

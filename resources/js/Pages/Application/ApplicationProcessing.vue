@@ -15,7 +15,6 @@ onMounted(async () => {
             const bioData = await processBioData();
             console.log('Bio data:', bioData);
             
-            // Second operation (dependent on first)
             if (bioData?.success === true) {
                 const emergencyData = await processEmergencyContacts(bioData.data.return_value);
                 console.log('Emergency data:', emergencyData);
@@ -27,8 +26,11 @@ onMounted(async () => {
                          if(courseData?.success === true){
                             const applicationConversion = await processApplicationConversion(bioData.data.return_value);
                             console.log('Conversion data:', applicationConversion);
-                            return;
-                            router.visit('/payments/amount-payable')
+                            if(applicationConversion?.success === true){
+                                router.visit('/payments/amount-payable')
+
+                            }
+                            // return;
                          }
                     }
             }

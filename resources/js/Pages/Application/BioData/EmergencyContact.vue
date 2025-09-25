@@ -9,7 +9,6 @@ import { ref, onMounted, computed } from 'vue';
 const props = defineProps({
     emergencyContact: Object,
 });
-console.log(props.emergencyContact)
 let relationshipStatus = ref(null);
 if((props.emergencyContact != null) && (props.emergencyContact.relationship == 1)){
     relationshipStatus = 'parent';
