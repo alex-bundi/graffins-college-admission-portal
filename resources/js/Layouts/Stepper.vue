@@ -1,46 +1,119 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
 
+// Accept completed steps from Laravel controller
+const props = defineProps({
+  completedSteps: {
+    type: Array,
+    default: () => []
+  }
+});
+
+// Application steps based on Laravel routes
+const steps = [
+  // Application routes
+  { id: 1, title: "Study Mode", route: "mode.of.study", completed: props.completedSteps.includes('mode.of.study') },
+  { id: 2, title: "Department", route: "department", completed: props.completedSteps.includes('department') },
+  { id: 3, title: "Pick Course", route: "pick.course", completed: props.completedSteps.includes('pick.course') },
+  { id: 4, title: "Course Levels", route: "course.levels", completed: props.completedSteps.includes('course.levels') },
+  { id: 5, title: "Course Type", route: "course-type", completed: props.completedSteps.includes('course-type') },
+  { id: 6, title: "Start Date", route: "class.start.date", completed: props.completedSteps.includes('class.start.date') },
+  { id: 7, title: "Start Time", route: "class.start.time", completed: props.completedSteps.includes('class.start.time') },
+  { id: 8, title: "Course Summary", route: "course.summary", completed: props.completedSteps.includes('course.summary') },
+  { id: 9, title: "Bio Data", route: "start.bio.data", completed: props.completedSteps.includes('start.bio.data') },
+  
+  // Bio Data routes
+  { id: 10, title: "Full Name", route: "full.name", completed: props.completedSteps.includes('full.name') },
+  { id: 11, title: "Contacts", route: "contacts", completed: props.completedSteps.includes('contacts') },
+  { id: 12, title: "Nationality", route: "nationality", completed: props.completedSteps.includes('nationality') },
+  { id: 13, title: "Email", route: "email.address", completed: props.completedSteps.includes('email.address') },
+  { id: 14, title: "Residence", route: "residence", completed: props.completedSteps.includes('residence') },
+  { id: 15, title: "Marketing", route: "marketing", completed: props.completedSteps.includes('marketing') },
+  { id: 16, title: "Allergies", route: "allergies", completed: props.completedSteps.includes('allergies') },
+  { id: 17, title: "Allergy Details", route: "allergy.description", completed: props.completedSteps.includes('allergy.description') },
+  { id: 18, title: "Emergency Contact", route: "emergency.contact", completed: props.completedSteps.includes('emergency.contact') },
+  { id: 19, title: "Upload ID", route: "upload.id", completed: props.completedSteps.includes('upload.id') },
+  { id: 20, title: "Upload Photo", route: "upload.photo", completed: props.completedSteps.includes('upload.photo') },
+  { id: 21, title: "Bio Summary", route: "bio.data.summary", completed: props.completedSteps.includes('bio.data.summary') },
+  { id: 22, title: "Student ID", route: "student.id", completed: props.completedSteps.includes('student.id') },
+  
+  // Regulations routes
+  { id: 23, title: "Regulations 1", route: "page.one", completed: props.completedSteps.includes('page.one') },
+  { id: 24, title: "Regulations 2", route: "page.two", completed: props.completedSteps.includes('page.two') },
+  { id: 25, title: "Regulations 3", route: "page.three", completed: props.completedSteps.includes('page.three') },
+  { id: 26, title: "Regulations 4", route: "page.four", completed: props.completedSteps.includes('page.four') },
+  { id: 27, title: "Regulations 5", route: "page.five", completed: props.completedSteps.includes('page.five') },
+  { id: 28, title: "Regulations 6", route: "page.six", completed: props.completedSteps.includes('page.six') },
+  { id: 29, title: "Regulations 7", route: "page.seven", completed: props.completedSteps.includes('page.seven') },
+  { id: 30, title: "Regulations 8", route: "page.eight", completed: props.completedSteps.includes('page.eight') },
+  { id: 31, title: "Declaration", route: "declaration", completed: props.completedSteps.includes('declaration') },
+  
+  // Payment routes
+  { id: 32, title: "Amount Payable", route: "amount.payable", completed: props.completedSteps.includes('amount.payable') },
+  { id: 33, title: "Payment Info", route: "payment.instructions", completed: props.completedSteps.includes('payment.instructions') },
+  { id: 34, title: "Update Payment", route: "update.payment", completed: props.completedSteps.includes('update.payment') },
+  
+  // Final steps
+  { id: 35, title: "Admission Letter", route: "admission.letter", completed: props.completedSteps.includes('admission.letter') },
+  { id: 36, title: "Complete", route: "final", completed: props.completedSteps.includes('final') }
+];
 </script>
+
 <template>
-    
-
-<ol class="relative text-gray-500 border-s border-gray-200 dark:border-gray-700 dark:text-gray-400">                  
-    <li class="mb-10 ms-6">            
-        <span class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
-            <svg class="w-3.5 h-3.5 text-green-500 dark:text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-            </svg>
-        </span>
-        <h3 class="font-medium leading-tight">Personal Info</h3>
-        <p class="text-sm">Step details here</p>
-    </li>
-    <li class="mb-10 ms-6">
-        <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
-            <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
-                <path d="M18 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2ZM6.5 3a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3.014 13.021l.157-.625A3.427 3.427 0 0 1 6.5 9.571a3.426 3.426 0 0 1 3.322 2.805l.159.622-6.967.023ZM16 12h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Z"/>
-            </svg>
-        </span>
-        <h3 class="font-medium leading-tight">Account Info</h3>
-        <p class="text-sm">Step details here</p>
-    </li>
-    <li class="mb-10 ms-6">
-        <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
-            <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z"/>
-            </svg>
-        </span>
-        <h3 class="font-medium leading-tight">Review</h3>
-        <p class="text-sm">Step details here</p>
-    </li>
-    <li class="ms-6">
-        <span class="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-gray-700">
-            <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2ZM7 2h4v3H7V2Zm5.7 8.289-3.975 3.857a1 1 0 0 1-1.393 0L5.3 12.182a1.002 1.002 0 1 1 1.4-1.436l1.328 1.289 3.28-3.181a1 1 0 1 1 1.392 1.435Z"/>
-            </svg>
-        </span>
-        <h3 class="font-medium leading-tight">Confirmation</h3>
-        <p class="text-sm">Step details here</p>
-    </li>
-</ol>
-
+  <!-- Horizontal scrollable container -->
+  <div class="w-full overflow-x-auto">
+    <ol class="flex items-center min-w-max space-x-4 px-4 py-2">
+      <li 
+        v-for="(step, index) in steps" 
+        :key="step.id"
+        class="relative flex-shrink-0"
+      >
+        <Link 
+          :href="route(step.route)" 
+          class="flex items-center font-medium whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity"
+          :class="step.completed ? 'text-indigo-600' : 'text-gray-900'"
+        >
+          <span 
+            class="w-6 h-6 border rounded-full flex justify-center items-center mr-3 text-sm lg:w-8 lg:h-8"
+            :class="step.completed 
+              ? 'bg-indigo-600 border-transparent text-white' 
+              : 'bg-gray-50 border-gray-200 text-gray-900'"
+          >
+            {{ step.id }}
+          </span>
+          <div class="block">
+            <h4 
+              class="text-base"
+              :class="step.completed ? 'text-indigo-600' : 'text-gray-900'"
+            >
+              {{ step.title }}
+            </h4>
+          </div>
+          <!-- Arrow icon - hide on last item -->
+          <svg 
+            v-if="index < steps.length - 1"
+            class="w-5 h-5 ml-2 sm:ml-4" 
+            :class="step.completed ? 'stroke-indigo-600' : 'stroke-gray-900'"
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" 
+              stroke="currentColor" 
+              stroke-width="1.6" 
+              stroke-linecap="round" 
+            />
+          </svg>
+                  </Link>
+      </li>
+    </ol>
+  </div>
+  
+  <!-- Optional: Add scroll indicators -->
+  <div class="flex justify-center mt-2">
+    <div class="text-xs text-gray-500">
+      ← Scroll horizontally to see all steps →
+    </div>
+  </div>
 </template>

@@ -8,7 +8,6 @@ import Stepper from './Stepper.vue';
 <template>
     <sidebar />
     <main class="p-4 sm:ml-64  grid grid-col-2">
-        <stepper />
         <slot></slot>
     </main>
 </template>

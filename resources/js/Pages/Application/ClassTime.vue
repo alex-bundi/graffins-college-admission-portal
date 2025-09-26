@@ -5,11 +5,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
 
 
 const props = defineProps({
     classTimes: Object,
     applicantCourse: Object,
+    completedSteps: {
+        type: Array,
+        default: () => []
+    }
 });
 
 const errors = ref({});
@@ -53,6 +58,7 @@ function submit(){
 <template>
     <Head title="Class Start Date" />
     <AuthenticatedLayout>
+        <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div

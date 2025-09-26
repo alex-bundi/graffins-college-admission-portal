@@ -3,11 +3,17 @@ import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
+
 
 const props = defineProps({
     courses: Object,
     department: String,
     applicantCourse: Object,
+    completedSteps: {
+        type: Array,
+        default: () => []
+    }
 });
 
 const itCourses = Object.fromEntries(
@@ -46,7 +52,6 @@ function submit(){
                 for(let error in allErrors){
                 errors.value[error] = allErrors[error]
                 }
-                disableSubmitBtn.value = false;
 
             
             },
@@ -64,7 +69,7 @@ function submit(){
 <template>
     <Head title="Pick Course" />
     <AuthenticatedLayout>
-        
+        <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div

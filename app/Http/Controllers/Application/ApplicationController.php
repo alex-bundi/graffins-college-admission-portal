@@ -25,6 +25,142 @@ class ApplicationController extends Controller
         $this->generalQueries = new GeneralQueries();
     }
 
+    // Add this method to your ApplicationController or create a BaseController
+protected function getCompletedSteps($applicantCourse = null, $applicant = null)
+{
+    $completedSteps = [];
+    
+    // Check ApplicantCourse completion
+    if ($applicantCourse) {
+        // Application flow steps
+        if (!empty($applicantCourse->mode_of_study)) {
+            $completedSteps[] = 'mode.of.study';
+        }
+        if (!empty($applicantCourse->department_code)) {
+            $completedSteps[] = 'department';
+        }
+        if (!empty($applicantCourse->course_code)) {
+            $completedSteps[] = 'pick.course';
+        }
+        if (!empty($applicantCourse->course_level)) {
+            $completedSteps[] = 'course.levels';
+        }
+        if (!empty($applicantCourse->unit_code)) {
+            $completedSteps[] = 'course-type';
+        }
+        if (!empty($applicantCourse->start_date)) {
+            $completedSteps[] = 'class.start.date';
+        }
+        if (!empty($applicantCourse->class_time)) {
+            $completedSteps[] = 'class.start.time';
+        }
+        
+        // If all course info is filled, mark course summary as complete
+        if (count(array_intersect(['mode.of.study', 'department', 'pick.course', 'course.levels', 'course-type', 'class.start.date', 'class.start.time'], $completedSteps)) >= 6) {
+            $completedSteps[] = 'course.summary';
+        }
+    }
+    
+    // Check Applicant (Bio Data) completion
+    if ($applicant) {
+        // Mark bio data start if we have basic course info
+        if (count($completedSteps) >= 3) {
+            $completedSteps[] = 'start.bio.data';
+        }
+        
+        // Bio data flow steps
+        if (!empty($applicant->first_name) && !empty($applicant->last_name)) {
+            $completedSteps[] = 'full.name';
+        }
+        if (!empty($applicant->phone_no)) {
+            $completedSteps[] = 'contacts';
+        }
+        if (!empty($applicant->nationality)) {
+            $completedSteps[] = 'nationality';
+        }
+        if (!empty($applicant->email)) {
+            $completedSteps[] = 'email.address';
+        }
+        if (!empty($applicant->residence)) {
+            $completedSteps[] = 'residence';
+        }
+        if (!empty($applicant->marketing)) {
+            $completedSteps[] = 'marketing';
+        }
+        if (!empty($applicant->allergies)) {
+            $completedSteps[] = 'allergies';
+            
+            // If they have allergies and description is filled
+            if ($applicant->allergies === 'Yes' && !empty($applicant->allergy_description)) {
+                $completedSteps[] = 'allergy.description';
+            } elseif ($applicant->allergies === 'No') {
+                // If no allergies, skip the description step
+                $completedSteps[] = 'allergy.description';
+            }
+        }
+        
+        // Check emergency contacts from separate table
+        $emergencyContact = EmergencyContact::where('applicant_id', $applicant->id)->first();
+        if ($emergencyContact && !empty($emergencyContact->full_name) && !empty($emergencyContact->phone_no)) {
+            $completedSteps[] = 'emergency.contact';
+        }
+        
+        if (!empty($applicant->passport_file_path)) {
+            $completedSteps[] = 'upload.id';
+        }
+        if (!empty($applicant->student_image_file_path)) {
+            $completedSteps[] = 'upload.photo';
+        }
+        
+        // If most bio data is complete, mark bio summary
+        $bioSteps = ['full.name', 'contacts', 'nationality', 'email.address', 'residence'];
+        if (count(array_intersect($bioSteps, $completedSteps)) >= 4) {
+            $completedSteps[] = 'bio.data.summary';
+        }
+        
+        // Student ID - you might need to add this field or check application_status
+        if (!empty($applicant->application_no)) {
+            $completedSteps[] = 'student.id';
+        }
+    }
+    
+    // Check session data for regulations and payments
+    $sessionData = session('user_data', []);
+    
+    // Regulations completion - track these in session when user completes each page
+    $regulationSteps = ['page.one', 'page.two', 'page.three', 'page.four', 'page.five', 'page.six', 'page.seven', 'page.eight'];
+    foreach ($regulationSteps as $step) {
+        if (!empty($sessionData['regulations'][$step])) {
+            $completedSteps[] = $step;
+        }
+    }
+    
+    if (!empty($sessionData['declaration_accepted'])) {
+        $completedSteps[] = 'declaration';
+    }
+    
+    // Payment completion
+    if (!empty($sessionData['payment_calculated'])) {
+        $completedSteps[] = 'amount.payable';
+    }
+    if (!empty($sessionData['payment_instructions_viewed'])) {
+        $completedSteps[] = 'payment.instructions';
+    }
+    if (!empty($sessionData['payment_updated'])) {
+        $completedSteps[] = 'update.payment';
+    }
+    
+    // Final steps - check application_status
+    if ($applicant && $applicant->application_status === 'Approved') {
+        $completedSteps[] = 'admission.letter';
+    }
+    if ($applicant && $applicant->application_status === 'Completed') {
+        $completedSteps[] = 'final';
+    }
+    
+    return $completedSteps;
+}
+
     
 
     public function getDepartmentPage(){
@@ -39,10 +175,13 @@ class ApplicationController extends Controller
             $applicationID =session('user_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             session()->put('user_data.application_no', $applicantCourse->applicant_id);
-            
+            $applicant = null;
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+
             return Inertia::render('Application/Department', [
                 'departments' => $departments,
                 'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
             ]);
 
         }catch(Exception $e){
@@ -90,8 +229,11 @@ class ApplicationController extends Controller
     public function getModeOfStudyPage(){
         try {
             $pendingApplications = $this->ValidateApplications();
+            $applicant = null;
+            $applicantCourse = null;
 
             if ($pendingApplications == false){
+
                 return Inertia::render('Application/ModeOfStudy');
 
             }else if ($pendingApplications == true){
@@ -100,9 +242,13 @@ class ApplicationController extends Controller
                     ->where('application_status' , 'new')
                     ->first();
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
+                $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
 
                 return Inertia::render('Application/ModeOfStudy', [
                     'applicantCourse' => $applicantCourse,
+                    'completedSteps' => $completedSteps,
+
+
                 ]);
 
             }
@@ -219,11 +365,15 @@ class ApplicationController extends Controller
             $courseQuery = $this->generalQueries->coursesQuery();
             $coursesURL = config('app.odata') . "{$courseQuery}";
             $courseData = $this->getOdata($coursesURL);
+            $applicant = null;
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+
             
             return Inertia::render('Application/PickCourse', [
                 'courses' => $courseData['value'],
                 'department' => $applicantCourse->department_code,
                 'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
             ]);
         }catch(Exception $e){
             return redirect()->route('department')->withErrors([
@@ -277,9 +427,11 @@ class ApplicationController extends Controller
 
     public function getCourseTypePage(){
         try{
+             $applicant = null;
             $applicationID =session('user_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicanCourseCode = $applicantCourse->course_code;
+                $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             
             if ($applicantCourse->department_code == 'WCAPS'){
                 $unitFeesQuery = $this->generalQueries->unitFeesQuery();
@@ -288,6 +440,7 @@ class ApplicationController extends Controller
                 $unitFees = $unitFeesData['value'];
                 return Inertia::render('Application/CourseType', [
                     'units' => $unitFees,
+                    'completedSteps' => $completedSteps,
                 ]);
             } else if ($applicantCourse->department_code == 'WENG'){
                 $courseLevelsQuery = $this->generalQueries->courseLevelsQuery();
@@ -298,6 +451,8 @@ class ApplicationController extends Controller
 
                 return Inertia::render('Application/ENGLevels', [
                     'courseLevels' => $courseLevels,
+                    'completedSteps' => $completedSteps,
+                    
                 ]);
             }else if ($applicantCourse->department_code == 'WBM'){
                 $courseLevelsQuery = $this->generalQueries->courseLevelsQuery();
@@ -307,6 +462,7 @@ class ApplicationController extends Controller
 
                 return Inertia::render('Application/WBMCourseLevels', [
                     'courseLevels' => $courseLevels,
+                    'completedSteps' => $completedSteps,
                 ]);
             }
 
@@ -404,10 +560,13 @@ class ApplicationController extends Controller
 
     public function getClassStartDatePage(){
         try{
+            $applicant = null;
             $applicationID =session('user_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/ClassStartDate',[
                 'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
             ]);  
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -451,9 +610,13 @@ class ApplicationController extends Controller
            
             $applicationID =session('user_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            
+            $applicant = null;
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/ClassTime', [
                 'classTimes' => $classTimes,
                 'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
             ]);
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -489,12 +652,15 @@ class ApplicationController extends Controller
 
     public function getCourseSummmary(){
         try{
+            $applicant = null;
+
             $applicationID =session('user_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/CourseSummary', [
                 'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
             ]);
 
             

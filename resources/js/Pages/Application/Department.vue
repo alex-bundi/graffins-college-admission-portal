@@ -3,10 +3,15 @@ import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
 
 const props = defineProps({
     departments: Object,
-    applicantCourse: Object
+    applicantCourse: Object,
+    completedSteps: {
+        type: Array,
+        default: () => []
+    }
 });
 
 const initialMode = ref(null);
@@ -16,6 +21,7 @@ const errors = ref({});
 const success = ref({});
 const form = useForm({
     departmentCode: '',
+
 });
 
 onMounted(() => {
@@ -51,6 +57,7 @@ function submit(){
 <template>
     <Head title="Department" />
     <AuthenticatedLayout>
+         <StepperComponent :completed-steps="completedSteps" />
         
         <div class="flex flex-row space-x-6 items-center">
              <div>
