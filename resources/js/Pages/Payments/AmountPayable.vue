@@ -11,9 +11,9 @@ const props = defineProps({
     studentUnits: Object,
 });
 
-console.log(props.applicantCourse)
-console.log(props.totalFees)
-console.log(props.studentUnits)
+// console.log(props.applicantCourse)
+// console.log(props.totalFees)
+// console.log(props.studentUnits)
 
 const errors = ref({});
 const success = ref({});

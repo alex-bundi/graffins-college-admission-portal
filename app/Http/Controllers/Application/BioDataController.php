@@ -804,9 +804,13 @@ class BioDataController extends Controller
             $applicationID =session('user_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/BioData/BioDataSummary', [
                 'applicantData' => $applicant,
-                'emergencyContact'=> $emergencyContact
+                'emergencyContact'=> $emergencyContact,
+                'completedSteps' => $completedSteps,
             ]);
         }catch(Exception $e){
             return redirect()->back()->withErrors([

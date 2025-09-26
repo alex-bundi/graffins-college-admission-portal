@@ -3,7 +3,16 @@ import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
 
+
+const props = defineProps({
+   
+    completedSteps: {
+        type: Array,
+        default: () => []
+    },
+});
 
 const errors = ref({});
 const success = ref({});
@@ -68,6 +77,9 @@ async function processApplicationConversion(applicantNo) {
 <template>
     <Head title="Last Step" />
     <AuthenticatedLayout>
+
+         <StepperComponent :completed-steps="completedSteps" />
+
         <div>
                 <Notifications :errors="errors" :success="success"/> 
         </div>

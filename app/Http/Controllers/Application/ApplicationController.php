@@ -825,7 +825,13 @@ class ApplicationController extends Controller
 
     public function getApplicationProcessingPage(){
         try{
-            return Inertia::render('Application/ApplicationProcessing');
+             $applicant = null;
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            return Inertia::render('Application/ApplicationProcessing', [
+                'completedSteps' => $completedSteps,
+            ]);
 
             
         }catch(Exception $e){

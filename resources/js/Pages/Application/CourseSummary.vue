@@ -30,7 +30,7 @@ const showMessage = () => {
     // Hide message after 3 seconds
     setTimeout(() => {
         showStepperMessage.value = false;
-    }, 3000);
+    }, 7000);
 };
 
 function submitCourseSummary(){

@@ -5,6 +5,8 @@ import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
 import { ref, onMounted } from 'vue';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+
 
 const errors = ref({});
 const success = ref({});
@@ -57,7 +59,7 @@ function submit(){
 
 <template>
     <Head title="Register" />
-    <ApplicationLayout>
+    <GuestLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div
@@ -203,5 +205,5 @@ function submit(){
 
 
 
-    </ApplicationLayout>
+    </GuestLayout>
 </template>

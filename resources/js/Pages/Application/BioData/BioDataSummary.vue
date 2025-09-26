@@ -5,17 +5,33 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
+
 const props = defineProps({
     applicantData: Object,
     emergencyContact: Object,
+    completedSteps: {
+        type: Array,
+        default: () => []
+    },
 });
-console.log(props.emergencyContact)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
     personalDataSummary: '',
 
 });
+
+const showStepperMessage = ref(false);
+
+// Function to show message temporarily
+const showMessage = () => {
+    showStepperMessage.value = true;
+    // Hide message after 3 seconds
+    setTimeout(() => {
+        showStepperMessage.value = false;
+    }, 7000);
+};
 
 function confirmPersonalData(){
     form.personalDataSummary ='submitted';
@@ -38,6 +54,7 @@ function confirmPersonalData(){
 <template>
     <Head title="Personal Information Summary" />
     <AuthenticatedLayout>
+         <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div
@@ -161,16 +178,26 @@ function confirmPersonalData(){
                 </div>
 
                 <div class="flex flex-col space-y-3 items-center">
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        Need to make changes?   Click
-                         <span class="font-monteserat tracking-wider font-bold">Edit </span> 
-                         
+                    <p class="font-josefin font-bold text-base tracking-wider">
+                        Need to change something? Click
+                        <span class="font-monteserat tracking-wider font-bold">Edit</span> 
                     </p>
 
                     <div>
-                        <Link class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                        <Link 
+                            @click="showMessage"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                        >
                             Edit
                         </Link>
+                    </div>
+                    
+                    <!-- Conditional message that appears on click -->
+                    <div 
+                        v-if="showStepperMessage" 
+                        class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm text-center transition-all duration-300 ease-in-out"
+                    >
+                        💡 You can click on any step in the progress bar above to navigate directly!
                     </div>
                 </div>
             </div>

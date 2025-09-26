@@ -89,12 +89,19 @@ class PaymentController extends Controller
             $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
             $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}' and CourseCode eq '{$applicantCourse->course_code}' and CourseLevel eq '{$applicantCourse->course_level}'");
             $studentPayments = $this->getOdata($studentPaymentsURL);
-            $studentPaymentsData = $studentPayments['value'][0];
+            // $studentPaymentsData = $studentPayments['value'][0];
+
+             if (!empty($studentPayments['value']) && count($studentPayments['value']) > 0) {
+                    $studentPaymentsData = $studentPayments['value'][0];
+            }else {
+                $studentPaymentsData = null;
+            }
             return Inertia::render('Payments/UpdatePayment', [
                 'studentPayments' => $studentPaymentsData,
             ]);
 
         }catch(Exception $e){
+            // dd($e->getMessage());
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
