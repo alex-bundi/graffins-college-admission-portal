@@ -5,9 +5,15 @@ import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
 import { ref, onMounted, computed } from 'vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
+
 const props = defineProps({
     countries: Object,
     applicant:Object,
+    completedSteps: {
+        type: Array,
+        default: () => []
+    }
 });
 const nationality = ref(props.applicant ? props.applicant.nationality + '..' + props.applicant.country_name : null);
 const errors = ref({});
@@ -47,6 +53,7 @@ function submit(){
 <template>
     <Head title="Nationality" />
     <ApplicationLayout>
+        <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div

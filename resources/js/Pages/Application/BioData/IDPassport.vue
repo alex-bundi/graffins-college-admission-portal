@@ -5,7 +5,14 @@ import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
 import { ref, onMounted } from 'vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
 
+const props = defineProps({
+    completedSteps: {
+        type: Array,
+        default: () => []
+    }
+});
 const errors = ref({});
 const success = ref({});
 const form = useForm({
@@ -36,6 +43,7 @@ function submit(){
 <template>
     <Head title="Upload Passport/ID" />
     <ApplicationLayout>
+        <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div

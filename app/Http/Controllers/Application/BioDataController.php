@@ -28,12 +28,151 @@ class BioDataController extends Controller
         $this->generalQueries = new GeneralQueries();
     }
 
+    protected function getCompletedSteps($applicantCourse = null, $applicant = null){
+        $completedSteps = [];
+        
+        // Check ApplicantCourse completion
+        if ($applicantCourse) {
+            // Application flow steps
+            if (!empty($applicantCourse->mode_of_study)) {
+                $completedSteps[] = 'mode.of.study';
+            }
+            if (!empty($applicantCourse->department_code)) {
+                $completedSteps[] = 'department';
+            }
+            if (!empty($applicantCourse->course_code)) {
+                $completedSteps[] = 'pick.course';
+            }
+            if (!empty($applicantCourse->course_level)) {
+                $completedSteps[] = 'course.levels';
+            }
+            if (!empty($applicantCourse->unit_code)) {
+                $completedSteps[] = 'course-type';
+            }
+            if (!empty($applicantCourse->start_date)) {
+                $completedSteps[] = 'class.start.date';
+            }
+            if (!empty($applicantCourse->class_time)) {
+                $completedSteps[] = 'class.start.time';
+            }
+            
+            // If all course info is filled, mark course summary as complete
+            if (count(array_intersect(['mode.of.study', 'department', 'pick.course', 'course.levels', 'course-type', 'class.start.date', 'class.start.time'], $completedSteps)) >= 6) {
+                $completedSteps[] = 'course.summary';
+            }
+        }
+        
+        // Check Applicant (Bio Data) completion
+        if ($applicant) {
+            // Mark bio data start if we have basic course info
+            if (count($completedSteps) >= 3) {
+                $completedSteps[] = 'start.bio.data';
+            }
+            
+            // Bio data flow steps
+            if (!empty($applicant->first_name) && !empty($applicant->last_name)) {
+                $completedSteps[] = 'full.name';
+            }
+            if (!empty($applicant->phone_no)) {
+                $completedSteps[] = 'contacts';
+            }
+            if (!empty($applicant->nationality)) {
+                $completedSteps[] = 'nationality';
+            }
+            if (!empty($applicant->email)) {
+                $completedSteps[] = 'email.address';
+            }
+            if (!empty($applicant->residence)) {
+                $completedSteps[] = 'residence';
+            }
+            if (!empty($applicant->marketing)) {
+                $completedSteps[] = 'marketing';
+            }
+            if (!empty($applicant->allergies)) {
+                $completedSteps[] = 'allergies';
+                
+                // If they have allergies and description is filled
+                if ($applicant->allergies === 'Yes' && !empty($applicant->allergy_description)) {
+                    $completedSteps[] = 'allergy.description';
+                } elseif ($applicant->allergies === 'No') {
+                    // If no allergies, skip the description step
+                    $completedSteps[] = 'allergy.description';
+                }
+            }
+            
+            // Check emergency contacts from separate table
+            $emergencyContact = EmergencyContact::where('applicant_id', $applicant->id)->first();
+            if ($emergencyContact && !empty($emergencyContact->full_name) && !empty($emergencyContact->phone_no)) {
+                $completedSteps[] = 'emergency.contact';
+            }
+            
+            if (!empty($applicant->passport_file_path)) {
+                $completedSteps[] = 'upload.id';
+            }
+            if (!empty($applicant->student_image_file_path)) {
+                $completedSteps[] = 'upload.photo';
+            }
+            
+            // If most bio data is complete, mark bio summary
+            $bioSteps = ['full.name', 'contacts', 'nationality', 'email.address', 'residence'];
+            if (count(array_intersect($bioSteps, $completedSteps)) >= 4) {
+                $completedSteps[] = 'bio.data.summary';
+            }
+            
+            // Student ID - you might need to add this field or check application_status
+            if (!empty($applicant->application_no)) {
+                $completedSteps[] = 'student.id';
+            }
+        }
+        
+        // Check session data for regulations and payments
+        $sessionData = session('user_data', []);
+        
+        // Regulations completion - track these in session when user completes each page
+        $regulationSteps = ['page.one', 'page.two', 'page.three', 'page.four', 'page.five', 'page.six', 'page.seven', 'page.eight'];
+        foreach ($regulationSteps as $step) {
+            if (!empty($sessionData['regulations'][$step])) {
+                $completedSteps[] = $step;
+            }
+        }
+        
+        if (!empty($sessionData['declaration_accepted'])) {
+            $completedSteps[] = 'declaration';
+        }
+        
+        // Payment completion
+        if (!empty($sessionData['payment_calculated'])) {
+            $completedSteps[] = 'amount.payable';
+        }
+        if (!empty($sessionData['payment_instructions_viewed'])) {
+            $completedSteps[] = 'payment.instructions';
+        }
+        if (!empty($sessionData['payment_updated'])) {
+            $completedSteps[] = 'update.payment';
+        }
+        
+        // Final steps - check application_status
+        if ($applicant && $applicant->application_status === 'Approved') {
+            $completedSteps[] = 'admission.letter';
+        }
+        if ($applicant && $applicant->application_status === 'Completed') {
+            $completedSteps[] = 'final';
+        }
+        
+        return $completedSteps;
+    }
+
+
      public function getNamesPage(){
         try{
             $email = trim(session('user_data')['email']);
             $user = User::where('email', $email)->first();
+            $applicantCourse = null;
+            $applicant = null;
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/BioData/FullName', [
                 'user' => $user,
+                'completedSteps' => $completedSteps,
             ]);
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -89,8 +228,13 @@ class BioDataController extends Controller
         try{
             $applicationID =session('user_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             return Inertia::render('Application/BioData/Contacts', [
                 'applicant' => $applicant,
+                'completedSteps' => $completedSteps,
             ]);
 
         } catch(Exception $e){
@@ -133,10 +277,16 @@ class BioDataController extends Controller
             $countriesURL = config('app.odata') . "{$countriesQuery}";
             $countriesData = $this->getOdata($countriesURL);
             $countries = $countriesData['value'];
+
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             
             return Inertia::render('Application/BioData/Nationality', [
                 'countries' => $countries,
                 'applicant' => $applicant,
+                'completedSteps' => $completedSteps,
             ]);
 
             
@@ -188,8 +338,15 @@ class BioDataController extends Controller
         try{
             $email = trim(session('user_data')['email']);
             $user = User::where('email', $email)->first();
+            $applicant = null;
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             return Inertia::render('Application/BioData/EmailAddress', [
                 'user' => $user,
+                'completedSteps' => $completedSteps,
+
             ]);
 
             
@@ -243,11 +400,16 @@ class BioDataController extends Controller
             $residenceURL = config('app.odata') . "{$residenceQuery}?" . '$filter=' . rawurlencode("Type eq 'Location'");
             $residenceData = $this->getOdata($residenceURL);
             $residence = $residenceData['value'];
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             // dd($residence);
             
             return Inertia::render('Application/BioData/Residence', [
                 'residences' => $residence,
                 'applicant' => $applicant,
+                'completedSteps' => $completedSteps,
             ]);
 
             
@@ -304,9 +466,15 @@ class BioDataController extends Controller
             $marketingURL = config('app.odata') . "{$marketingQuery}";
             $marketingData = $this->getOdata($marketingURL);
             $marketing = $marketingData['value'];
+
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             return Inertia::render('Application/BioData/Marketing', [
                 'marketingAreas' => $marketing,
                 'applicant' => $applicant,
+                'completedSteps' => $completedSteps,
             ]);
             
         }catch(Exception $e){
@@ -359,8 +527,14 @@ class BioDataController extends Controller
         try{
              $applicationID =session('user_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
+
+             $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             return Inertia::render('Application/BioData/Allergies', [
                 'applicant' => $applicant,
+                'completedSteps' => $completedSteps,
             ]);
 
             
@@ -403,8 +577,14 @@ class BioDataController extends Controller
         try{
              $applicationID =session('user_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
+
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             return Inertia::render('Application/BioData/AllergyDescription', [
                 'applicant' => $applicant,
+                'completedSteps' => $completedSteps,
             ]);
 
         }catch(Exception $e){
@@ -441,8 +621,15 @@ class BioDataController extends Controller
         try{
              $applicationID =session('user_data')['application_no'];
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
+            
+            $applicantCourse = null;
+            $applicant = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            
             return Inertia::render('Application/BioData/EmergencyContact', [
                 'emergencyContact' => $emergencyContact,
+                'completedSteps' => $completedSteps,
             ]);
 
         }catch(Exception $e){
@@ -497,8 +684,13 @@ class BioDataController extends Controller
 
      public function getUploadIDPage(){
         try{
+            $applicant = null;
+            $applicantCourse = null;
 
-            return Inertia::render('Application/BioData/IDPassport');
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            return Inertia::render('Application/BioData/IDPassport', [
+                'completedSteps' => $completedSteps,
+            ]);
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -552,7 +744,19 @@ class BioDataController extends Controller
     }
 
     public function getUploadPhotoPage(){
-        return Inertia::render('Application/BioData/UploadPassportPhoto');
+        try{
+             $applicant = null;
+            $applicantCourse = null;
+
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            return Inertia::render('Application/BioData/UploadPassportPhoto', [
+                'completedSteps' => $completedSteps,
+            ]);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function postUploadPhoto(Request $request){

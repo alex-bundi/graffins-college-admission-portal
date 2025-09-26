@@ -5,9 +5,14 @@ import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
 import { ref, onMounted,computed } from 'vue';
+import StepperComponent from '@/Layouts/Stepper.vue';
 
 const props = defineProps({
     applicant: Object,
+    completedSteps: {
+        type: Array,
+        default: () => []
+    }
 });
 
 let allergyStatus = ref(null);
@@ -64,6 +69,7 @@ function submit(){
 <template>
     <Head title="Allergies" />
     <ApplicationLayout>
+        <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div
