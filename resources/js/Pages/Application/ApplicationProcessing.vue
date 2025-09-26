@@ -21,28 +21,28 @@ onMounted(async () => {
     if (!processed) {
         try {
             // First operation
-            const bioData = await processBioData();
-            console.log('Bio data:', bioData);
+            // const bioData = await processBioData();
+            // console.log('Bio data:', bioData);
             
-            if (bioData?.success === true) {
-                const emergencyData = await processEmergencyContacts(bioData.data.return_value);
-                console.log('Emergency data:', emergencyData);
+            // if (bioData?.success === true) {
+            //     const emergencyData = await processEmergencyContacts(bioData.data.return_value);
+            //     console.log('Emergency data:', emergencyData);
 
-                    if(emergencyData?.success === true){
-                        const courseData = await processApplicantCourse(bioData.data.return_value);
-                         console.log('Course data:', courseData);
+            //         if(emergencyData?.success === true){
+            //             const courseData = await processApplicantCourse(bioData.data.return_value);
+            //              console.log('Course data:', courseData);
 
-                         if(courseData?.success === true){
-                            const applicationConversion = await processApplicationConversion(bioData.data.return_value);
-                            console.log('Conversion data:', applicationConversion);
-                            if(applicationConversion?.success === true){
-                                router.visit('/payments/amount-payable')
+            //              if(courseData?.success === true){
+            //                 const applicationConversion = await processApplicationConversion(bioData.data.return_value);
+            //                 console.log('Conversion data:', applicationConversion);
+            //                 if(applicationConversion?.success === true){
+            //                     router.visit('/payments/amount-payable')
 
-                            }
-                            // return;
-                         }
-                    }
-            }
+            //                 }
+            //                 // return;
+            //              }
+            //         }
+            // }
             
             processed = true;
         } catch (error) {
@@ -83,12 +83,28 @@ async function processApplicationConversion(applicantNo) {
         <div>
                 <Notifications :errors="errors" :success="success"/> 
         </div>
+
+        <div class="flex flex-row space-x-6 items-center">
+             <div>
+                <div
+                    class="inline-block rounded-md h-20 min-h-[1em] w-0.5 self-stretch bg-green-400 dark:bg-white/10"></div>
+            </div>
+            <div>
+                <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
+                    Application Processing...
+                </h1>
+            </div>
+
+            <div>
+                <Notifications :errors="errors" :success="success"/> 
+            </div>
+        </div>
         
         <section class="flex w-full mt-6">
             <!-- Header -->
             <div>
                 <h1>
-                    Application Processing...
+                    
                 </h1>
             </div>
 

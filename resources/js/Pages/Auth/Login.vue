@@ -44,7 +44,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="Login" />
     <GuestLayout>
         <div class="flex flex-row space-x-6 items-center">
              <div>
