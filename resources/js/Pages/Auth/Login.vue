@@ -117,6 +117,17 @@ function submit(){
                                     Login
                                 </button>
                             </div>
+
+                         <div class="max-w-sm mt-4">
+                            <div class="flex justify-center w-full">
+                                <div class="flex flex-row space-x-2 font-josefin font-bold tracking-wider text-sm">
+                                    <p>
+                                        Don't have an account?
+                                    </p>
+                                    <Link :href="route('register')" class="text-primaryColor hover:font-bold hover:text-darkPrimaryColor">Register</Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div v-show="disableSubmitBtn" class="max-w-sm mt-5">
                         <button disabled type="button" class="text-white bg-amber-700 hover:bg-amber-800 cursor-not-allowed

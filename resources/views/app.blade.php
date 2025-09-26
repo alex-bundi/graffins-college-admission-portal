@@ -11,7 +11,7 @@
 
         <meta property="og:title" content="Graffins College Admission Portal - Apply Online">
         <meta property="og:description" content="Easily apply for admission at Graffins College. Explore our certificate, diploma, and degree programs and begin your academic journey today.">
-        <meta property="og:url" content="https://graffinscolab.graffinscollege.com/"> <!-- Update to actual production URL -->
+        <meta property="og:url" content="https://graffinscolab.graffinscollege.com/">
         <meta property="og:image" content="{{ url('/storage/images/logo.png') }}">
 
         <!-- Fonts -->

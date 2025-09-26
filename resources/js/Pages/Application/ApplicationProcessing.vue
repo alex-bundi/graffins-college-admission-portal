@@ -21,28 +21,28 @@ onMounted(async () => {
     if (!processed) {
         try {
             // First operation
-            // const bioData = await processBioData();
-            // console.log('Bio data:', bioData);
+            const bioData = await processBioData();
+            console.log('Bio data:', bioData);
             
-            // if (bioData?.success === true) {
-            //     const emergencyData = await processEmergencyContacts(bioData.data.return_value);
-            //     console.log('Emergency data:', emergencyData);
+            if (bioData?.success === true) {
+                const emergencyData = await processEmergencyContacts(bioData.data.return_value);
+                console.log('Emergency data:', emergencyData);
 
-            //         if(emergencyData?.success === true){
-            //             const courseData = await processApplicantCourse(bioData.data.return_value);
-            //              console.log('Course data:', courseData);
+                    if(emergencyData?.success === true){
+                        const courseData = await processApplicantCourse(bioData.data.return_value);
+                         console.log('Course data:', courseData);
 
-            //              if(courseData?.success === true){
-            //                 const applicationConversion = await processApplicationConversion(bioData.data.return_value);
-            //                 console.log('Conversion data:', applicationConversion);
-            //                 if(applicationConversion?.success === true){
-            //                     router.visit('/payments/amount-payable')
+                         if(courseData?.success === true){
+                            const applicationConversion = await processApplicationConversion(bioData.data.return_value);
+                            console.log('Conversion data:', applicationConversion);
+                            if(applicationConversion?.success === true){
+                                router.visit('/payments/amount-payable')
 
-            //                 }
-            //                 // return;
-            //              }
-            //         }
-            // }
+                            }
+                            // return;
+                         }
+                    }
+            }
             
             processed = true;
         } catch (error) {

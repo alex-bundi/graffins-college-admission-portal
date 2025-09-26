@@ -290,6 +290,7 @@ class ApplicationController extends Controller
                     'second_name' => session('user_data')['second_name'],
                     'last_name' => session('user_data')['last_name'],
                     'email' => strtolower(session('user_data')['email']),
+                    'application_date' => date('Y-m-d'),
                 ];
                 $newApplication = Applicant::create($application);
                 if($newApplication->exists){
