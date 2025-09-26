@@ -10,6 +10,8 @@ use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use App\Models\Applicant;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class CourseController extends Controller
@@ -25,7 +27,8 @@ class CourseController extends Controller
 
     public function getCourseList(){
         try{
-            $email = session('user_data')['email'];
+            $email = Auth::user()->email; 
+
             $applications = Applicant::where('email', $email)->get();
             
             return Inertia::render('CourseList',[

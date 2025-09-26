@@ -38,6 +38,7 @@ export default {
                 primaryColor: '#008f3f',
                 darkPrimaryColor: '#006400',
                 lightPrimaryColor: '#82dc9d',
+                complementaryColor: '#FFF000',
               },
         },
     },

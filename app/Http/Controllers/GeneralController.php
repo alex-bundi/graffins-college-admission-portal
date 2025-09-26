@@ -12,6 +12,7 @@ use App\Traits\GeneralTrait;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Applicant;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -49,40 +50,32 @@ class GeneralController extends Controller
 
 
     public function getDashboard(){
-        return Inertia::render('Dashboard');
+        try {
+            return Inertia::render('Dashboard');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+        
     }
     public function postLogin(Request $request){
         $validated = $request->validate([
-            // 'email' => 'required|email:rfc,dns',
-            'email' => 'required|email',
+            'email' => 'required|email:rfc,dns',
             'password' => 'required|string',
         ]);
 
         try{
-            $email = trim($validated['email']);
-            $user = User::where('email', $email)->first();
-            if (!$user) {
-                return redirect()->back()->withInput()->withErrors([
-                    'error' => 'The email you provided does not exist'
-                ]);
-            }
-            if(Hash::check($validated['password'], $user->password)){
-                $userData = [
-                    'first_name' => $user->first_name,
-                    'second_name' => $user->second_name,
-                    'last_name' => $user->last_name,
-                    'email' => $user->email,
-                ];
-                session()->put('user_data', $userData);
-                  
-
+             if (Auth::attempt($validated)) {
+                $request->session()->regenerate();
                 return redirect()->route('dashboard');
-            } else {
-                return back()->withInput()->withErrors([
-                    'error' => 'The Password you provided does not match our records'
-                ]);
-
             }
+
+            return back()->withInput()->withErrors([
+                'error' => 'Invalid email or password.'
+            ]);
+
+           
 
         }catch(Exception $e){
             return redirect()->back()->withErrors([

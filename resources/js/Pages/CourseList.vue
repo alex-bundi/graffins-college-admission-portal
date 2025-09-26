@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 const props = defineProps({
@@ -14,7 +14,9 @@ const newApplications = Object.fromEntries(
 )
 console.log(newApplications);
 
-
+const applicationStatus = computed(() => {
+       
+})
 </script>
 
 <template>
@@ -167,7 +169,33 @@ console.log(newApplications);
                                                 </p>
                                             </div>
                                         </li>
+
+                                        <li class="flex items-center space-x-2">
+                                            <div class="font-monteserat font-bold tracking-wider">
+                                                Application Status:
+
+                                            </div>
+                                            <div>
+                                                <p class="font-josefin font-bold tracking-wider uppercase">
+                                                    {{ application.application_status }}
+                                                </p>
+                                            </div>
+                                        </li>
                                     </ul>
+                                </div>
+
+                                <div class="mt-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="font-monteserat font-bold tracking-wider text-complementaryColor">
+                                            Application Status:
+
+                                        </div>
+                                        <div>
+                                            <p class="font-josefin font-bold tracking-wider uppercase">
+                                                {{ application.application_status }}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                        </div>

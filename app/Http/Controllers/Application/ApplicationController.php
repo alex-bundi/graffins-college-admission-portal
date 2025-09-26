@@ -12,6 +12,8 @@ use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use App\Models\EmergencyContact;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class ApplicationController extends Controller
