@@ -14,6 +14,8 @@ use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use Illuminate\Support\Str;
+use App\Http\Controllers\BusinessCentralAPIController;
+
 
 
 
@@ -22,10 +24,12 @@ class BioDataController extends Controller
       use OdataTrait;
     use GeneralTrait;
     protected $generalQueries;
+    protected $businessCentralAccess;
 
     public function __construct()
     {
         $this->generalQueries = new GeneralQueries();
+        $this->businessCentralAccess = new BusinessCentralAPIController;
     }
 
     protected function getCompletedSteps($applicantCourse = null, $applicant = null){
@@ -843,6 +847,25 @@ class BioDataController extends Controller
         }
 
     
+    }
+
+    public function getCountries(){
+        try {
+            
+
+            dd ($this->businessCentralAccess->getAccessToken());       
+            
+                        // $countriesQuery = $this->generalQueries->countriesQuery();
+            // $countriesURL = config('app.odata') . "{$countriesQuery}";
+            // $countriesData = $this->getOdata($countriesURL);
+            // $countries = $countriesData['value'];
+            // return $countries;
+        }catch(Exception $e){
+            echo ($e->getMessage());
+            // return redirect()->back()->withErrors([
+            //     'error' => $e->getMessage()
+            // ]);
+        }
     }
 
 }

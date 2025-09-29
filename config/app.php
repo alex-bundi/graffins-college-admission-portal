@@ -22,6 +22,13 @@ return [
 
 
 
+    // Business Central Access Token
+    'token_url' => env('BUSINESS_CENTRAL_TOKEN_URl'),
+    'client_id' => env('BUSINESS_CENTRAL_CLIENT_ID'),
+    'client_secret' => env('BUSINESS_CENTRAL_CLIENT_SECRET'),
+    'scope' =>env('BUSINESS_CENTRAL_SCOPE_URL'),
+    'grant_type' =>env('BUSINESS_CENTRAL_GRANT_TYPE'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

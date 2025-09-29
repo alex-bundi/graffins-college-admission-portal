@@ -12,6 +12,14 @@ use GuzzleHttp\Exception\ServerException;
 use Exception;
 
 trait OdataTrait {
+    private $auth;
+
+
+    public function __construct(){
+        $auth = new OAuth2Controller;
+    }
+
+
     public function getOdata($url){
        
         try {
@@ -74,5 +82,9 @@ trait OdataTrait {
         }
     }
 
+
+    public function getNewOdata(){
+        dd($this->auth->getNewAccessToken());
+    }
     
 }

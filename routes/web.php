@@ -31,6 +31,10 @@ Route::middleware('guest')->group(function () {
 });
 
 
+// Test
+Route::get('/countries', [BioDataController::class, 'getCountries']);
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [GeneralController::class, 'getDashboard'])->name('dashboard');
     Route::get('/apply-course', [CourseController::class, 'getCourseList'])->name('course.list');
