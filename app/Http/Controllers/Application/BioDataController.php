@@ -852,8 +852,16 @@ class BioDataController extends Controller
     public function getCountries(){
         try {
             
+            $validAccessToken = $this->businessCentralAccess->getAccessToken();
 
-            dd ($this->businessCentralAccess->getAccessToken());       
+            if($validAccessToken){
+                // error
+                if($validAccessToken['statusCode'] == 401){
+                    return redirect()->back()->withErrors([
+                        'error' => $validAccessToken['message']
+                    ]);
+                }
+            }
             
                         // $countriesQuery = $this->generalQueries->countriesQuery();
             // $countriesURL = config('app.odata') . "{$countriesQuery}";

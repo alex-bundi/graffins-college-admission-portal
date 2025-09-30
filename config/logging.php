@@ -126,6 +126,10 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'access_token' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/access_token.log'),
+        ],
 
     ],
 
