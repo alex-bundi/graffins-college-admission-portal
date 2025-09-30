@@ -83,8 +83,5 @@ trait OdataTrait {
     }
 
 
-    public function getNewOdata(){
-        dd($this->auth->getNewAccessToken());
-    }
     
 }

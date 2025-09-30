@@ -130,6 +130,10 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/access_token.log'),
         ],
+        'internet_connection' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/access_token.log'),
+        ],
 
     ],
 

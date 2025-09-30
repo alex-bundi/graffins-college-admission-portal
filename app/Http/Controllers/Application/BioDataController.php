@@ -851,25 +851,34 @@ class BioDataController extends Controller
 
     public function getCountries(){
         try {
-            
-            $validAccessToken = $this->businessCentralAccess->getAccessToken();
 
-            if($validAccessToken){
-                // error
-                if($validAccessToken['statusCode'] == 401){
-                    return redirect()->back()->withErrors([
-                        'error' => $validAccessToken['message']
-                    ]);
-                }
-            }
-            
-                        // $countriesQuery = $this->generalQueries->countriesQuery();
-            // $countriesURL = config('app.odata') . "{$countriesQuery}";
-            // $countriesData = $this->getOdata($countriesURL);
+            $countriesQuery = $this->generalQueries->countriesQuery();
+            $countriesURL = config('app.odata') . "{$countriesQuery}";
+            $countriesData = $this->businessCentralAccess->getOdata($countriesURL);
+            dd($countriesData);
+
             // $countries = $countriesData['value'];
+
+            // if($validAccessToken){
+            //     // error
+            //     if($validAccessToken['statusCode'] == 401){
+            //         return redirect()->back()->withErrors([
+            //             'error' => $validAccessToken['message']
+            //         ]);
+            //     }
+            //     if($validAccessToken['statusCode'] == 0 ){
+            //         return redirect()->back()->withErrors([
+            //             'error' => $validAccessToken['message']
+            //         ]);
+            //     }
+            // }
+
+            dd($validAccessToken);
+            
+          
             // return $countries;
         }catch(Exception $e){
-            echo ($e->getMessage());
+            echo ($e->getCode());
             // return redirect()->back()->withErrors([
             //     'error' => $e->getMessage()
             // ]);

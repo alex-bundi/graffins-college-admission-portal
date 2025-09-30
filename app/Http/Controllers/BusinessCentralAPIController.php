@@ -7,6 +7,8 @@ use GuzzleHttp\Client;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+
 
 
 class BusinessCentralAPIController extends Controller
@@ -75,12 +77,60 @@ class BusinessCentralAPIController extends Controller
 
                 return $data;
             }
+            if($e->getCode() == 0 ) {
+                 $response = $e->getResponse();
+                $logMessage = $currentTime . '_' . 'internet_connection'. $response->getBody()->getContents();
+                Log::channel('internet_connection')->error($logMessage);
+                
+                $data = [
+                    'statusCode' => $e->getCode(),
+                    'message' => 'No internet connection. Please check your connection and try again.',
+                ];
+
+                return $data;
+            }
             
             
-            // return $e->getCode();
+            return $e->getCode();
 
 
             
         };
+
+    }
+
+    public function getOdata($url){
+        try{
+            $directory = base_path('config\\');
+            $filename = 'tokenfile.txt';
+            $tokenFile = $directory . $filename;
+
+            $trials = 3;
+
+            if (file_exists($tokenFile) && filesize($tokenFile) > 0) {
+                $authToken = fopen($tokenFile, 'r');
+                $accessToken = fread($authToken, filesize($tokenFile));
+                fclose($authToken);
+            } else {
+
+            }
+
+            $response =  $this->client->get($url, [
+                'verify' => false,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json'
+                ]
+            ]);
+            return $response;
+            
+            $jdata = json_decode($response->getBody(), true);
+
+            
+        }catch (ClientException | ServerException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            
+            // return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }
