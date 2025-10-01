@@ -873,7 +873,6 @@ class BioDataController extends Controller
             //     }
             // }
 
-            dd($validAccessToken);
             
           
             // return $countries;
