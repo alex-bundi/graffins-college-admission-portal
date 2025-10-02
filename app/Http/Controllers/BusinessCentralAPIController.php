@@ -61,7 +61,7 @@ class BusinessCentralAPIController extends Controller
 
             
 
-            return $statusCode;
+            // return $statusCode;
         }catch(ClientException $e){
             $currentTime = date("Y-m-d H:i:s");
             
@@ -91,7 +91,7 @@ class BusinessCentralAPIController extends Controller
             }
             
             
-            return $e->getCode();
+            // return $e->getCode();
 
 
             
@@ -106,14 +106,34 @@ class BusinessCentralAPIController extends Controller
             $tokenFile = $directory . $filename;
 
             $trials = 3;
-
+            $accessToken = '';
+            dd($this->getAccessToken());
             if (file_exists($tokenFile) && filesize($tokenFile) > 0) {
                 $authToken = fopen($tokenFile, 'r');
-                $accessToken = fread($authToken, filesize($tokenFile));
+                $savedAccessToken = fread($authToken, filesize($tokenFile));
                 fclose($authToken);
-            } else {
+                $accessToken = $savedAccessToken;
 
+            } else {
+                $accessToken = $this->getAccessToken();
+
+                if($accessToken){
+                    // error
+                    if($accessToken['statusCode'] == 401){
+                        return redirect()->back()->withErrors([
+                            'error' => $accessToken['message']
+                        ]);
+                    }
+                    if($accessToken['statusCode'] == 0 ){
+                        return redirect()->back()->withErrors([
+                            'error' => $accessToken['message']
+                        ]);
+                    }
+                }
             }
+            dd($accessToken);
+
+            
 
             $response =  $this->client->get($url, [
                 'verify' => false,
@@ -122,11 +142,17 @@ class BusinessCentralAPIController extends Controller
                     'Content-Type' => 'application/json'
                 ]
             ]);
-            return $response;
-            
+           
             $jdata = json_decode($response->getBody(), true);
 
+
+            // $data = [
+            //         'statusCode' => $e->getCode(),
+            //         'data' => json_decode($response->getBody(), true),
+            //     ];
             
+
+            return $jdata;
         }catch (ClientException | ServerException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
             
