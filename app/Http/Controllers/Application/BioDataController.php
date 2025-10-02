@@ -877,10 +877,18 @@ class BioDataController extends Controller
           
             // return $countries;
         }catch(Exception $e){
-            echo ($e->getCode());
-            // return redirect()->back()->withErrors([
-            //     'error' => $e->getMessage()
-            // ]);
+            
+            return redirect()->back()->withErrors([
+                'error' => $this->validateError($e->getCode(), $e->getMessage()),
+            ]);
+        }
+    }
+
+    public function validateError($statusCode, $errorMessage){
+        if($statusCode == 0){
+            return 'No internet connection. Please check your connection and try again.';
+        }else {
+            return $errorMessage;
         }
     }
 

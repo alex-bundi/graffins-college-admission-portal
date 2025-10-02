@@ -56,7 +56,7 @@ class BusinessCentralAPIController extends Controller
 
                 ];
 
-                return $accessToken;
+                return $data;
             }
 
             
@@ -107,7 +107,6 @@ class BusinessCentralAPIController extends Controller
 
             $trials = 3;
             $accessToken = '';
-            dd($this->getAccessToken());
             if (file_exists($tokenFile) && filesize($tokenFile) > 0) {
                 $authToken = fopen($tokenFile, 'r');
                 $savedAccessToken = fread($authToken, filesize($tokenFile));
@@ -115,23 +114,29 @@ class BusinessCentralAPIController extends Controller
                 $accessToken = $savedAccessToken;
 
             } else {
-                $accessToken = $this->getAccessToken();
+                $validAccessToken = $this->getAccessToken();
 
-                if($accessToken){
+                if($validAccessToken){
                     // error
-                    if($accessToken['statusCode'] == 401){
+                    if($validAccessToken['statusCode'] == 401){
+                        return redirect()->back()->withErrors([
+                            'error' => $validAccessToken['message']
+                        ]);
+                    }
+                    if($validAccessToken['statusCode'] == 0 ){
                         return redirect()->back()->withErrors([
                             'error' => $accessToken['message']
                         ]);
                     }
-                    if($accessToken['statusCode'] == 0 ){
-                        return redirect()->back()->withErrors([
-                            'error' => $accessToken['message']
-                        ]);
+
+                    // Success
+                    if($validAccessToken['statusCode'] == 200){
+                        $accessToken = $validAccessToken['accessToken'];
+
                     }
                 }
             }
-            dd($accessToken);
+            
 
             
 
