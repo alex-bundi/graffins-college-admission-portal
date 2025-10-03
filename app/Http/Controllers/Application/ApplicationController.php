@@ -21,10 +21,12 @@ class ApplicationController extends Controller
     use OdataTrait;
     use GeneralTrait;
     protected $generalQueries;
+    protected $user;
 
     public function __construct()
     {
         $this->generalQueries = new GeneralQueries();
+        $this->user = Auth::user();
     }
 
     // Add this method to your ApplicationController or create a BaseController
@@ -167,16 +169,16 @@ class ApplicationController extends Controller
 
     public function getDepartmentPage(){
         try {
-            
 
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
             $departmentsData = $this->getOdata($departmentsURL);
             $departments = $departmentsData['value'];
 
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
+            
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            session()->put('user_data.application_no', $applicantCourse->applicant_id);
+            session()->put('applicant_data.application_no', $applicantCourse->applicant_id);
             $applicant = null;
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
 
@@ -228,21 +230,37 @@ class ApplicationController extends Controller
         }
     }
 
+    public function editApplication($applicantID){
+        try {
+            dd($applicantID);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function getModeOfStudyPage(){
         try {
             $pendingApplications = $this->ValidateApplications();
             $applicant = null;
             $applicantCourse = null;
 
+
             if ($pendingApplications == false){
 
-                return Inertia::render('Application/ModeOfStudy');
+                return Inertia::render('Application/ModeOfStudy', [
+                    'applicantCourse' => $applicantCourse,
+
+
+                ]);
 
             }else if ($pendingApplications == true){
-                $email = session('user_data')['email'];
-                $applications = Applicant::where('email', $email)
+                $applications = Applicant::where('email', $this->user->email)
                     ->where('application_status' , 'new')
                     ->first();
+
+               
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
                 $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
 
@@ -263,19 +281,21 @@ class ApplicationController extends Controller
 
     private function ValidateApplications(){
         try{
-            $email = session('user_data')['email'];
+          
+            $email = Auth::user()->email; 
+            
             $applications = Applicant::where('email', $email)
                 ->where('application_status' , 'new')
                 ->first();
             
-            if ($applications === null) {
+            if ($applications == null) {
                 return false;
             } else {
                 return true;
             }
 
         }catch(Exception $e){
-            // return false;
+            return false;
         }
     }
 
@@ -285,36 +305,35 @@ class ApplicationController extends Controller
         ]);
         try{
             $pendingApplications = $this->ValidateApplications();
-
             if ($pendingApplications == false){
                 $application = [
-                    'first_name' => session('user_data')['first_name'],
-                    'second_name' => session('user_data')['second_name'],
-                    'last_name' => session('user_data')['last_name'],
-                    'email' => strtolower(session('user_data')['email']),
+                    'first_name' => $this->user->first_name,
+                    'second_name' => $this->user->second_name,
+                    'last_name' => $this->user->last_name,
+                    'email' => strtolower($this->user->email),
                     'application_date' => date('Y-m-d'),
                 ];
                 $newApplication = Applicant::create($application);
                 if($newApplication->exists){
-                    session()->put('user_data.application_no', $newApplication->id);
-                    
+                
+                    session()->put('applicant_data.application_no', $newApplication->id);
+                     
                     $applicantCourse = [
                         'mode_of_study' =>$validated['mode_of_study'] == 'inclass' ? 1 : 2,
-                        'applicant_id' => session('user_data')['application_no'],
+                        'applicant_id' => session('applicant_data')['application_no'],
                     ];
 
                     $newApplicantCourse = ApplicantCourse::create($applicantCourse);
                                 // $applicationNo = session('user_data')['application_no'];
-
+                  
 
                     if($newApplicantCourse->exists){
-                        session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
+                        session()->put('applicant_data.applicationCourseID', $newApplicantCourse->id);
                         return redirect()->route('department');
                     }   
                 }
             } else if ($pendingApplications == true){
-                $email = session('user_data')['email'];
-                $applications = Applicant::where('email', $email)
+                $applications = Applicant::where('email', $this->user->email)
                     ->where('application_status' , 'new')
                     ->first();
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
@@ -326,8 +345,8 @@ class ApplicationController extends Controller
                     ];
 
                     $newApplicantCourse = ApplicantCourse::create($applicantCourse);
-                    session()->put('user_data.applicationCourseID', $newApplicantCourse->id);
-                    session()->put('user_data.application_no', $applications->id);
+                    session()->put('applicant_data.applicationCourseID', $newApplicantCourse->id);
+                    session()->put('applicant_data.application_no', $applications->id);
                 } else {
                     $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
                     if (!$applicantCourse->save()) {
@@ -335,8 +354,8 @@ class ApplicationController extends Controller
                             'error' => 'Failed to save the mode of study. Please try again.'
                         ]);
                     }
-                    session()->put('user_data.applicationCourseID', $applicantCourse->id);
-                    session()->put('user_data.application_no', $applications->id);
+                    session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
+                    session()->put('applicant_data.application_no', $applications->id);
                 }
                 
                 

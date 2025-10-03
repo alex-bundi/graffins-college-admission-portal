@@ -13,6 +13,8 @@ const props = defineProps({
     }
 });
 
+console.log(props.applicantCourse);
+
 const initialMode = ref(null);
 
 const errors = ref({});
