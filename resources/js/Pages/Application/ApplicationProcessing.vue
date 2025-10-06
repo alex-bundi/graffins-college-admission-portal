@@ -14,7 +14,7 @@ const props = defineProps({
     },
 });
 
-const errors = ref({});
+const errors = ref({}); 
 const success = ref({});
 let processed = false;
 onMounted(async () => {
