@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -13,17 +13,27 @@ const props = defineProps({
     }
 });
 
-
+console.log(props.courseLevels)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
     courseLevel: '',
    
 });
+const initialMode = ref(null);
+
+const disableSubmitBtn = ref(false);
+
+onMounted(() => {
+    if((props.applicantCourse != null)){
+        form.courseLevel = props.courseLevels.CourseLevelCode + '..' + props.courseLevels.CourseLevelDescription;
+        initialMode.value = props.courseLevels.CourseLevelCode + '..' + props.courseLevels.CourseLevelDescription;
+    } 
+});
 
 function submit(){
 
-  
+    disableSubmitBtn.value = true;
     router.post('/application/post-course-levels', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
@@ -99,7 +109,8 @@ function submit(){
                 </div>
 
                  <div class="w-1/4">
-                    <button type="submit" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
+                    <button type="submit" :class="{'cursor-not-allowed' : disableSubmitBtn}"
+                        class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                     rounded-full shadow-md 
                                     bg-gradient-to-b from-lime-400 to-green-500 
                                     hover:from-lime-500 hover:to-green-600 

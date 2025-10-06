@@ -196,7 +196,15 @@ function submitCourseSummary(){
                         >
                             Edit
                         </Link>
+
+
+                
                     </div>
+
+
+
+
+
                     
                     <!-- Conditional message that appears on click -->
                     <div 
@@ -208,7 +216,7 @@ function submitCourseSummary(){
                 </div>
             </div>
 
-            <div class="w-1/4">
+            <!-- <div class="w-1/4">
                 <Link :href="route('start.bio.data')" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                 rounded-full shadow-md 
                                 bg-gradient-to-b from-lime-400 to-green-500 
@@ -223,7 +231,7 @@ function submitCourseSummary(){
 
                     </span>
                 </Link>
-            </div>
+            </div> -->
         </div>
 
 

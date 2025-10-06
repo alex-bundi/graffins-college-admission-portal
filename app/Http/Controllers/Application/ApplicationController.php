@@ -173,6 +173,8 @@ class ApplicationController extends Controller
                 ->first();
             $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applications);
+            session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
+                session()->put('applicant_data.application_no', $applications->id);
 
             return Inertia::render('Application/ModeOfStudy', [
                 'applicantCourse' => $applicantCourse,
@@ -199,11 +201,12 @@ class ApplicationController extends Controller
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
             $departmentsData = $this->getOdata($departmentsURL);
             $departments = $departmentsData['value'];
-
+             
             $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             session()->put('applicant_data.application_no', $applicantCourse->applicant_id);
+            
             $applicant = null;
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
 
@@ -239,7 +242,7 @@ class ApplicationController extends Controller
                 
             }
             
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->department_code = trim($departmentCode);
@@ -255,15 +258,15 @@ class ApplicationController extends Controller
         }
     }
 
-    public function editApplication($applicantID){
-        try {
-            dd($applicantID);
-        }catch(Exception $e){
-            return redirect()->back()->withErrors([
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
+    // public function editApplication($applicantID){
+    //     try {
+    //         dd($applicantID);
+    //     }catch(Exception $e){
+    //         return redirect()->back()->withErrors([
+    //             'error' => $e->getMessage()
+    //         ]);
+    //     }
+    // }
 
     public function getModeOfStudyPage(){
         try {
@@ -288,6 +291,10 @@ class ApplicationController extends Controller
                
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
                 $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+                session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
+                session()->put('applicant_data.application_no', $applications->id);
+            
+
 
                 return Inertia::render('Application/ModeOfStudy', [
                     'applicantCourse' => $applicantCourse,
@@ -402,7 +409,7 @@ class ApplicationController extends Controller
 
     public function getPickCoursePage(){
         try{
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
              $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
 
             if(!$applicantCourse){
@@ -445,7 +452,7 @@ class ApplicationController extends Controller
                 }
                 
             }
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_code = trim($courseCode);
@@ -475,7 +482,7 @@ class ApplicationController extends Controller
     public function getCourseTypePage(){
         try{
              $applicant = null;
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicanCourseCode = $applicantCourse->course_code;
                 $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
@@ -544,7 +551,7 @@ class ApplicationController extends Controller
                     $courseDescri = $matches[1];
                 }
             } 
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_level = trim($courseLevel);
@@ -586,7 +593,7 @@ class ApplicationController extends Controller
                 $courseLevel = $validated['courseLevel'];
             }
 
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_level = $courseLevel;
@@ -608,7 +615,7 @@ class ApplicationController extends Controller
     public function getClassStartDatePage(){
         try{
             $applicant = null;
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/ClassStartDate',[
@@ -627,7 +634,7 @@ class ApplicationController extends Controller
             'startDate' => 'nullable|date',
         ]);    
         try{
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->start_date = $validated['startDate'];
@@ -655,7 +662,7 @@ class ApplicationController extends Controller
             $classTimeData = $this->getOdata($classTimeURL);
             $classTimes = $classTimeData['value'];
            
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             
             $applicant = null;
@@ -676,7 +683,7 @@ class ApplicationController extends Controller
             'time' => 'nullable|string',
         ]);
         try{
-             $applicationID =session('user_data')['applicationCourseID'];
+             $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->class_time = trim($validated['time']);
@@ -701,7 +708,7 @@ class ApplicationController extends Controller
         try{
             $applicant = null;
 
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
@@ -722,7 +729,7 @@ class ApplicationController extends Controller
             'courseSummary' => 'nullable|string',
         ]);
         try{
-            $applicationID =session('user_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->application_status = $validated['courseSummary'];
