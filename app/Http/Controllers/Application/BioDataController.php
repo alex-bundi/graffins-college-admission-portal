@@ -15,6 +15,8 @@ use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use Illuminate\Support\Str;
 use App\Http\Controllers\BusinessCentralAPIController;
+use Illuminate\Support\Facades\Auth;
+
 
 
 
@@ -25,11 +27,15 @@ class BioDataController extends Controller
     use GeneralTrait;
     protected $generalQueries;
     protected $businessCentralAccess;
+    protected $user;
+
 
     public function __construct()
     {
         $this->generalQueries = new GeneralQueries();
         $this->businessCentralAccess = new BusinessCentralAPIController;
+        $this->user = Auth::user();
+
     }
 
     protected function getCompletedSteps($applicantCourse = null, $applicant = null){
@@ -169,13 +175,13 @@ class BioDataController extends Controller
 
      public function getNamesPage(){
         try{
-            $email = trim(session('user_data')['email']);
-            $user = User::where('email', $email)->first();
+            // $email = trim(session('user_data')['email']);
+            // $user = User::where('email', $email)->first();
             $applicantCourse = null;
             $applicant = null;
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/BioData/FullName', [
-                'user' => $user,
+                'user' => $this->user,
                 'completedSteps' => $completedSteps,
             ]);
         }catch(Exception $e){
@@ -194,7 +200,7 @@ class BioDataController extends Controller
         ]);
         try{
             
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->first_name = $validated['firstName'];
             $applicant->second_name = $validated['secondName'];
@@ -206,8 +212,7 @@ class BioDataController extends Controller
 
             }
 
-            $email = trim(session('user_data')['email']);
-            $user = User::where('email', $email)->first();
+            $user = User::where('email', $this->user->email)->first();
             $user->first_name = $validated['firstName'];
             $user->second_name = $validated['secondName'];
             $user->last_name = $validated['lastName'];
@@ -230,7 +235,7 @@ class BioDataController extends Controller
 
     public function getContactPage(){
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicantCourse = null;
 
@@ -253,7 +258,7 @@ class BioDataController extends Controller
             'phoneNo' => 'required|string',
         ]);
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->phone_no = $validated['phoneNo'];
             if (!$applicant->save()) {
@@ -274,7 +279,7 @@ class BioDataController extends Controller
 
     public function getNationalityPage(){
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             
             $countriesQuery = $this->generalQueries->countriesQuery();
@@ -317,7 +322,7 @@ class BioDataController extends Controller
                     $countryDescription = $matches[1];
                 }
 
-                 $applicationID =session('user_data')['application_no'];
+                 $applicationID =session('applicant_data')['application_no'];
                 $applicant = Applicant::where('id', $applicationID)->first();
                 $applicant->nationality = $countryCode;
                 $applicant->country_name = $countryDescription;
@@ -340,15 +345,13 @@ class BioDataController extends Controller
 
      public function getEmailAddressPage(){
         try{
-            $email = trim(session('user_data')['email']);
-            $user = User::where('email', $email)->first();
             $applicant = null;
             $applicantCourse = null;
 
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             
             return Inertia::render('Application/BioData/EmailAddress', [
-                'user' => $user,
+                'user' => $this->user,
                 'completedSteps' => $completedSteps,
 
             ]);
@@ -366,7 +369,7 @@ class BioDataController extends Controller
             'email' => 'required|string',
         ]);
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->email = trim($validated['email']);
             if (!$applicant->save()) {
@@ -375,8 +378,7 @@ class BioDataController extends Controller
                 ]);
             }
 
-            $email = trim(session('user_data')['email']);
-            $user = User::where('email', $email)->first();
+            $user = User::where('email', $this->user->email)->first();
             $user->email = trim($validated['email']);
             if (!$user->save()) {
                 return redirect()->back()->withErrors([
@@ -397,7 +399,7 @@ class BioDataController extends Controller
 
     public function getResidencePage(){
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
 
             $residenceQuery = $this->generalQueries->residenceQuery();
@@ -440,7 +442,7 @@ class BioDataController extends Controller
                     $residenceDescription = $matches[1];
                 }
 
-                 $applicationID =session('user_data')['application_no'];
+                 $applicationID =session('applicant_data')['application_no'];
                 $applicant = Applicant::where('id', $applicationID)->first();
                 $applicant->residence = $residenceCode;
                 $applicant->residence_description = $residenceDescription;
@@ -463,7 +465,7 @@ class BioDataController extends Controller
 
     public function getMarketingPage(){
          try{
-             $applicationID =session('user_data')['application_no'];
+             $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
 
             $marketingQuery = $this->generalQueries->marketingQuery();
@@ -505,7 +507,7 @@ class BioDataController extends Controller
                     $aboutUsDescription = $matches[1];
                 }
 
-                 $applicationID =session('user_data')['application_no'];
+                 $applicationID =session('applicant_data')['application_no'];
                 $applicant = Applicant::where('id', $applicationID)->first();
                 $applicant->marketing = $aboutUsCode;
                 $applicant->marketing_description = $aboutUsDescription;
@@ -529,7 +531,7 @@ class BioDataController extends Controller
 
     public function getAllergiesPage(){
         try{
-             $applicationID =session('user_data')['application_no'];
+             $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
 
              $applicantCourse = null;
@@ -554,7 +556,7 @@ class BioDataController extends Controller
             'allergy' => 'required|string',
         ]);
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->allergies = $validated['allergy'] == 'yes' ? 1 : 0;
             if (!$applicant->save()) {
@@ -579,7 +581,7 @@ class BioDataController extends Controller
 
      public function getAllergyDescriptionPage(){
         try{
-             $applicationID =session('user_data')['application_no'];
+             $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
 
             $applicantCourse = null;
@@ -603,7 +605,7 @@ class BioDataController extends Controller
             'allergyDescription' => 'required|string',
         ]);
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->allergy_description = $validated['allergyDescription'];
             if (!$applicant->save()) {
@@ -623,7 +625,7 @@ class BioDataController extends Controller
 
     public function getEmergencyContactPage(){
         try{
-             $applicationID =session('user_data')['application_no'];
+             $applicationID =session('applicant_data')['application_no'];
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
             
             $applicantCourse = null;
@@ -662,7 +664,7 @@ class BioDataController extends Controller
                 $relationStatus = 5;
             }
            
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
            
             $emergencyContact = [
                 'full_name' => trim($validated['fullName']),
@@ -714,8 +716,8 @@ class BioDataController extends Controller
             if($request->hasFile('passport_id_file')){
                 if ($request->file('passport_id_file')->isValid()) {
                  
-                    $applicationID =session('user_data')['application_no'];
-                    $safeEmail = Str::slug(Str::before(session('user_data')['email'], '@'));
+                    $applicationID =session('applicant_data')['application_no'];
+                    $safeEmail = Str::slug(Str::before($this->user->email, '@'));
                     $file = $request->file('passport_id_file');
                     $filename = $applicationID . '_' . $safeEmail.'.'. $file->getClientOriginalExtension();
 
@@ -726,7 +728,7 @@ class BioDataController extends Controller
                     $file->move($destination, $filename);
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
                     
-                    $applicationID =session('user_data')['application_no'];
+                    $applicationID =session('applicant_data')['application_no'];
                     $applicant = Applicant::where('id', $applicationID)->first();
                     $applicant->student_image_file_path = $fullPath;
                     if (!$applicant->save()) {
@@ -740,6 +742,7 @@ class BioDataController extends Controller
             return redirect()->route('upload.photo');
             
         }catch(Exception $e){
+
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
@@ -771,8 +774,8 @@ class BioDataController extends Controller
             if($request->hasFile('passportImage')){
                 if ($request->file('passportImage')->isValid()) {
                  
-                    $applicationID =session('user_data')['application_no'];
-                    $safeEmail = Str::slug(Str::before(session('user_data')['email'], '@'));
+                    $applicationID =session('applicant_data')['application_no'];
+                    $safeEmail = Str::slug(Str::before($this->user->email, '@'));
                     $file = $request->file('passportImage');
                     $filename = $applicationID . '_' . $safeEmail.'.'. $file->getClientOriginalExtension();
 
@@ -782,7 +785,7 @@ class BioDataController extends Controller
                     }
                     $file->move($destination, $filename);
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
-                    $applicationID =session('user_data')['application_no'];
+                    $applicationID =session('applicant_data')['application_no'];
                     $applicant = Applicant::where('id', $applicationID)->first();
                     $applicant->passport_file_path = $fullPath;
                     if (!$applicant->save()) {
@@ -805,7 +808,7 @@ class BioDataController extends Controller
 
     public function getBiodataSummary(){
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
             $applicantCourse = null;
@@ -829,7 +832,7 @@ class BioDataController extends Controller
             'personalDataSummary' => 'nullable|string',
         ]);
         try{
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->application_status = 'submitted';
             if (!$applicant->save()) {

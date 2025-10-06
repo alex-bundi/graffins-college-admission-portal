@@ -18,18 +18,18 @@ const success = ref({});
 const form = useForm({
     passport_id_file: '',
 });
+const disableSubmitBtn = ref(false);
 
 
 function submit(){
-
-
-   
+    disableSubmitBtn.value = true;
 
     router.post('/application/post-upload-id-passport', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
             }
+            disableSubmitBtn.value = false;
 
            
         },
@@ -74,7 +74,7 @@ function submit(){
                         <input @input="form.passport_id_file = $event.target.files[0]" id="passport_file" type="file" class="py-2.5 sm:py-3 px-4 block w-full text-sm text-gray-600 
                         bg-white border border-gray-200 rounded-lg file:bg-gray-200 file:text-gray-700 file:text-sm 
                             file:px-4 file:py-1 file:border-none file:rounded-full placeholder-gray-400/70 focus:outline-none 
-                            focus:ring-1 focus:ring-opacity-40  focus:ring-primaryColor focus:border-primaryColor  " accept="application/pdf"/>
+                            focus:ring-1 focus:ring-opacity-40  focus:ring-primaryColor focus:border-primaryColor  " accept=""/>
                             
 
                     </div>
@@ -82,7 +82,8 @@ function submit(){
                 </div>
 
                 <div class="w-1/4">
-                    <button type="submit" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
+                    <button type="submit" :class="{'cursor-not-allowed' : disableSubmitBtn}"
+                        class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                     rounded-full shadow-md 
                                     bg-gradient-to-b from-lime-400 to-green-500 
                                     hover:from-lime-500 hover:to-green-600 

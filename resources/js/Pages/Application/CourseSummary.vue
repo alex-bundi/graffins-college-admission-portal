@@ -23,17 +23,18 @@ const form = useForm({
 });
 
 const showStepperMessage = ref(false);
+const disableSubmitBtn = ref(false);
 
-// Function to show message temporarily
+
 const showMessage = () => {
     showStepperMessage.value = true;
-    // Hide message after 3 seconds
     setTimeout(() => {
         showStepperMessage.value = false;
-    }, 7000);
+    }, 70000);
 };
 
 function submitCourseSummary(){
+     disableSubmitBtn.value = true;
     form.courseSummary = 'submitted';
   
     router.post('/application/post-course-summary', form, {
@@ -41,6 +42,7 @@ function submitCourseSummary(){
             for(let error in allErrors){
             errors.value[error] = allErrors[error]
             }
+            disableSubmitBtn.value = false;
 
            
         },
@@ -175,7 +177,7 @@ function submitCourseSummary(){
                     <div> 
                         <form action="" method="post" @submit.prevent="submitCourseSummary">
                             <input class="hidden" type="text" v-model="form.courseSummary" name="courseSummary" id="courseSummary" value="submitted">
-                            <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                            <button  :class="{'cursor-not-allowed' : disableSubmitBtn}" class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                 Confirm
                             </button>
                         </form>

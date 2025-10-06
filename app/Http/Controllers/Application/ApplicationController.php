@@ -906,7 +906,7 @@ class ApplicationController extends Controller
         try{
             
             // Get Applicant data
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
@@ -983,7 +983,7 @@ class ApplicationController extends Controller
         try{
             
             // Get Applicant data
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
@@ -1047,7 +1047,7 @@ class ApplicationController extends Controller
         try{
             
             // Get Applicant data
-            $applicationID =session('user_data')['application_no'];
+            $applicationID =session('applicant_data')['application_no'];
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
@@ -1129,7 +1129,7 @@ class ApplicationController extends Controller
             $result = $soapClient->ConvertApplicantToStudent($params);
 
                 if($result){
-                    session()->put('user_data.student_no', $result->return_value);
+                    session()->put('applicant_data.student_no', $result->return_value);
                     return response()->json([
                         'success' => true,
                         'data' => $result,

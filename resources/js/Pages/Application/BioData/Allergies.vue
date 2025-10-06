@@ -34,9 +34,11 @@ const hasChanged = computed(() => {
         form.allergy !== (props.applicant.allergies ?? null)
     );
 });
+const disableSubmitBtn = ref(false);
 
 
 function submit(){
+    disableSubmitBtn.value = true;
 
      if (hasChanged.value == true) {
         router.post('/application/post-allergies', form, {
@@ -44,7 +46,8 @@ function submit(){
                 for(let error in allErrors){
                 errors.value[error] = allErrors[error]
                 }
-            
+                disableSubmitBtn.value = false;
+                
             },
 
         });
@@ -125,7 +128,8 @@ function submit(){
                              
                 </ul>
                 <div class="w-1/4">
-                    <button type="submit" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
+                    <button type="submit" :class="{'cursor-not-allowed' : disableSubmitBtn}"
+                        class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                     rounded-full shadow-md 
                                     bg-gradient-to-b from-lime-400 to-green-500 
                                     hover:from-lime-500 hover:to-green-600 
