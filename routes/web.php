@@ -38,9 +38,9 @@ Route::get('/countries', [BioDataController::class, 'getCountries']);
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [GeneralController::class, 'getDashboard'])->name('dashboard');
     Route::get('/apply-course', [CourseController::class, 'getCourseList'])->name('course.list');
-    Route::get('/edit-course', [CourseController::class, 'getCourseList'])->name('course.list');
 
     Route::prefix('application')->group(function () {
+        Route::get('/edit-course/{applicationID}', [ApplicationController::class, 'getEditCourse'])->name('edit.application');
         
         Route::get('/mode-of-study', [ApplicationController::class, 'getModeOfStudyPage'])->name('mode.of.study');
         Route::post('/post-mode-of-study', [ApplicationController::class, 'postModeOfStudy'])->name('post.mode.of.study');

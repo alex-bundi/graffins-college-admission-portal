@@ -165,6 +165,31 @@ class ApplicationController extends Controller
         return $completedSteps;
     }
 
+    public function getEditCourse($applicationID){
+        try {
+            
+            $applications = Applicant::where('email', $this->user->email)
+                ->where('id' , $applicationID)
+                ->first();
+            $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applications);
+
+            return Inertia::render('Application/ModeOfStudy', [
+                'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
+
+
+            ]);
+
+            return Inertia::render('Application/Department');
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+    }
     
 
     public function getDepartmentPage(){
