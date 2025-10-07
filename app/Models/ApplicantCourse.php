@@ -26,6 +26,12 @@ class ApplicantCourse extends Model
         'level_description',
         'department_description',
         'application_status',
+        'academic_year',
+        'intake_code',
+        'intake_description',
+        'end_date',
+        'tutor_code',
+        'tutor_name',
     ];
 
     protected $hidden = [

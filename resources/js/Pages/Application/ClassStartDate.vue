@@ -38,7 +38,7 @@ function submit(){
     disableSubmitBtn.value = true;
 
     if (form.startDate === initialMode.value) {
-        router.visit('/application/class-start-time')
+        router.visit('/application/intake')
     } else {
         router.post('/application/post-class-start-date', form, {
             onError : (allErrors) => {

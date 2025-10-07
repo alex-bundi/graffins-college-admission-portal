@@ -55,6 +55,10 @@ class GeneralQueries extends Model
         return 'QyStudentDetails';
     }
 
+    public function intakesQuery(){
+        return 'QyIntakes';
+    }
+
     
 
 }

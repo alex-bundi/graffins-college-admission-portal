@@ -189,15 +189,23 @@ function submit(){
                             </div>
 
 
-                        <div class="max-w-sm mt-4">
+                        <div class="flex flex-col items-center space-y-2 justify-center max-w-sm mt-4 font-josefin font-bold tracking-widest text-sm">
                             <div class="">
-                                <div class="flex flex-row space-x-2 font-josefin font-bold tracking-widest text-sm">
+                                <div class="flex flex-row space-x-2 ">
                                     <p>
                                         Already have an account?
                                     </p>
                                     <Link :href="route('login')" class="text-primaryColor hover:font-bold hover:text-darkPrimaryColor">Sign In</Link>
                                 </div>
                             </div>
+
+                            <div>
+                                <Link :href="route('home')"  class="text-primaryColor hover:font-bold hover:text-darkPrimaryColor">
+                                    Back to home page
+                                </Link>
+                            </div>
+
+                            
                         </div>
                     </div>
                     <div v-show="disableSubmitBtn" class="max-w-sm mt-5">

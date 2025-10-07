@@ -27,10 +27,14 @@ class Applicant extends Model
         'marketing_description',
         'passport_file_path',
         'student_image_file_path',
-        'passport_file_path'
+        'passport_file_path',
+        'gender',
+        'dob',
+        'id_passport_No',
     ];
 
     protected $hidden = [
     'created_at', 'updated_at',
     ];
 }
+

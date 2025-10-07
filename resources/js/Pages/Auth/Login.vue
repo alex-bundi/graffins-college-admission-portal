@@ -118,7 +118,7 @@ function submit(){
                                 </button>
                             </div>
 
-                         <div class="max-w-sm mt-4">
+                         <div class=" flex flex-col items-center space-y-2 justify-center max-w-sm mt-4 font-josefin font-bold tracking-widest text-sm">
                             <div class="flex justify-center w-full">
                                 <div class="flex flex-row space-x-2 font-josefin font-bold tracking-wider text-sm">
                                     <p>
@@ -126,6 +126,12 @@ function submit(){
                                     </p>
                                     <Link :href="route('register')" class="text-primaryColor hover:font-bold hover:text-darkPrimaryColor">Register</Link>
                                 </div>
+                            </div>
+
+                             <div>
+                                <Link :href="route('home')"  class="text-black hover:font-bold hover:text-darkPrimaryColor">
+                                    Back to home page
+                                </Link>
                             </div>
                         </div>
                     </div>

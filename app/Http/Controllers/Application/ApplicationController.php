@@ -644,7 +644,7 @@ class ApplicationController extends Controller
                 ]);
             }
 
-            return redirect()->route('class.start.time');
+            return redirect()->route('intake');
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -1168,5 +1168,60 @@ class ApplicationController extends Controller
         }
     
         return true;
+    }
+
+
+    public function getIntakePage(){
+         try{
+            $currentYr = date('Y');
+            $intakeQuery = $this->generalQueries->intakesQuery();
+            $intakeURL = config('app.odata')  . "{$intakeQuery}?" . '$filter=' . rawurlencode("AcademicYear eq '{$currentYr}'");
+            $intakes= $this->getOdata($intakeURL);
+            $intakeData = $intakes['value'];
+            return Inertia::render('Application/Intake', [
+                'intakes' => $intakeData,
+                'currentYr' => $currentYr,
+            ]);
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'errors' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function postIntake(Request $request){
+         try{
+             $validated = $request->validate([
+                'academicYear' => 'required|string',
+                'intake' => 'required|string',
+            ]);
+
+            if($validated['intake'] != null){
+                $intakeCodePtrn = '/^([^.]+)\.\./';
+                $intakeDescriPtrn = '/\.\.(.+)$/';
+                if (preg_match($intakeCodePtrn, $validated['intake'], $matches)) {
+                    $intakeCode = trim($matches[1]);
+                }
+
+                if (preg_match($intakeDescriPtrn, $validated['intake'] , $matches)) {
+                    $intakeDescription = $matches[1];
+                }
+                
+            }
+            
+            $applicationID =session('applicant_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->academic_year = trim($validated['academicYear']);
+            $applicantCourse->intake_code = trim($intakeCode);
+            $applicantCourse->intake_description = trim($intakeDescription);
+            $applicantCourse->save();
+            return redirect()->route('class.start.time');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }

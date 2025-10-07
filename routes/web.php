@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
-Route::get('/', [GeneralController::class, 'getHomePage']);
+Route::get('/', [GeneralController::class, 'getHomePage'])->name('home');
 Route::get('/welcome', [GeneralController::class, 'getWelcomePage'])->name('welcome');
 Route::get('/registration-status', [GeneralController::class, 'getRegistrationStatus'])->name('registration.status');
 
@@ -57,6 +57,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/course-type', [ApplicationController::class, 'getCourseTypePage'])->name('course-type');
         Route::post('/post-course-type', [ApplicationController::class, 'postCourseType'])->name('post.course-type');
+
+         Route::get('/intake', [ApplicationController::class, 'getIntakePage'])->name('intake');
+        Route::post('/post-intake', [ApplicationController::class, 'postIntake'])->name('post.intake');
 
         Route::get('/class-start-date', [ApplicationController::class, 'getClassStartDatePage'])->name('class.start.date');
         Route::post('/post-class-start-date', [ApplicationController::class, 'postClassStartDate'])->name('post.class-start-date');
