@@ -120,16 +120,40 @@ function submitCourseSummary(){
 
                     <div class="flex flex-row space-x-3">
                         <h3 class="font-monteserat text-base tracking-wider ">
-                            Mode of study
+                            Mode of study:
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
                             {{ (applicantCourse.mode_of_study == 1) ? 'Inclass' : 'Online'  }}
                         </p>
                     </div>
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Academic Year:
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantCourse.academic_year }}
+                        </p>
+                    </div>
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Intake:
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantCourse.intake_description }}
+                        </p>
+                    </div>
+                    <div class="flex flex-row space-x-3">
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Tutor:
+                        </h3>
+                        <p class="font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantCourse.tutor_name }}
+                        </p>
+                    </div>
 
                     <div class="flex flex-row space-x-3">
                         <h3 class="font-monteserat text-base tracking-wider ">
-                            Start Date
+                            Start Date:
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
                             {{ applicantCourse.start_date }}
@@ -138,7 +162,7 @@ function submitCourseSummary(){
                     <!-- Course Type -->
                     <div v-show="applicantCourse.unit_status ==  'Single Subject'" class="flex flex-row space-x-3">
                         <h3 class="font-monteserat text-base tracking-wider ">
-                            Course Type
+                            Course Type:
                         </h3>
                         <p class="font-josefin font-bold text-base  tracking-wider">
                            Single Subject

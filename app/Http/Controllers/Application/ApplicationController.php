@@ -418,7 +418,9 @@ class ApplicationController extends Controller
 
             $courseQuery = $this->generalQueries->coursesQuery();
             $coursesURL = config('app.odata') . "{$courseQuery}";
+
             $courseData = $this->getOdata($coursesURL);
+            dd($courseData);
             $applicant = null;
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
 
@@ -756,7 +758,7 @@ class ApplicationController extends Controller
 
     public function getStudentIDPage(){
         try{
-            $studentNo = session('user_data')['student_no'];
+            $studentNo = session('applicant_data')['student_no'];
             $studentQuery = $this->generalQueries->studentsQuery();
             $studentURL = config('app.odata') . "{$studentQuery}?". '$filter=' . rawurlencode("No eq '{$studentNo}'");
             $students= $this->getOdata($studentURL);
@@ -779,7 +781,7 @@ class ApplicationController extends Controller
             'idVerificationURL' => 'required|string',
         ]);
         try{
-            $studentNo = session('user_data')['student_no'];
+            $studentNo = session('applicant_data')['student_no'];
             $context = $this->initializeSoapProcess();
             $soapClient = new \SoapClient(
                 config('app.webService'), 
@@ -817,7 +819,7 @@ class ApplicationController extends Controller
 
     public function getAdmissionLetterPage(){
         try{
-            $studentNo = session('user_data')['student_no'];
+            $studentNo = session('applicant_data')['student_no'];
             return Inertia::render('Application/AdmissionLetter', [
                 'studentNo' => $studentNo,
             ]);
@@ -842,7 +844,7 @@ class ApplicationController extends Controller
                     
                 ]
             );
-            $studentNo = session('user_data')['student_no'];
+            $studentNo = session('applicant_data')['student_no'];
             $params = new \stdClass();
             $params->studentNo = $studentNo;
             
@@ -942,8 +944,11 @@ class ApplicationController extends Controller
                 $params->allergies = trim($applicant->allergies);
                 $params->allergyDescription = trim($applicant->allergy_description);
                 $params->phoneNo = trim($applicant->phone_no);
+                $params->passportID = trim($applicant->id_passport_No);
+                $params->dateOfBirth = trim($applicant->dob);
+                $params->gender = trim($applicant->gender);
 
-                $imageFilePath = $applicant->passport_file_path;
+                $imageFilePath = $applicant->student_image_file_path;
                 if($imageFilePath && file_exists($imageFilePath)){
                     $fileContent = file_get_contents($imageFilePath);
                     $base64 = base64_encode($fileContent);
@@ -951,6 +956,16 @@ class ApplicationController extends Controller
                     
                 }
                 $params->studentImageBase64 = $base64;
+
+                $passportFilePath = $applicant->passport_file_path;
+                if($passportFilePath && file_exists($passportFilePath)){
+                    $fileContent = file_get_contents($passportFilePath);
+                    $passportFileBase64 = base64_encode($passportFilePath);
+
+                    
+                }
+                $params->documentBase64 = $passportFileBase64;
+                $params->documentFileName = 'student_id';
             
                 $result = $soapClient->CreateApplicantAccount($params);
 
@@ -1085,6 +1100,7 @@ class ApplicationController extends Controller
                 $params->unitCode = $applicantCourse->unit_code;
                 $params->intake = $applicantCourse->intake_code;
                 $params->tutor = $applicantCourse->tutor_code;
+                $params->academicYr = $applicantCourse->academic_year;
 
                
                 

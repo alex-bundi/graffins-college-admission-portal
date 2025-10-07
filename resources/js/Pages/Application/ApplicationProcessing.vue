@@ -18,38 +18,37 @@ const errors = ref({});
 const success = ref({});
 let processed = false;
 onMounted(async () => {
-    // if (!processed) {
-    //     try {
-    //         // First operation
-    //         const bioData = await processBioData();
-    //         console.log('Bio data:', bioData);
+    if (!processed) {
+        try {
+            // First operation
+            const bioData = await processBioData();
+            console.log('Bio data:', bioData);
             
-    //         if (bioData?.success === true) {
+            if (bioData?.success === true) {
+                const emergencyData = await processEmergencyContacts(bioData.data.return_value);
+                console.log('Emergency data:', emergencyData);
+
+                    if(emergencyData?.success === true){
+                        const courseData = await processApplicantCourse(bioData.data.return_value);
+                         console.log('Course data:', courseData);
+
+                         if(courseData?.success === true){
+                            const applicationConversion = await processApplicationConversion(bioData.data.return_value);
+                            console.log('Conversion data:', applicationConversion);
+                            if(applicationConversion?.success === true){
+                                router.visit('/payments/amount-payable')
+
+                            }
+                            // return;
+                         }
+                    }
+            }
             
-    //             const emergencyData = await processEmergencyContacts(bioData.data.return_value);
-    //             console.log('Emergency data:', emergencyData);
-
-    //                 if(emergencyData?.success === true){
-    //                     const courseData = await processApplicantCourse(bioData.data.return_value);
-    //                      console.log('Course data:', courseData);
-
-    //                      if(courseData?.success === true){
-    //                         const applicationConversion = await processApplicationConversion(bioData.data.return_value);
-    //                         console.log('Conversion data:', applicationConversion);
-    //                         if(applicationConversion?.success === true){
-    //                             router.visit('/payments/amount-payable')
-
-    //                         }
-    //                         // return;
-    //                      }
-    //                 }
-    //         }
-            
-    //         processed = true;
-    //     } catch (error) {
-    //         console.error('Error in onMounted:', error);
-    //     }
-    // }
+            processed = true;
+        } catch (error) {
+            console.error('Error in onMounted:', error);
+        }
+    }
 });
 
 // Simplified functions that just handle their specific logic
@@ -94,6 +93,9 @@ async function processApplicationConversion(applicantNo) {
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
                     Application Processing...
                 </h1>
+                 <p class="font-josefin text-red-500 tracking-wider font-bold mt-4 text-base">
+                    Don’t refresh — the page will redirect automatically.
+                </p>
             </div>
 
             <div>

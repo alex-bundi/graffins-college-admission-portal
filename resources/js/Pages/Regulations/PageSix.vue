@@ -45,13 +45,7 @@ const success = ref({});
         <div class="mt-4">
             <ul>
 
-                <li>
-                    <p class="font-josefin font-bold text-base tracking-wider">
-                        <span class="font-monteserat font-extrabold">Tuition Fees  </span> 
-                         may increase annually for all students (notice in December).
-
-                    </p>
-                </li>
+               
             </ul>
         </div>
 

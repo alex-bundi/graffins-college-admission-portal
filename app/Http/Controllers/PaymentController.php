@@ -27,8 +27,8 @@ class PaymentController extends Controller
 
     public function getAmountPayable(){
         try{
-            $applicationID =session('user_data')['application_no'];
-            $studentNo = session('user_data')['student_no'];
+            $applicationID =session('applicant_data')['application_no'];
+            $studentNo = session('applicant_data')['student_no'];
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
@@ -46,7 +46,7 @@ class PaymentController extends Controller
                     $totalFees += $unit['Unit_Fees'];
                 }
             }
-            session()->put('user_data.fee_amount', $totalFees);
+            session()->put('applicant_data.fee_amount', $totalFees);
 
             return Inertia::render('Payments/AmountPayable',[
                 'applicantCourse' => $applicantCourse,
@@ -64,7 +64,7 @@ class PaymentController extends Controller
 
     public function getPaymentInstructions(){
         try{
-            $totalFees =session('user_data')['fee_amount'];
+            $totalFees =session('applicant_data')['fee_amount'];
             return Inertia::render('Payments/PaymentInstructions', [
                 'totalFees' => $totalFees,
             ]);
@@ -79,8 +79,8 @@ class PaymentController extends Controller
 
     public function getUpdatePaymentForm(){
         try{
-            $applicationID =session('user_data')['application_no'];
-            $studentNo = session('user_data')['student_no'];
+            $applicationID =session('applicant_data')['application_no'];
+            $studentNo = session('applicant_data')['student_no'];
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
@@ -118,8 +118,8 @@ class PaymentController extends Controller
         ]);
 
         try{
-            $applicationID =session('user_data')['application_no'];
-            $studentNo = session('user_data')['student_no'];
+            $applicationID =session('applicant_data')['application_no'];
+            $studentNo = session('applicant_data')['student_no'];
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();

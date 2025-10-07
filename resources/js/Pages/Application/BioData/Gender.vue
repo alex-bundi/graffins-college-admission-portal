@@ -4,45 +4,53 @@ import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted,computed } from 'vue';
 import StepperComponent from '@/Layouts/Stepper.vue';
+
 const props = defineProps({
-    user: Object,
+    applicant: Object,
     completedSteps: {
         type: Array,
         default: () => []
     }
 });
+
+// let genderStatus = ref(null);
+// if((props.applicant.allergies != null) && (props.applicant.allergies == 1)){
+//     genderStatus = 'yes';
+// } else if ((props.applicant.allergies != null) && (props.applicant.allergies == 2)){
+//     genderStatus = 'no';
+
+// }
+
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    email: props.user ? props.user.email : null,
+    gender: 0,
 });
-const hasChanged = computed(() => {
-    return (
-        form.email !== (props.user.email ?? null)
-    );
-});
+
+// const hasChanged = computed(() => {
+//     return (
+//         form.gender !== (props.applicant.gender ?? null)
+//     );
+// });
 const disableSubmitBtn = ref(false);
+
 
 function submit(){
     disableSubmitBtn.value = true;
 
-    if (hasChanged.value == true) {
-        router.post('/application/post-dob', form, {
+      router.post('/application/post-gender', form, {
             onError : (allErrors) => {
                 for(let error in allErrors){
                 errors.value[error] = allErrors[error]
                 }
                 disableSubmitBtn.value = false;
-
-            
+                
             },
 
         });
-    } else {
-        router.visit('/application/dob');
-    }
+   
 
     
 
@@ -51,7 +59,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Email Address" />
+    <Head title="Allergies" />
     <ApplicationLayout>
         <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
@@ -61,11 +69,8 @@ function submit(){
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
-                    📧 Email Address
+                   What is your Gender?
                 </h1>
-                <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
-                    Kindly share your email address for official communication and updates.
-                </p>
             </div>
 
             <div>
@@ -75,28 +80,39 @@ function submit(){
 
         <div class="mt-4"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div class="max-w-sm" >
-                        <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="email" label-name="Email" class="" />
-                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                                *
-                            </span>
-                        </div>
-                        <FormInput 
-                            type="text"
-                            id="email"
-                            v-model="form.email"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                
+                <ul class="grid w-full gap-6 md:grid-cols-2 mt-2">
+                    <li>
+                        <input type="radio" v-model="form.gender" id="1" name="1" value="1" class="hidden peer" />
+                        <label for="1" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                            bg-white border border-gray-200 rounded-lg cursor-pointer  
+                            peer-checked:border-primaryColor
+                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                            dark:text-gray-400 ">                           
+                            <div class="block">
+                                <div class="w-full text-lg font-semibold">Male</div>
+                            </div>
                             
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.email">{{ form.errors.email }}</div>
-                        
-                    </div>
-  
-                </div>
+                        </label>
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.gender">{{ form.errors.gender }}</div>
 
+                    </li>
+                    <li>
+                        <input type="radio"  v-model="form.gender" id="2" name="2" value="2" class="hidden peer">
+                        <label for="2" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                            bg-white border border-gray-200 rounded-lg cursor-pointer  
+                            peer-checked:border-primaryColor
+                            peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                            dark:text-gray-400 ">
+                            <div class="block">
+                                <div class="w-full text-lg font-semibold">Female</div>
+                            <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.gender">{{ form.errors.gender }}</div>
+
+                            </div>
+                        </label>
+                    </li>
+                             
+                </ul>
                 <div class="w-1/4">
                     <button type="submit" :class="{'cursor-not-allowed' : disableSubmitBtn}"
                         class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 

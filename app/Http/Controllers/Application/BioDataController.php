@@ -387,7 +387,7 @@ class BioDataController extends Controller
 
             }
 
-            return redirect()->route('residence');
+            return redirect()->route('date.of.birth');
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -662,7 +662,10 @@ class BioDataController extends Controller
                 $relationStatus = 4;
             }else if($validated['relationship'] == 'spouse'){
                 $relationStatus = 5;
+            }else if($validated['relationship'] == 'child'){
+                $relationStatus = 8;
             }
+
            
             $applicationID =session('applicant_data')['application_no'];
            
@@ -709,7 +712,7 @@ class BioDataController extends Controller
     public function postUploadID(Request $request){
          $validated = $request->validate([
             
-            'passport_id_file' => 'required|mimes:pdf',
+            'passport_id_file' => 'required|file',
 
         ]);
         try{
@@ -730,7 +733,7 @@ class BioDataController extends Controller
                     
                     $applicationID =session('applicant_data')['application_no'];
                     $applicant = Applicant::where('id', $applicationID)->first();
-                    $applicant->student_image_file_path = $fullPath;
+                    $applicant-> passport_file_path = $fullPath;
                     if (!$applicant->save()) {
                         return redirect()->back()->withErrors([
                             'error' => 'Failed to save. Please try again.'
@@ -787,7 +790,7 @@ class BioDataController extends Controller
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
                     $applicationID =session('applicant_data')['application_no'];
                     $applicant = Applicant::where('id', $applicationID)->first();
-                    $applicant->passport_file_path = $fullPath;
+                    $applicant->student_image_file_path = $fullPath;
                     if (!$applicant->save()) {
                         return redirect()->back()->withErrors([
                             'error' => 'Failed to save. Please try again.'
@@ -893,6 +896,114 @@ class BioDataController extends Controller
         }else {
             return $errorMessage;
         }
+    }
+
+    public function getDOBPage(){
+        try{
+           
+
+            return Inertia::render('Application/BioData/DOB', [
+            ]);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function postDOB(Request $request){
+        $validated = $request->validate([  
+            'dob' => 'required|date',
+        ]);
+        try{
+            $applicationID =session('applicant_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->dob = $validated['dob'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+            }
+           return redirect()->route('gender');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+    public function getGenderPage(){
+        try{
+           
+
+            return Inertia::render('Application/BioData/Gender', [
+            ]);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function postGender(Request $request){
+        $validated = $request->validate([  
+            'gender' => 'required|string',
+        ]);
+        try{
+            $applicationID =session('applicant_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->gender = (int) $validated['gender'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+            }
+           return redirect()->route('passport');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+    public function getPassportPage(){
+        try{
+           
+
+            return Inertia::render('Application/BioData/Passport', [
+            ]);
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function postPassportID(Request $request){
+        $validated = $request->validate([  
+            'passportID' => 'required|string',
+        ]);
+        try{
+            $applicationID =session('applicant_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->id_passport_No = trim($validated['passportID']);
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+            }
+           return redirect()->route('residence');
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
     }
 
 }

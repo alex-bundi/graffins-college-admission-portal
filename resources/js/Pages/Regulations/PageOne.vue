@@ -62,9 +62,7 @@ const success = ref({});
 
                     </p>
                     <ul class="p-4 font-josefin text-sm tracking-wider">
-                        <li>
-                            - Doors close at 9:00 a.m. and 2:00 p.m. – no late entry.
-                        </li>
+                       
                         <li>
                             - 80% attendance is required to sit exams.
                         </li>

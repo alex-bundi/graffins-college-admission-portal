@@ -50,6 +50,12 @@ const success = ref({});
 
                     </span>
                 </Link>
+            </div> 
+
+            <div class="mt-8">
+                <Link :href="route('course.summary')"  class="text-black font-josefin font-bold hover:font-bold hover:text-darkPrimaryColor">
+                    Back to Course Summary
+                </Link>
             </div>
        </div>
 

@@ -44,13 +44,7 @@ const success = ref({});
         <div class="mt-4">
             <ul>
 
-                <li>
-                    <p class="font-josefin font-bold text-base tracking-wider">
-                        <span class="font-monteserat font-extrabold">No Visitors  </span> 
-                        allowed inside the college (except parents/guardians for official visits).
-
-                    </p>
-                </li>
+                
             </ul>
         </div>
 

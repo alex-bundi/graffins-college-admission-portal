@@ -1,13 +1,14 @@
 <script setup>
+import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
-import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
-import { ref, onMounted, computed } from 'vue';
 import StepperComponent from '@/Layouts/Stepper.vue';
+
 const props = defineProps({
-    user: Object,
+    applicantCourse: Object,
     completedSteps: {
         type: Array,
         default: () => []
@@ -16,34 +17,42 @@ const props = defineProps({
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    email: props.user ? props.user.email : null,
+    dob: '',
+
 });
-const hasChanged = computed(() => {
-    return (
-        form.email !== (props.user.email ?? null)
-    );
-});
+
+const initialMode = ref(null);
 const disableSubmitBtn = ref(false);
+
+
+onMounted(() => {
+
+    if((props.applicantCourse != null)){
+        form.dob = props.applicantCourse.start_date ;
+        initialMode.value = props.applicantCourse.start_date ;
+    } 
+});
+
 
 function submit(){
     disableSubmitBtn.value = true;
 
-    if (hasChanged.value == true) {
+    if (form.dob === initialMode.value) {
+        // router.visit('/application/intake')
+    } else {
         router.post('/application/post-dob', form, {
             onError : (allErrors) => {
                 for(let error in allErrors){
                 errors.value[error] = allErrors[error]
                 }
                 disableSubmitBtn.value = false;
-
-            
+                
             },
 
         });
-    } else {
-        router.visit('/application/dob');
-    }
 
+    }
+  
     
 
  
@@ -51,8 +60,8 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Email Address" />
-    <ApplicationLayout>
+    <Head title="Class Start Date" />
+    <AuthenticatedLayout>
         <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
              <div>
@@ -61,43 +70,40 @@ function submit(){
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
-                    📧 Email Address
+                    📅 What is your date of birth?
                 </h1>
-                <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
-                    Kindly share your email address for official communication and updates.
-                </p>
-            </div>
 
-            <div>
-                <Notifications :errors="errors" :success="success"/> 
+             
             </div>
         </div>
 
-        <div class="mt-4"> 
+        <div>
+                <Notifications :errors="errors" :success="success"/> 
+        </div>
+
+        <div class="mt-12"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div class="max-w-sm" >
-                        <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="email" label-name="Email" class="" />
-                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                                *
-                            </span>
-                        </div>
-                        <FormInput 
-                            type="text"
-                            id="email"
-                            v-model="form.email"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
-                            
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.email">{{ form.errors.email }}</div>
-                        
+                <!--  Email -->
+                <div class="max-w-sm" >
+                    <div class="flex flex-row space-x-2">
+                        <FormInputLabel for-input="start_date" label-name="Start Date" class="" />
+                        <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                            *
+                        </span>
                     </div>
-  
+                    <FormInput 
+                        type="date"
+                        id="start_date"
+                        v-model="form.dob"
+                        class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                        
+                        required/> 
+                        
+                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.dob">{{ form.errors.dob }}</div>
+                    
                 </div>
 
-                <div class="w-1/4">
+                 <div class="w-1/4">
                     <button type="submit" :class="{'cursor-not-allowed' : disableSubmitBtn}"
                         class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                     rounded-full shadow-md 
@@ -115,12 +121,8 @@ function submit(){
                     </button>
                 </div>
             </form>
-
         </div>
 
 
-
-
-
-    </ApplicationLayout>
+    </AuthenticatedLayout>
 </template>

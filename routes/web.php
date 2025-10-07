@@ -88,6 +88,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/email-address', [BioDataController::class, 'getEmailAddressPage'])->name('email.address');
         Route::post('/post-email-address', [BioDataController::class, 'postEmailAddress'])->name('post.email.address');
 
+        Route::get('/dob', [BioDataController::class, 'getDOBPage'])->name('date.of.birth');
+        Route::post('/post-dob', [BioDataController::class, 'postDOB'])->name('post.date.of.birth');
+
+         Route::get('/gender', [BioDataController::class, 'getGenderPage'])->name('gender');
+        Route::post('/post-gender', [BioDataController::class, 'postGender'])->name('post.gender');
+
+         Route::get('/passport-id', [BioDataController::class, 'getPassportPage'])->name('passport');
+        Route::post('/post-passport-id', [BioDataController::class, 'postPassportID'])->name('post.passport');
+
         Route::get('/residence', [BioDataController::class, 'getResidencePage'])->name('residence');
         Route::post('/post-residence', [BioDataController::class, 'postResidence'])->name('post.residence');
 

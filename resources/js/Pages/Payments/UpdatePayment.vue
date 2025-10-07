@@ -145,6 +145,8 @@ function submit(){
                          -->
 
                          <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                            <FormInputLabel for-input="mode_of_payment" label-name="Mode of Payment" class="" />
+
                             <li>
                                 <input type="radio" v-model="form.modeOfPayment" id="bank" name="bank" value="1" class="hidden peer" />
                                 <label for="bank" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
@@ -190,7 +192,7 @@ function submit(){
                                 </label>
                             </li>
 
-                            <li>
+                            <!-- <li>
                                 <input type="radio"  v-model="form.modeOfPayment" id="cash" name="cash" value="cash" class="hidden peer">
                                 <label for="cash" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                     bg-white border border-gray-200 rounded-lg cursor-pointer  
@@ -203,7 +205,7 @@ function submit(){
 
                                     </div>
                                 </label>
-                            </li>
+                            </li> -->
                                     
                         </ul>
                     </div>

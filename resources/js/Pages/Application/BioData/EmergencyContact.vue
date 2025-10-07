@@ -165,6 +165,20 @@ function submit(){
                                 </label>
 
                             </li>
+                             <li>
+                                <input type="radio" v-model="form.relationship" id="child" name="child" value="child" class="hidden peer" />
+                                <label for="child" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                    peer-checked:border-primaryColor
+                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                    dark:text-gray-400 ">                           
+                                    <div class="block">
+                                        <div class="w-full text-lg font-semibold">Child</div>
+                                    </div>
+                                    
+                                </label>
+
+                            </li>
 
                             <li>
                                 <input type="radio" v-model="form.relationship" id="sibling" name="sibling" value="sibling" class="hidden peer" />
