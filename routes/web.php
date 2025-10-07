@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function () {
          Route::get('/intake', [ApplicationController::class, 'getIntakePage'])->name('intake');
         Route::post('/post-intake', [ApplicationController::class, 'postIntake'])->name('post.intake');
 
+         Route::get('/tutors', [ApplicationController::class, 'getTutorsPage'])->name('tutor');
+        Route::post('/post-tutor', [ApplicationController::class, 'postTutor'])->name('post.tutor');
+
         Route::get('/class-start-date', [ApplicationController::class, 'getClassStartDatePage'])->name('class.start.date');
         Route::post('/post-class-start-date', [ApplicationController::class, 'postClassStartDate'])->name('post.class-start-date');
 

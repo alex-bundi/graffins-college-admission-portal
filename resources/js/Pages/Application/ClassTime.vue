@@ -36,7 +36,7 @@ const disableSubmitBtn = ref(false);
 function submit(){
      disableSubmitBtn.value = true;
     if (form.time === initialMode.value) {
-        router.visit('/application/course-summary')
+        router.visit('/application/tutors')
     } else {
         router.post('/application/post-class-start-time', form, {
             onError : (allErrors) => {

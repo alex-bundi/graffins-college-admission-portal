@@ -694,7 +694,7 @@ class ApplicationController extends Controller
                 ]);
             }
 
-            return redirect()->route('course.summary');
+            return redirect()->route('tutor');
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -1083,6 +1083,8 @@ class ApplicationController extends Controller
                 $params->classTime = $applicantCourse->class_time;
                 $params->courseType = $applicantCourse->unit_status;
                 $params->unitCode = $applicantCourse->unit_code;
+                $params->intake = $applicantCourse->intake_code;
+                $params->tutor = $applicantCourse->tutor_code;
 
                
                 
@@ -1218,6 +1220,60 @@ class ApplicationController extends Controller
             $applicantCourse->intake_description = trim($intakeDescription);
             $applicantCourse->save();
             return redirect()->route('class.start.time');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function getTutorsPage(){
+         try{
+            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $tutorsQuery = $this->generalQueries->tutorsQuery();
+            $tutorsURL = config('app.odata')  . "{$tutorsQuery}?" . '$filter=' . rawurlencode("Course_Code eq '{$applicantCourse->course_code}'");
+            $tutors= $this->getOdata($tutorsURL);
+            $tutorsData = $tutors['value'];
+
+            
+            return Inertia::render('Application/Tutors', [
+                'tutors' => $tutorsData,
+            ]);
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'errors' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function postTutor(Request $request){
+        try{
+             $validated = $request->validate([
+                'tutor' => 'required|string',
+            ]);
+
+            if($validated['tutor'] != null){
+                $tutorCodePtrn = '/^([^.]+)\.\./';
+                $tutorDescriPtrn = '/\.\.(.+)$/';
+                if (preg_match($tutorCodePtrn, $validated['tutor'], $matches)) {
+                    $tutorCode = trim($matches[1]);
+                }
+
+                if (preg_match($tutorDescriPtrn, $validated['tutor'] , $matches)) {
+                    $tutorDescription = $matches[1];
+                }
+                
+            }
+            
+            $applicationID =session('applicant_data')['applicationCourseID'];
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse->tutor_code = trim($tutorCode);
+            $applicantCourse->tutor_name = trim($tutorDescription);
+            $applicantCourse->save();
+            return redirect()->route('course.summary');
         }catch(Exception $e){
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()

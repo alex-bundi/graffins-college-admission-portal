@@ -38,7 +38,7 @@ trait OdataTrait {
                 
                 $accessToken = $auth->getAccessToken(); 
             }
-            $accessToken = $auth->getAccessToken(); 
+            // $accessToken = $auth->getAccessToken(); 
            
        
             $response = $client->get($url, [
