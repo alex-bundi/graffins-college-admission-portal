@@ -19,15 +19,19 @@ use Illuminate\Support\Facades\Log;
 
 
 
+
 class GeneralController extends Controller
 {
     use OdataTrait;
     use GeneralTrait;
     protected $generalQueries;
+    protected $user;
+
 
     public function __construct()
     {
         $this->generalQueries = new GeneralQueries();
+         $this->user = Auth::user();
     }
 
     public function getHomePage(){
@@ -53,7 +57,9 @@ class GeneralController extends Controller
 
     public function getDashboard(){
         try {
-            return Inertia::render('Dashboard');
+            return Inertia::render('Dashboard', [
+                'user' => $this->user,
+            ]);
         }catch(Exception $e){
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()

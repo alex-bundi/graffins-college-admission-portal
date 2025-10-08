@@ -14,6 +14,8 @@ const props = defineProps({
     }
 });
 
+console.log(props.departments);
+
 const initialMode = ref(null);
 const disableSubmitBtn = ref(false);
 
@@ -26,11 +28,16 @@ const form = useForm({
 
 });
 
+const sortedDepartments = ref({});
+
 onMounted(() => {
     if((props.applicantCourse != null)){
         form.departmentCode = props.applicantCourse.department_code + '..' + props.applicantCourse.department_description;
         initialMode.value = props.applicantCourse.department_code + '..' + props.applicantCourse.department_description;
     } 
+
+    sortedDepartments.value = props.departments;
+    console.log(sortedDepartments.value)
 });
 
 function submit(){

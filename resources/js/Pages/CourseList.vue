@@ -6,7 +6,6 @@ const props = defineProps({
     applications: Object,
 });
 
-console.log(props.applications);
 
 const newApplications = Object.fromEntries(
     Object.entries(props.applications).filter(([key, value]) => value.application_status == 'new')
@@ -35,40 +34,7 @@ console.log(applicationCount.value);
         </div>
 
          <!-- Header -->
-        <section  class=" flex items-center mt-6">
-            <div class="max-w-screen-xl px-4 mx-auto lg:px-12 w-full">
-                <!-- Start coding here -->
-                <div class="relative bg-white shadow-md  sm:rounded-lg">
-                <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
-                    <div class="w-full md:w-1/2">
-                    <!-- <form class="flex items-center">
-                        <label for="simple-search" class="sr-only">Search</label>
-                        <div class="relative w-full">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 
-                            focus:border-primary-500 " placeholder="Search" required="">
-                        </div>
-                    </form> -->
-                    </div>
-                    <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
-                        <Link :href="route('mode.of.study')" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primaryColor hover:bg-darkPrimaryColor
-                            focus:ring-4 focus:ring-primary-300 focus:outline-none ">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                            <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
-                            </svg>
-
-                            Apply for a Course
-                        </Link>
-                    
-                    </div>
-                </div>
-                </div>
-            </div>
-        </section>
+       
 
         <section v-if="applicationCount == 0" class=" flex flex-col items-center justify-center mt-6">
             <div>
@@ -242,7 +208,7 @@ console.log(applicationCount.value);
                     </ul>
                 </div>
 
-                <div class="flex flex-col items-center space-y-5">
+                <div class="flex flex-col items-center space-y-5 mt-4">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8">
                         <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 0 0-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634Zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 0 1-.189-.866c0-.298.059-.605.189-.866Zm2.023 6.828a.75.75 0 1 0-1.06-1.06 3.75 3.75 0 0 1-5.304 0 .75.75 0 0 0-1.06 1.06 5.25 5.25 0 0 0 7.424 0Z" clip-rule="evenodd" />
