@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Artisan;
 
 
 Route::get('/', [GeneralController::class, 'getHomePage'])->name('home');
@@ -164,6 +165,20 @@ Route::middleware('auth')->group(function () {
         Route::post('/post-update-payment', [PaymentController::class, 'postPayment'])->name('post.payment');
         
 
+    });
+
+    Route::get('/artisan/migrate', function () {
+        Artisan::call('migrate', ['--force' => true]);
+        return "✅ Migrations completed.";
+    });
+
+    // Clear cache
+    Route::get('/artisan/clear-cache', function () {
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        return "✅ Cache cleared.";
     });
 });
 

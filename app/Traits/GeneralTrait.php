@@ -10,6 +10,8 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use Exception;
+use Illuminate\Support\Facades\Log;
+
 
 trait GeneralTrait {
    
@@ -47,6 +49,13 @@ trait GeneralTrait {
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+
+    public function logError($header, $logMessage, $logFile){
+        $currentTime = date("Y-m-d H:i:s");
+        $logMessage = $currentTime . '_' .$header. $logMessage;
+        Log::channel($logFile)->error($logMessage);
     }
     
 }

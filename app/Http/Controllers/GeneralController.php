@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Applicant;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 
 
@@ -84,9 +86,12 @@ class GeneralController extends Controller
         }
     }
 
+
+
     
 
     public function postRegistration(Request $request){
+        $start = microtime(true);
         $validated = $request->validate([
             'firstName' => 'required|string',
             'secondName' => 'required|string',
@@ -96,6 +101,14 @@ class GeneralController extends Controller
         ]);
 
         try {
+            // Validate user
+            $accountExists = User::where('email', $validated['email'])->first();
+            if($accountExists != null){
+                return redirect()->back()->withErrors([
+                    'error' => 'An account with this email already exists. Please sign in or use a different email.'
+                ]);
+            }
+
             $user = [
                 'first_name' => trim($validated['firstName']),
                 'second_name' => trim($validated['secondName']),
@@ -104,19 +117,34 @@ class GeneralController extends Controller
                 'password' => Hash::make($validated['password']),
             ];
             $newUser = User::create($user);
+            
+            $this->testPerformance($start, 'performance');
             if($newUser->exists){
                     return redirect()->route('login')->with('success', 'Your account has been created successfully');;
             }else {
                 return redirect()->route('sign.up')->with('error', 'Something went wrong. Try again or reach out to our support team for help.');
 
-            }
+            } 
+
+            
         }catch(Exception $e){
+            $this->logError('account_registration', $e->getMessage(), 'account_registration');
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
         }
 
     }
+
+    public function testPerformance($startTime, $logfile){
+        $elapsed = round((microtime(true) - $startTime) * 1000, 2); // in milliseconds
+        $currentTime = date("Y-m-d H:i:s");
+
+        $logMessage = "[{$currentTime}] User registration took {$elapsed} ms";
+        Log::channel($logfile)->error($logMessage);
+    }
+
+    
 
     // public function postRegistration(Request $request){
     //     $validated = $request->validate([

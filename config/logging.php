@@ -134,6 +134,14 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/access_token.log'),
         ],
+        'performance' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/performance.log'),
+        ],
+        'account_registration' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/account_registration.log'),
+        ],
 
     ],
 
