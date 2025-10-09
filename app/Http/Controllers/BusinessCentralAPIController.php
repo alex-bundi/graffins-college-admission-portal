@@ -8,22 +8,43 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use App\Traits\GeneralTrait;
+
 
 
 
 class BusinessCentralAPIController extends Controller
 {
     protected $client;
+    protected $savedAccessTokenFile;
+    use GeneralTrait;
+
     public function __construct()
     {
         $this->client = new Client();
+        $this->savedAccessTokenFile = $this->getAccessTokenFile();
+
     }
+
+    private function getAccessTokenFile(){
+        $directory = base_path('config\\');
+        $filename = 'tokenfile.txt';
+        $tokenFile = $directory . $filename;
+
+        if(file_exists($tokenFile)){
+            return $tokenFile;
+        }else {
+            fopen($tokenFile, "w");
+            fclose($tokenFile);
+            return $tokenFile;
+
+        }
+
+    }
+
     public function getAccessToken(){
         try {
-
-            $bcTokenURL = config('app.token_url');
-
-            $response = $this->client->post($bcTokenURL , [
+            $response = $this->client->post(config('app.token_url') , [
                 'connect_timeout' => 2,
                 'form_params' => [
                     'client_id' => config('app.client_id'),
@@ -39,10 +60,7 @@ class BusinessCentralAPIController extends Controller
                 $body = json_decode($response->getBody(), true);
                 $accessToken = $body['access_token'];
 
-                $directory = base_path('config\\');
-                $filename = 'tokenfile.txt';
-                $fullPath = $directory . $filename;
-                $accessTokenFile = fopen($fullPath, 'wb');
+                $accessTokenFile = fopen($this->savedAccessTokenFile, 'wb');
                 if ($accessTokenFile){
                     $token = $accessToken;
                     fwrite($accessTokenFile, $token);
@@ -55,6 +73,7 @@ class BusinessCentralAPIController extends Controller
                     'message' => 'success',
 
                 ];
+
 
                 return $data;
             }
@@ -89,34 +108,32 @@ class BusinessCentralAPIController extends Controller
 
                 return $data;
             }
-            
-            
-            // return $e->getCode();
-
-
-            
+ 
         };
 
     }
 
     public function getOdata($url){
         try{
-            $directory = base_path('config\\');
-            $filename = 'tokenfile.txt';
-            $tokenFile = $directory . $filename;
+            $start = microtime(true);
 
             $trials = 3;
             $accessToken = '';
-            if (file_exists($tokenFile) && filesize($tokenFile) > 0) {
-                $authToken = fopen($tokenFile, 'r');
-                $savedAccessToken = fread($authToken, filesize($tokenFile));
+            if (file_exists($this->savedAccessTokenFile) && filesize($this->savedAccessTokenFile) > 0) {
+
+                $authToken = fopen($this->savedAccessTokenFile, 'r');
+                $savedAccessToken = fread($authToken, filesize($this->savedAccessTokenFile));
                 fclose($authToken);
                 $accessToken = $savedAccessToken;
 
-            } else {
+            } 
+
+            
+            else {
                 $validAccessToken = $this->getAccessToken();
 
                 if($validAccessToken){
+                    return session()->all();
                     // error
                     if($validAccessToken['statusCode'] == 401){
                         return redirect()->back()->withErrors([
@@ -138,17 +155,17 @@ class BusinessCentralAPIController extends Controller
             }
             
 
-            
+            $this->testPerformance($start, 'business_cemtral_api', 'Getting Access token ');
 
-            $response =  $this->client->get($url, [
-                'verify' => false,
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $accessToken,
-                    'Content-Type' => 'application/json'
-                ]
-            ]);
+            // $response =  $this->client->get($url, [
+            //     'verify' => false,
+            //     'headers' => [
+            //         'Authorization' => 'Bearer ' . $accessToken,
+            //         'Content-Type' => 'application/json'
+            //     ]
+            // ]);
            
-            $jdata = json_decode($response->getBody(), true);
+            // $jdata = json_decode($response->getBody(), true);
 
 
             // $data = [
@@ -157,9 +174,11 @@ class BusinessCentralAPIController extends Controller
             //     ];
             
 
-            return $jdata;
+            // return $jdata;
+            return $accessToken;
         }catch (ClientException | ServerException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
+            return $e->getMessage();
             
             // return redirect()->back()->with('error', $e->getMessage());
         }

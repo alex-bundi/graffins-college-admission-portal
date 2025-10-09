@@ -233,4 +233,16 @@ class GeneralController extends Controller
             return true;
         }
     }
+
+
+    public function getAPIErrorsPage(){
+        try {
+            return Inertia::render('Error');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+    }
 }

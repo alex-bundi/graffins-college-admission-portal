@@ -35,6 +35,9 @@ Route::middleware('guest')->group(function () {
 // Test
 Route::get('/countries', [BioDataController::class, 'getCountries']);
 
+// API Erros
+Route::get('/api-errors', [GeneralController::class, 'getAPIErrorsPage']);
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [GeneralController::class, 'getDashboard'])->name('dashboard');

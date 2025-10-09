@@ -57,5 +57,15 @@ trait GeneralTrait {
         $logMessage = $currentTime . '_' .$header. $logMessage;
         Log::channel($logFile)->error($logMessage);
     }
+
+    public function testPerformance($startTime, $logfile, $performanceMsg){
+        // $start = microtime(true);
+
+        $elapsed = round((microtime(true) - $startTime) * 1000, 2); // in milliseconds
+        $currentTime = date("Y-m-d H:i:s");
+
+        $logMessage = "[{$currentTime}] {$performanceMsg} took {$elapsed} ms";
+        Log::channel($logfile)->error($logMessage);
+    }
     
 }
