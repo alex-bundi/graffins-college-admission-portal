@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use App\Traits\GeneralTrait;
-
-
-
+use Inertia\Inertia;
 
 class BusinessCentralAPIController extends Controller
 {
@@ -133,16 +131,16 @@ class BusinessCentralAPIController extends Controller
                 $validAccessToken = $this->getAccessToken();
 
                 if($validAccessToken){
-                    return session()->all();
                     // error
                     if($validAccessToken['statusCode'] == 401){
-                        return redirect()->back()->withErrors([
-                            'error' => $validAccessToken['message']
-                        ]);
+                        $validAccessToken['previousURL'] = session()->all()['_previous']['url'];
+                        // return redirect()->route('api.errors')->with();
+                        return $validAccessToken;
                     }
                     if($validAccessToken['statusCode'] == 0 ){
-                        return redirect()->back()->withErrors([
-                            'error' => $accessToken['message']
+                        return Inertia::render('Error', [
+                            'data' => $validAccessToken,
+                            'previousURL' => session()->all()['_previous']['url'],
                         ]);
                     }
 

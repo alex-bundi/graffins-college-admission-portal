@@ -40,6 +40,8 @@ class HandleInertiaRequests extends Middleware
                 'message' => session(key: 'message'),
                 'success' => session(key: 'success'),
                 'error' => session(key: 'error'),
+                'data' => $request->session()->get('data'),
+                'previousURL' =>  $request->session()->get('previousURL'),
             ],
         ];
     }

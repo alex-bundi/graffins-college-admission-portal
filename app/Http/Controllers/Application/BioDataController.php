@@ -861,8 +861,12 @@ class BioDataController extends Controller
             $countriesQuery = $this->generalQueries->countriesQuery();
             $countriesURL = config('app.odata') . "{$countriesQuery}";
             $countriesData = $this->businessCentralAccess->getOdata($countriesURL);
-            dd($countriesData);
-
+            // dd($countriesData);
+            $response = $this->validateAPIResponse($countriesData);
+            
+            if ($response) {
+                return $response;
+            }
             
 
             // $countries = $countriesData['value'];
@@ -890,6 +894,18 @@ class BioDataController extends Controller
                 'error' => $this->validateError($e->getCode(), $e->getMessage()),
             ]);
         }
+    }
+
+    public function validateAPIResponse($apiResponse){
+        
+        if ($apiResponse['statusCode'] == 401 || $apiResponse['statusCode'] == 0) {
+            return redirect()->route('api.errors')->with([
+                'data' => $apiResponse,
+                'previousURL' => url()->previous(),
+            ]);
+        }
+
+        
     }
 
     public function validateError($statusCode, $errorMessage){
