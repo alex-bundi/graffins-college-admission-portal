@@ -247,6 +247,7 @@ class ApplicationController extends Controller
         
     }
     public function postDepartment(Request $request){
+        dd($request->all());
         try{
             $validated = $request->validate([
                 'departmentCode' => 'required|string',

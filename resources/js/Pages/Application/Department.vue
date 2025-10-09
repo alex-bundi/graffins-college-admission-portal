@@ -14,7 +14,6 @@ const props = defineProps({
     }
 });
 
-console.log(props.departments);
 
 const initialMode = ref(null);
 const disableSubmitBtn = ref(false);
@@ -25,6 +24,7 @@ const errors = ref({});
 const success = ref({});
 const form = useForm({
     departmentCode: '',
+    departmentDescription: '',
 
 });
 
@@ -32,16 +32,20 @@ const sortedDepartments = ref({});
 
 onMounted(() => {
     if((props.applicantCourse != null)){
-        form.departmentCode = props.applicantCourse.department_code + '..' + props.applicantCourse.department_description;
-        initialMode.value = props.applicantCourse.department_code + '..' + props.applicantCourse.department_description;
+        form.departmentCode = props.applicantCourse.department_code;
+        initialMode.value = props.applicantCourse.department_code ;
     } 
 
     sortedDepartments.value = props.departments;
-    console.log(sortedDepartments.value)
 });
+
+function getDescription(description){
+    form.departmentDescription = description;
+}
 
 function submit(){
     disableSubmitBtn.value = true;
+   
     
     if (form.departmentCode === initialMode.value) {
         router.visit('/application/pick-course')
@@ -95,8 +99,8 @@ function submit(){
             </div>
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                 <ul class="grid w-full gap-6 md:grid-cols-1">
-                    <li v-for="department in departments" :key="department.Code">
-                        <input type="radio" v-model="form.departmentCode" :id="department.Code" :value="department.Code + '..' + department.Name" class="hidden peer" />
+                    <li v-for="department in departments" :key="department.Code" >
+                        <input type="radio" v-model="form.departmentCode" :id="department.Code" :value="department.Code" class="hidden peer"  @change="getDescription(department.Name)" />
                         <label :for="department.Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor
