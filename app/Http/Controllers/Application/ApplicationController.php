@@ -13,6 +13,8 @@ use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use App\Models\EmergencyContact;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\BusinessCentralAPIController;
+
 
 
 
@@ -22,11 +24,17 @@ class ApplicationController extends Controller
     use GeneralTrait;
     protected $generalQueries;
     protected $user;
+    protected $businessCentralAccess;
+    protected $start;
 
     public function __construct()
     {
         $this->generalQueries = new GeneralQueries();
         $this->user = Auth::user();
+        $this->businessCentralAccess = new BusinessCentralAPIController;
+        $this->start = microtime(true);
+        
+
     }
 
     // Add this method to your ApplicationController or create a BaseController
@@ -199,13 +207,23 @@ class ApplicationController extends Controller
 
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
-            $departmentsData = $this->getOdata($departmentsURL);
-            $departments = $departmentsData['value'];
+            $departmentsData = $this->businessCentralAccess->getOdata($departmentsURL);
+            $response = $this->validateAPIResponse($departmentsData);
+           
+            if ($response) {
+                return $response;
+            }
+            $this->testPerformance($this->start, 'business_central_api', 'Getting departments data ');
+
+            
+
+            $departments = $departmentsData['data']['value'];
              
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+           
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            session()->put('applicant_data.application_no', $applicantCourse->applicant_id);
+            // session()->put('applicant_data.application_no', $applicantCourse->applicant_id);
             
             $applicant = null;
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
@@ -217,9 +235,14 @@ class ApplicationController extends Controller
             ]);
 
         }catch(Exception $e){
-            return redirect()->back()->withErrors([
-                'error' => $e->getMessage()
-            ]);
+            // dd(session()->all());
+            // return redirect()->back()->with([
+            //     'error' => $e->getMessage()
+            // ]);
+
+            return redirect()->back()->with(
+                'error', $e->getMessage()
+            );
         }
         
     }
@@ -291,8 +314,10 @@ class ApplicationController extends Controller
                
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
                 $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-                session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
-                session()->put('applicant_data.application_no', $applications->id);
+                $this->retrieveOrUpdateSessionData('put', 'applicationCourseID',  $applicantCourse->id);
+                $this->retrieveOrUpdateSessionData('put', 'application_no',  $applications->id);
+                // session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
+                // session()->put('applicant_data.application_no', $applications->id);
             
 
 

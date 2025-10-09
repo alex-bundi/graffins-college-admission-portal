@@ -22,6 +22,7 @@ const success = ref({});
 const form = useForm({
     mode_of_study: '',
 });
+console.log(errors.value);
 
 onMounted(() => {
     if((props.applicantCourse != null) && (props.applicantCourse.mode_of_study == 1)){

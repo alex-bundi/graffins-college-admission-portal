@@ -67,5 +67,29 @@ trait GeneralTrait {
         $logMessage = "[{$currentTime}] {$performanceMsg} took {$elapsed} ms";
         Log::channel($logfile)->error($logMessage);
     }
+
+    public function validateAPIResponse($apiResponse){
+        
+        if ($apiResponse['statusCode'] == 401 || $apiResponse['statusCode'] == 0) {
+            return redirect()->route('api.errors')->with([
+                'data' => $apiResponse,
+                'previousURL' => url()->previous(),
+            ]);
+        } 
+    }
+
+    public function retrieveOrUpdateSessionData($action, $key, $value = null){
+        $sessionKey = 'applicant_data';
+        if($action == 'put'){
+            
+            $data = $sessionKey . $key;
+            session()->put($data, $value);
+            return;
+        }
+        if ($action == 'get'){
+            return session($sessionKey)[$key];
+        }
+
+    }
     
 }

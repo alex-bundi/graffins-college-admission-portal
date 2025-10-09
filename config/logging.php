@@ -142,9 +142,9 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/account_registration.log'),
         ],
-        'business_cemtral_api' => [
+        'business_central_api' => [
             'driver' => 'single',
-            'path' => storage_path('logs/business_cemtral_api.log'),
+            'path' => storage_path('logs/business_central_api.log'),
         ],
 
 

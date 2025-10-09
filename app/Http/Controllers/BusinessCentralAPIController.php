@@ -111,11 +111,35 @@ class BusinessCentralAPIController extends Controller
 
     }
 
+    public function refreshToken(){
+        try{
+            $validAccessToken = $this->getAccessToken();
+            return $validAccessToken;
+            if($validAccessToken){
+                // error
+                if($validAccessToken['statusCode'] == 401 ){
+                    $validAccessToken['previousURL'] = session()->all()['_previous']['url'];
+                    return $validAccessToken;
+                }
+                if($validAccessToken['statusCode'] == 0 ){
+                    $validAccessToken['previousURL'] = session()->all()['_previous']['url'];
+                    return $validAccessToken;
+                }
+
+                // Success
+                if($validAccessToken['statusCode'] == 200){
+                    $accessToken = $validAccessToken['accessToken'];
+                    return $accessToken;
+
+                }
+            }
+        }catch (ClientException | ServerException $e) {
+
+        }
+    }
+
     public function getOdata($url){
         try{
-            $start = microtime(true);
-
-            $trials = 3;
             $accessToken = '';
             if (file_exists($this->savedAccessTokenFile) && filesize($this->savedAccessTokenFile) > 0) {
 
@@ -125,23 +149,18 @@ class BusinessCentralAPIController extends Controller
                 $accessToken = $savedAccessToken;
 
             } 
-
-            
             else {
                 $validAccessToken = $this->getAccessToken();
 
                 if($validAccessToken){
                     // error
-                    if($validAccessToken['statusCode'] == 401){
+                    if($validAccessToken['statusCode'] == 401 ){
                         $validAccessToken['previousURL'] = session()->all()['_previous']['url'];
-                        // return redirect()->route('api.errors')->with();
                         return $validAccessToken;
                     }
                     if($validAccessToken['statusCode'] == 0 ){
-                        return Inertia::render('Error', [
-                            'data' => $validAccessToken,
-                            'previousURL' => session()->all()['_previous']['url'],
-                        ]);
+                        $validAccessToken['previousURL'] = session()->all()['_previous']['url'];
+                        return $validAccessToken;
                     }
 
                     // Success
@@ -152,31 +171,55 @@ class BusinessCentralAPIController extends Controller
                 }
             }
             
+            $response =  $this->client->get($url, [
+                'verify' => false,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json'
+                ]
+            ]);
+            $data = [
+                    'statusCode' => $response->getStatusCode(),
+                    'data' => json_decode($response->getBody(), true),
+                ];
 
-            $this->testPerformance($start, 'business_cemtral_api', 'Getting Access token ');
-
-            // $response =  $this->client->get($url, [
-            //     'verify' => false,
-            //     'headers' => [
-            //         'Authorization' => 'Bearer ' . $accessToken,
-            //         'Content-Type' => 'application/json'
-            //     ]
-            // ]);
-           
-            // $jdata = json_decode($response->getBody(), true);
-
-
-            // $data = [
-            //         'statusCode' => $e->getCode(),
-            //         'data' => json_decode($response->getBody(), true),
-            //     ];
             
 
-            // return $jdata;
-            return $accessToken;
+            return $data;
         }catch (ClientException | ServerException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
-            return $e->getMessage();
+           
+            $currentTime = date("Y-m-d H:i:s");
+            // $statusCode = $e->getResponse()->getStatusCode();
+            if($e->getCode() == 401 ) {
+                $trails = 1;
+                // Refresh Token
+                $this->refreshToken();
+
+
+                 $response = $e->getResponse();
+                $logMessage = $currentTime . '_' . 'access_token_'. $response->getBody()->getContents();
+                Log::channel('access_token')->error($logMessage);
+                
+                $data = [
+                    'statusCode' => $e->getCode(),
+                    'message' => 'We’re experiencing an issue with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
+                ];
+
+                return $data;
+            }
+            if($e->getCode() == 0 ) {
+                 $response = $e->getResponse();
+                $logMessage = $currentTime . '_' . 'internet_connection'. $response->getBody()->getContents();
+                Log::channel('internet_connection')->error($logMessage);
+                
+                $data = [
+                    'statusCode' => $e->getCode(),
+                    'message' => 'No internet connection. Please check your connection and try again.',
+                ];
+
+                return $data;
+            }
+            // return $e->getMessage();
             
             // return redirect()->back()->with('error', $e->getMessage());
         }

@@ -124,7 +124,7 @@ class GeneralController extends Controller
             ];
             $newUser = User::create($user);
             
-            $this->testPerformance($start, 'performance');
+            // $this->testPerformance($start, 'performance', 'Account Registration');
             if($newUser->exists){
                     return redirect()->route('login')->with('success', 'Your account has been created successfully');;
             }else {
@@ -140,98 +140,6 @@ class GeneralController extends Controller
             ]);
         }
 
-    }
-
-    public function testPerformance($startTime, $logfile){
-        $elapsed = round((microtime(true) - $startTime) * 1000, 2); // in milliseconds
-        $currentTime = date("Y-m-d H:i:s");
-
-        $logMessage = "[{$currentTime}] User registration took {$elapsed} ms";
-        Log::channel($logfile)->error($logMessage);
-    }
-
-    
-
-    // public function postRegistration(Request $request){
-    //     $validated = $request->validate([
-    //         'firstName' => 'required|string',
-    //         'secondName' => 'required|string',
-    //         'email' => 'required|email:rfc,dns',
-    //         'lastName' => 'required|string',
-    //         'password' => 'required|string',
-    //     ]);
-    //     try{
-    //         $emailExists = $this->ValidateRegistration(strtolower($validated['email']));
-
-    //         if($emailExists == true){
-    //             return redirect()->back()->withInput()->withErrors([
-    //                 'error' => 'The email you are using to sign up is already in use. Please sign in or use another email.'
-    //             ]);
-    //         }else if ($emailExists == false) {
-    //             $context = $this->initializeSoapProcess();
-          
-    //             $soapClient = new \SoapClient(
-    //                 config('app.webService'), 
-    //                 [
-    //                     'stream_context' => $context,
-    //                     'trace' => 1,
-    //                     'exceptions' => 1
-    //                 ]
-    //             );
-
-    //             $params = new \stdClass();
-    //             $params->firstName = trim($validated['firstName']);
-    //             $params->secondName = trim($validated['secondName']);
-    //             $params->lastName = trim($validated['lastName']);
-    //             $params->email = strtolower(trim($validated['email']));
-    //             $params->portalPassword = Hash::make($validated['password']);
-            
-    //             $result = $soapClient->CreateApplicantAccount($params);
-
-
-    //             if($result){
-                    
-    //                 $application = [
-    //                     'application_no' => $result->return_value,
-    //                     'first_name' => trim($validated['firstName']),
-    //                     'second_name' => trim($validated['secondName']),
-    //                     'last_name' => trim($validated['lastName']),
-    //                     'email' => strtolower(trim($validated['email'])),
-    //                 ];
-    //                 $newApplication = Applicant::create($application);
-    //             // Rember to cater for the other $result conditions such as 'Reset UnSuccessful' etc...
-    //                 if($result->return_value){
-    //                     return redirect()->route('login')->with('success', 'Your account has been created successfully and is currently under review');
-    //                 } else if($result->return_value === 'INSERT UNSUCCESSFUL'){
-    //                     return redirect()->route('sign.up')->with('error', 'An error occurred while creating your account. Please try again or contact support if the issue persists.');
-    //                 } 
-    //             } else {
-    //                 return redirect()->route('sign.up')->with('error', 'Something went wrong. Try again or reach out to our support team for help.');
-
-    //             }
-    //         }
-    //         return redirect()->route('dashboard');
-            
-    //     }catch(Exception $e){
-    //         return redirect()->back()->withErrors([
-    //             'error' => $e->getMessage()
-    //         ]);
-    //     }
-    // }
-
-    private function ValidateRegistration(string $email){
-        $applicantsQuery = $this->generalQueries->applicantsQuery();
-        $applicantsURL = config('app.odata') . "{$applicantsQuery}?". '$filter=' . rawurlencode("Email eq '{$email}'");
-        $applicantsData = $this->getOdata($applicantsURL);
-        
-
-         if (count($applicantsData['value']) === 0){ 
-            // Email does not exist
-            return false;
-        } else if(count($applicantsData['value']) > 0) {
-            // Email exists
-            return true;
-        }
     }
 
 
