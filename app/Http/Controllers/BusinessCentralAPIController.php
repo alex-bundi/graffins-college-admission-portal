@@ -42,6 +42,7 @@ class BusinessCentralAPIController extends Controller
 
     public function getAccessToken(){
         try {
+
             $response = $this->client->post(config('app.token_url') , [
                 'connect_timeout' => 2,
                 'form_params' => [
@@ -71,15 +72,12 @@ class BusinessCentralAPIController extends Controller
                     'message' => 'success',
 
                 ];
-
-
                 return $data;
             }
 
-            
-
             // return $statusCode;
-        }catch(ClientException $e){
+        }catch(ClientException | ServerException $e){
+
             $currentTime = date("Y-m-d H:i:s");
             
             if($e->getCode() == 401 ) {
@@ -113,8 +111,8 @@ class BusinessCentralAPIController extends Controller
 
     public function refreshToken(){
         try{
+            
             $validAccessToken = $this->getAccessToken();
-            return $validAccessToken;
             if($validAccessToken){
                 // error
                 if($validAccessToken['statusCode'] == 401 ){
@@ -134,7 +132,7 @@ class BusinessCentralAPIController extends Controller
                 }
             }
         }catch (ClientException | ServerException $e) {
-
+            return $e;
         }
     }
 
@@ -186,23 +184,28 @@ class BusinessCentralAPIController extends Controller
             
 
             return $data;
-        }catch (ClientException | ServerException $e) {
-           
+        }catch (ClientException | ServerException $e) {  
+
             $currentTime = date("Y-m-d H:i:s");
-            // $statusCode = $e->getResponse()->getStatusCode();
             if($e->getCode() == 401 ) {
-                $trails = 1;
+                
+                $trials = 1;
                 // Refresh Token
-                $this->refreshToken();
+
+                do {
+                    $this->refreshToken();
+                    $this->getOdata($url);
+                    $trials -= 1;
+                }while($trials != 0);
 
 
-                 $response = $e->getResponse();
+                $response = $e->getResponse();
                 $logMessage = $currentTime . '_' . 'access_token_'. $response->getBody()->getContents();
                 Log::channel('access_token')->error($logMessage);
                 
                 $data = [
                     'statusCode' => $e->getCode(),
-                    'message' => 'We’re experiencing an issue with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
+                    'message' => ' with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
                 ];
 
                 return $data;

@@ -239,7 +239,7 @@ class ApplicationController extends Controller
             // return redirect()->back()->with([
             //     'error' => $e->getMessage()
             // ]);
-
+            // dd($e->getMessage());
             return redirect()->back()->with(
                 'error', $e->getMessage()
             );
