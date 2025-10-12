@@ -16,23 +16,23 @@ const props = defineProps({
     }
 });
 
-const itCourses = Object.fromEntries(
-    Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WCAPS')
-)
+const itCourses = Object.values(props.courses)
+    .filter(course => course.DepartmentCode == 'WCAPS')
+    .sort((a, b) => a.CourseDescription.localeCompare(b.CourseDescription));
 
-const engCourses = Object.fromEntries(
-    Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WENG')
-)
+const engCourses = Object.values(props.courses)
+    .filter(course => course.DepartmentCode == 'WENG')
+    .sort((a, b) => a.CourseDescription.localeCompare(b.CourseDescription));
 
-const businessCourses = Object.fromEntries(
-    Object.entries(props.courses).filter(([key, value]) => value.DepartmentCode == 'WBM')
-)
-
+const businessCourses = Object.values(props.courses)
+    .filter(course => course.DepartmentCode == 'WBM')
+    .sort((a, b) => a.CourseDescription.localeCompare(b.CourseDescription));
 
 const errors = ref({});
 const success = ref({});
 const form = useForm({
     courseCode: '',
+    courseDescription: '',
 });
 const initialMode = ref(null);
 const disableSubmitBtn = ref(false);
@@ -40,10 +40,14 @@ const disableSubmitBtn = ref(false);
 
 onMounted(() => {
     if((props.applicantCourse != null)){
-        form.courseCode = props.applicantCourse.course_code + '..' + props.applicantCourse.course_description;
-        initialMode.value = props.applicantCourse.course_code + '..' + props.applicantCourse.course_description;
+        form.courseCode = props.applicantCourse.course_code ;
+        initialMode.value = props.applicantCourse.course_code;
     } 
 });
+
+function getDescription(description){
+    form.courseDescription = description;
+}
 
 function submit(){
     disableSubmitBtn.value = true;
@@ -101,15 +105,16 @@ function submit(){
                     <!-- It Courses section -->
                     <section v-show="props.department == 'WCAPS'">
                         <!-- Header -->
-                        <div class="p-6 bg-white rounded-md ">
-                            <h2 class="flex justify-center font-monteserat text-base tracking-wider">
+                        <div class="p-6 underline underline-offset-4">
+                            <h2 class="flex justify-center font-monteserat text-xl tracking-wider">
                                 💼 Technology Department
                             </h2>
                         </div>
                          <!-- IT Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="course in itCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode + '..' + course.CourseDescription" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" 
+                                        @change="getDescription(course.CourseDescription)"/>
                                     <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor

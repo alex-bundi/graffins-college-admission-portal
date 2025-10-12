@@ -100,7 +100,8 @@ function submit(){
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                 <ul class="grid w-full gap-6 md:grid-cols-1">
                     <li v-for="department in departments" :key="department.Code" >
-                        <input type="radio" v-model="form.departmentCode" :id="department.Code" :value="department.Code" class="hidden peer"  @change="getDescription(department.Name)" />
+                        <input type="radio" v-model="form.departmentCode" :id="department.Code" :value="department.Code" class="hidden peer" 
+                         @change="getDescription(department.Name)" />
                         <label :for="department.Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor

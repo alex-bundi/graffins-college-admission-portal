@@ -185,12 +185,12 @@ class BusinessCentralAPIController extends Controller
 
             return $data;
         }catch (ClientException | ServerException $e) {  
-
             $currentTime = date("Y-m-d H:i:s");
             if($e->getCode() == 401 ) {
                 
                 $trials = 1;
                 // Refresh Token
+                            
 
                 do {
                     $this->refreshToken();

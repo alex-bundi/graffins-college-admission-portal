@@ -213,14 +213,10 @@ class ApplicationController extends Controller
             if ($response) {
                 return $response;
             }
-            $this->testPerformance($this->start, 'business_central_api', 'Getting departments data ');
-
-            
 
             $departments = $departmentsData['data']['value'];
              
             $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
-           
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             // session()->put('applicant_data.application_no', $applicantCourse->applicant_id);
@@ -235,11 +231,6 @@ class ApplicationController extends Controller
             ]);
 
         }catch(Exception $e){
-            // dd(session()->all());
-            // return redirect()->back()->with([
-            //     'error' => $e->getMessage()
-            // ]);
-            // dd($e->getMessage());
             return redirect()->back()->with(
                 'error', $e->getMessage()
             );
@@ -247,31 +238,19 @@ class ApplicationController extends Controller
         
     }
     public function postDepartment(Request $request){
-        dd($request->all());
         try{
             $validated = $request->validate([
                 'departmentCode' => 'required|string',
+                'departmentDescription' => 'required|string',
             ]);
-
-            if($validated['departmentCode'] != null){
-                $departmentCodePtrn = '/^([^.]+)\.\./';
-                $departmentDescriPtrn = '/\.\.(.+)$/';
-                if (preg_match($departmentCodePtrn, $validated['departmentCode'], $matches)) {
-                    $departmentCode = trim($matches[1]);
-                }
-
-                if (preg_match($departmentDescriPtrn, $validated['departmentCode'] , $matches)) {
-                    $departmentDescription = $matches[1];
-                }
-                
-            }
             
             $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->department_code = trim($departmentCode);
-            $applicantCourse->department_description = trim($departmentDescription);
+            $applicantCourse->department_code = trim($validated['departmentCode']);
+            $applicantCourse->department_description = trim($validated['departmentDescription']);
             $applicantCourse->save();
+
             
             return redirect()->route('pick.course');
             
@@ -282,15 +261,6 @@ class ApplicationController extends Controller
         }
     }
 
-    // public function editApplication($applicantID){
-    //     try {
-    //         dd($applicantID);
-    //     }catch(Exception $e){
-    //         return redirect()->back()->withErrors([
-    //             'error' => $e->getMessage()
-    //         ]);
-    //     }
-    // }
 
     public function getModeOfStudyPage(){
         try {
@@ -435,8 +405,8 @@ class ApplicationController extends Controller
 
     public function getPickCoursePage(){
         try{
-            $applicationID =session('applicant_data')['applicationCourseID'];
-             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
 
             if(!$applicantCourse){
                 return redirect()->route('mode.of.study')->with('success', 'Could not process application. Please contact support');;
@@ -444,15 +414,20 @@ class ApplicationController extends Controller
 
             $courseQuery = $this->generalQueries->coursesQuery();
             $coursesURL = config('app.odata') . "{$courseQuery}";
+            // $coursesURL = config('app.odata') . "{$courseQuery}?" . '$filter=' . rawurlencode("DepartmentCode eq '{$applicantCourse->department_code}'");
 
-            $courseData = $this->getOdata($coursesURL);
-            dd($courseData);
+            $courseData = $this->businessCentralAccess->getOdata($coursesURL);
+            $response = $this->validateAPIResponse($courseData);
+           
+            if ($response) {
+                return $response;
+            }
             $applicant = null;
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
 
             
             return Inertia::render('Application/PickCourse', [
-                'courses' => $courseData['value'],
+                'courses' => $courseData['data']['value'],
                 'department' => $applicantCourse->department_code,
                 'applicantCourse' => $applicantCourse,
                 'completedSteps' => $completedSteps,
@@ -466,26 +441,19 @@ class ApplicationController extends Controller
     public function postPickCourse(Request $request){
          $validated = $request->validate([
             'courseCode' => 'required|string',
+            'courseDescription' => 'required|string',
         ]);
         try{
-            if($validated['courseCode'] != null){
-                $courseCodePtrn = '/^([^.]+)\.\./';
-                $courseDescriPtrn = '/\.\.(.+)$/';
-                if (preg_match($courseCodePtrn, $validated['courseCode'], $matches)) {
-                     $courseCode = trim($matches[1]);
-                }
-
-                if (preg_match($courseDescriPtrn, $validated['courseCode'] , $matches)) {
-                    $courseDescription = $matches[1];
-                }
-                
-            }
             $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->course_code = trim($courseCode);
-            $applicantCourse->course_description = trim($courseDescription);
-            $applicantCourse->save();
+            $applicantCourse->course_code = trim($validated['courseCode']);
+            $applicantCourse->course_description = trim($validated['courseDescription']);
+            if (!$applicantCourse->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save the course. Please try again.'
+                ]);
+            }
 
             return redirect()->route('course-type');
             
@@ -518,8 +486,16 @@ class ApplicationController extends Controller
             if ($applicantCourse->department_code == 'WCAPS'){
                 $unitFeesQuery = $this->generalQueries->unitFeesQuery();
                 $unitFeesURL = config('app.odata') . "{$unitFeesQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
-                $unitFeesData = $this->getOdata($unitFeesURL);
-                $unitFees = $unitFeesData['value'];
+                $unitFeesData = $this->businessCentralAccess->getOdata($unitFeesURL);
+                $response = $this->validateAPIResponse($unitFeesData);
+           
+                if ($response) {
+                    return $response;
+                }
+
+                $unitFees = $unitFeesData['data']['value'];
+                // $this->testPerformance($this->start, 'performance', 'getting course levels');
+
                 return Inertia::render('Application/CourseType', [
                     'units' => $unitFees,
                     'completedSteps' => $completedSteps,
