@@ -245,7 +245,7 @@ class ApplicationController extends Controller
             ]);
             
             $applicationID =session('applicant_data')['applicationCourseID'];
-            
+            // test
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->department_code = trim($validated['departmentCode']);
             $applicantCourse->department_description = trim($validated['departmentDescription']);
