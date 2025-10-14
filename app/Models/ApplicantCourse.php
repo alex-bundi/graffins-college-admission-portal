@@ -32,6 +32,7 @@ class ApplicantCourse extends Model
         'end_date',
         'tutor_code',
         'tutor_name',
+        'unit_description',
     ];
 
     protected $hidden = [

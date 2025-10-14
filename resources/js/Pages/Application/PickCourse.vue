@@ -111,7 +111,7 @@ function submit(){
                             </h2>
                         </div>
                          <!-- IT Courses -->
-                        <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                        <ul class="grid grid-cols-1 w-full gap-6 md:grid-cols-3 mt-2">
                                 <li v-for="course in itCourses" :key="course.CourseCode">
                                     <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" 
                                         @change="getDescription(course.CourseDescription)"/>

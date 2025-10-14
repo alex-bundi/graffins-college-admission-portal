@@ -213,10 +213,12 @@ class ApplicationController extends Controller
             if ($response) {
                 return $response;
             }
+            
 
             $departments = $departmentsData['data']['value'];
              
             $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+           
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             // session()->put('applicant_data.application_no', $applicantCourse->applicant_id);
@@ -231,7 +233,8 @@ class ApplicationController extends Controller
             ]);
 
         }catch(Exception $e){
-            return redirect()->back()->with(
+            
+            return redirect()->back()->withErrors(
                 'error', $e->getMessage()
             );
         }
@@ -503,8 +506,14 @@ class ApplicationController extends Controller
             } else if ($applicantCourse->department_code == 'WENG'){
                 $courseLevelsQuery = $this->generalQueries->courseLevelsQuery();
                 $courseLevelsURL = config('app.odata') . "{$courseLevelsQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
-                $courseLevelsData = $this->getOdata($courseLevelsURL);
-                $courseLevels = $courseLevelsData['value'];
+                $courseLevelsData = $this->businessCentralAccess->getOdata($courseLevelsURL);
+                $response = $this->validateAPIResponse($courseLevelsData);
+           
+                if ($response) {
+                    return $response;
+                }
+
+                $courseLevels = $courseLevelsData['data']['value'];
                 
 
                 return Inertia::render('Application/ENGLevels', [
@@ -515,8 +524,15 @@ class ApplicationController extends Controller
             }else if ($applicantCourse->department_code == 'WBM'){
                 $courseLevelsQuery = $this->generalQueries->courseLevelsQuery();
                 $courseLevelsURL = config('app.odata') . "{$courseLevelsQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
-                $courseLevelsData = $this->getOdata($courseLevelsURL);
-                $courseLevels = $courseLevelsData['value'];
+                $courseLevelsData = $this->businessCentralAccess->getOdata($courseLevelsURL);
+
+                $response = $this->validateAPIResponse($courseLevelsData);
+           
+                if ($response) {
+                    return $response;
+                }
+
+                $courseLevels = $courseLevelsData['data']['value'];
 
                 return Inertia::render('Application/WBMCourseLevels', [
                     'courseLevels' => $courseLevels,
@@ -576,6 +592,7 @@ class ApplicationController extends Controller
         }
     }
     public function postCourseType(Request $request){
+        dd($request->all());
         $validated = $request->validate([
             'courseLevel' => 'nullable|string',
             'singleSubject' => 'nullable|string',
@@ -600,8 +617,10 @@ class ApplicationController extends Controller
             $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->course_level = $courseLevel;
-            $applicantCourse->unit_code = $courseUnit;
+            $applicantCourse->course_level = $validated['courseLevel'];
+            $applicantCourse->level_description = $validated['levelDescription'];
+            $applicantCourse->unit_code = $validated['unitCode'];
+            $applicantCourse->unit_description = ($validated['singleSubject'] != null) ? $validated['unitDescription'] : 'null';
             $applicantCourse->unit_status = ($validated['singleSubject'] != null) ? 'Single Subject' : 'Full Course';
             $applicantCourse->save();
 

@@ -192,11 +192,12 @@ class BusinessCentralAPIController extends Controller
                 // Refresh Token
                             
 
-                do {
-                    $this->refreshToken();
-                    $this->getOdata($url);
-                    $trials -= 1;
-                }while($trials != 0);
+                // do {
+                   
+                //     $trials -= 1;
+                // }while($trials != 0);
+                 $this->refreshToken();
+                $this->getOdata($url);
 
 
                 $response = $e->getResponse();
@@ -205,7 +206,7 @@ class BusinessCentralAPIController extends Controller
                 
                 $data = [
                     'statusCode' => $e->getCode(),
-                    'message' => ' with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
+                    'message' => 'We’re experiencing an issue with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
                 ];
 
                 return $data;
@@ -218,6 +219,17 @@ class BusinessCentralAPIController extends Controller
                 $data = [
                     'statusCode' => $e->getCode(),
                     'message' => 'No internet connection. Please check your connection and try again.',
+                ];
+
+                return $data;
+            }else{
+                  $response = $e->getResponse();
+                $logMessage = $currentTime . '_' . 'internet_connection'. $response->getBody()->getContents();
+                Log::channel('internet_connection')->error($logMessage);
+                
+                $data = [
+                    'statusCode' => $e->getCode(),
+                    'message' => 'We’re experiencing an issue with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
                 ];
 
                 return $data;
