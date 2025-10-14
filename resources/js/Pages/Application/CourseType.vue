@@ -52,6 +52,7 @@ function getAllDescription(levelCode, levelDescription, unitDescription){
     form.unitCode = form.singleSubject;
 
 }
+console.log(props.units)
 
 function submit(){
     disableSubmitBtn.value = true;
@@ -118,7 +119,7 @@ function submit(){
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="level, index in uniqueLevels" :key="index">
                                    
-                                    <input type="radio" v-model="form.fullCourse    " :id="index" :name="index" :value="level" class="hidden peer" 
+                                    <input type="radio" v-model="form.fullCourse" :id="index" :name="index" :value="level" class="hidden peer" 
                                         @change="getLevelDescription(level)"/>
                                     <label :for="index" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
@@ -160,7 +161,7 @@ function submit(){
                         <ul class="grid w-full gap-6 md:grid-cols-2 mt-2">
                                 <li v-for="unit in props.units" :key="unit.UnitCode">
                                     <input type="radio" v-model="form.singleSubject" :id="unit.UnitCode" :name="unit.UnitCode" :value="unit.UnitCode" class="hidden peer" 
-                                        @change="getAllDescription(unit.CourseLevel, unit.CourseLevelDescription, unit.UnitDescription)"/>
+                                        @change="getAllDescription(unit.CourseLevel, unit.CourseLevel, unit.UnitDescription)"/>
                                     <label :for="unit.UnitCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor

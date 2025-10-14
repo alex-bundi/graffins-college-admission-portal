@@ -17,7 +17,8 @@ const props = defineProps({
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    startDate: '',
+    startDate: props.applicantCourse && props.applicantCourse.start_date ? props.applicantCourse.start_date : null,
+    endDate: props.applicantCourse && props.applicantCourse.start_date ? props.applicantCourse.end_date : null,
 
 });
 
@@ -25,33 +26,43 @@ const initialMode = ref(null);
 const disableSubmitBtn = ref(false);
 
 
-onMounted(() => {
+// onMounted(() => {
 
-    if((props.applicantCourse != null)){
-        form.startDate = props.applicantCourse.start_date ;
-        initialMode.value = props.applicantCourse.start_date ;
-    } 
-});
+//     if((props.applicantCourse != null)){
+//         form.startDate = props.applicantCourse.start_date;
+//         initialMode.value = props.applicantCourse.start_date ;
+//     } 
+// });
 
 
 function submit(){
     disableSubmitBtn.value = true;
+    router.post('/application/post-class-start-date', form, {
+        onError : (allErrors) => {
+            for(let error in allErrors){
+            errors.value[error] = allErrors[error]
+            }
+            disableSubmitBtn.value = false;
+            
+        },
 
-    if (form.startDate === initialMode.value) {
-        router.visit('/application/intake')
-    } else {
-        router.post('/application/post-class-start-date', form, {
-            onError : (allErrors) => {
-                for(let error in allErrors){
-                errors.value[error] = allErrors[error]
-                }
-                disableSubmitBtn.value = false;
+    });
+
+    // if (form.startDate === initialMode.value) {
+    //     router.visit('/application/intake')
+    // } else {
+    //     router.post('/application/post-class-start-date', form, {
+    //         onError : (allErrors) => {
+    //             for(let error in allErrors){
+    //             errors.value[error] = allErrors[error]
+    //             }
+    //             disableSubmitBtn.value = false;
                 
-            },
+    //         },
 
-        });
+    //     });
 
-    }
+    // }
   
     
 
@@ -70,11 +81,11 @@ function submit(){
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
-                    📅 When are you planning to start your classes?
+                    📅 When are your classes starting?
                 </h1>
 
                 <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
-                    Please pick your preferred start date from the calendar
+                    Please pick your preferred start date and end date from the calendar
                 </p>
             </div>
         </div>
@@ -85,25 +96,47 @@ function submit(){
 
         <div class="mt-12"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <!--  Email -->
-                <div class="max-w-sm" >
-                    <div class="flex flex-row space-x-2">
-                        <FormInputLabel for-input="start_date" label-name="Start Date" class="" />
-                        <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                            *
-                        </span>
+                <div class="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-12 sm:items-center">
+                    <div class="max-w-sm" >
+                        <div class="flex flex-row space-x-2">
+                            <FormInputLabel for-input="start_date" label-name="Start Date" class="" />
+                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                *
+                            </span>
+                        </div>
+                        <FormInput 
+                            type="date"
+                            id="start_date"
+                            v-model="form.startDate"
+                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                            
+                            required/> 
+                            
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.startDate">{{ form.errors.startDate }}</div>
+                        
                     </div>
-                    <FormInput 
-                        type="date"
-                        id="start_date"
-                        v-model="form.startDate"
-                        class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+
+                    <div class="max-w-sm" >
+                        <div class="flex flex-row space-x-2">
+                            <FormInputLabel for-input="end_date" label-name="End Date" class="" />
+                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                *
+                            </span>
+                        </div>
+                        <FormInput 
+                            type="date"
+                            id="end_date"
+                            v-model="form.endDate"
+                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                            
+                            required/> 
+                            
+                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.startDate">{{ form.errors.startDate }}</div>
                         
-                        required/> 
-                        
-                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.startDate">{{ form.errors.startDate }}</div>
-                    
+                    </div>
+
                 </div>
+                
 
                  <div class="w-1/4">
                     <button type="submit" :disabled="disableSubmitBtn" :class="{'cursor-not-allowed' : disableSubmitBtn}"

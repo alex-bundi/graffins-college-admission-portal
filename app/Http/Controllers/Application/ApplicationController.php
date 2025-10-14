@@ -386,7 +386,7 @@ class ApplicationController extends Controller
                             'error' => 'Failed to save the mode of study. Please try again.'
                         ]);
                     }
-                    $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
+                    $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $applicantCourse->id);
                     $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
                 }
                 
@@ -591,17 +591,24 @@ class ApplicationController extends Controller
             'courseLevel' => 'nullable|string',
             'unitCode' => 'nullable|string',
             'levelDescription' => 'nullable|string',
+            'unitDescription' => 'nullable|string',
         ]);
-        try{
+       try{
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
-            dd($validated['levelDescription']);
+            
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_level = $validated['courseLevel'];
             $applicantCourse->level_description = $validated['levelDescription'];
             $applicantCourse->unit_code = $validated['unitCode'];
             $applicantCourse->unit_description = ($validated['singleSubject'] != null) ? $validated['unitDescription'] : 'null';
             $applicantCourse->unit_status = ($validated['singleSubject'] != null) ? 'Single Subject' : 'Full Course';
-            $applicantCourse->save();
+            
+
+            if (!$applicantCourse->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save the Course level. Please try again.'
+                ]);
+            }
 
             return redirect()->route('class.start.date');
             
@@ -634,12 +641,14 @@ class ApplicationController extends Controller
     public function postClassStartDate(Request $request){
         $validated = $request->validate([
             'startDate' => 'nullable|date',
+            'endDate' => 'nullable|date',
         ]);    
         try{
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->start_date = $validated['startDate'];
+            $applicantCourse->end_date = $validated['endDate'];
             if (!$applicantCourse->save()) {
                 return redirect()->back()->withErrors([
                     'error' => 'Failed to save the start date. Please try again.'
@@ -661,10 +670,16 @@ class ApplicationController extends Controller
         try{
             $classTimeQuery = $this->generalQueries->classTimeQuery();
             $classTimeURL = config('app.odata') . "{$classTimeQuery}";
-            $classTimeData = $this->getOdata($classTimeURL);
-            $classTimes = $classTimeData['value'];
+            $classTimeData = $this->businessCentralAccess->getOdata($classTimeURL);
+            $response = $this->validateAPIResponse($classTimeData);
+        
+            if ($response) {
+                return $response;
+            }
+
+            $classTimes = $classTimeData['data']['value'];
            
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             
             $applicant = null;
@@ -1194,8 +1209,16 @@ class ApplicationController extends Controller
             $currentYr = date('Y');
             $intakeQuery = $this->generalQueries->intakesQuery();
             $intakeURL = config('app.odata')  . "{$intakeQuery}?" . '$filter=' . rawurlencode("AcademicYear eq '{$currentYr}'");
-            $intakes= $this->getOdata($intakeURL);
-            $intakeData = $intakes['value'];
+            $intakes=  $this->businessCentralAccess->getOdata($intakeURL);
+            $response = $this->validateAPIResponse($intakes);
+        
+            if ($response) {
+                return $response;
+            }
+
+            $this->testPerformance($this->start, 'performance', 'getting intake');
+
+            $intakeData = $intakes['data']['value'];
             return Inertia::render('Application/Intake', [
                 'intakes' => $intakeData,
                 'currentYr' => $currentYr,
@@ -1213,27 +1236,16 @@ class ApplicationController extends Controller
              $validated = $request->validate([
                 'academicYear' => 'required|string',
                 'intake' => 'required|string',
+                'intakeDescription' => 'required|string',
             ]);
 
-            if($validated['intake'] != null){
-                $intakeCodePtrn = '/^([^.]+)\.\./';
-                $intakeDescriPtrn = '/\.\.(.+)$/';
-                if (preg_match($intakeCodePtrn, $validated['intake'], $matches)) {
-                    $intakeCode = trim($matches[1]);
-                }
-
-                if (preg_match($intakeDescriPtrn, $validated['intake'] , $matches)) {
-                    $intakeDescription = $matches[1];
-                }
-                
-            }
-            
+           
             $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->academic_year = trim($validated['academicYear']);
-            $applicantCourse->intake_code = trim($intakeCode);
-            $applicantCourse->intake_description = trim($intakeDescription);
+            $applicantCourse->intake_code = trim($validated['intake']);
+            $applicantCourse->intake_description = trim($validated['intakeDescription']);
             $applicantCourse->save();
             return redirect()->route('class.start.time');
         }catch(Exception $e){
@@ -1249,8 +1261,16 @@ class ApplicationController extends Controller
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $tutorsQuery = $this->generalQueries->tutorsQuery();
             $tutorsURL = config('app.odata')  . "{$tutorsQuery}?" . '$filter=' . rawurlencode("Course_Code eq '{$applicantCourse->course_code}'");
-            $tutors= $this->getOdata($tutorsURL);
-            $tutorsData = $tutors['value'];
+            $tutors=  $this->businessCentralAccess->getOdata($tutorsURL);
+            $response = $this->validateAPIResponse($tutors);
+        
+            if ($response) {
+                return $response;
+            }
+
+            $this->testPerformance($this->start, 'performance', 'getting tutors');
+            
+            $tutorsData = $tutors['data']['value'];
 
             
             return Inertia::render('Application/Tutors', [
@@ -1268,26 +1288,16 @@ class ApplicationController extends Controller
         try{
              $validated = $request->validate([
                 'tutor' => 'required|string',
+                'tutorName' => 'required|string',
             ]);
 
-            if($validated['tutor'] != null){
-                $tutorCodePtrn = '/^([^.]+)\.\./';
-                $tutorDescriPtrn = '/\.\.(.+)$/';
-                if (preg_match($tutorCodePtrn, $validated['tutor'], $matches)) {
-                    $tutorCode = trim($matches[1]);
-                }
-
-                if (preg_match($tutorDescriPtrn, $validated['tutor'] , $matches)) {
-                    $tutorDescription = $matches[1];
-                }
-                
-            }
+         
             
             $applicationID =session('applicant_data')['applicationCourseID'];
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->tutor_code = trim($tutorCode);
-            $applicantCourse->tutor_name = trim($tutorDescription);
+            $applicantCourse->tutor_code = trim($validated['tutor'] );
+            $applicantCourse->tutor_name = trim($validated['tutorName'] );
             $applicantCourse->save();
             return redirect()->route('course.summary');
         }catch(Exception $e){

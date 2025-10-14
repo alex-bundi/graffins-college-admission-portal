@@ -18,6 +18,7 @@ const errors = ref({});
 const success = ref({});
 const form = useForm({
     tutor: '',
+    tutorName: '',
    
 });
 const initialMode = ref(null);
@@ -30,7 +31,9 @@ const disableSubmitBtn = ref(false);
 //         initialMode.value = props.courseLevels.CourseLevelCode + '..' + props.courseLevels.CourseLevelDescription;
 //     } 
 // });
-
+function getDescription(description){
+    form.tutorName = description;
+}
 function submit(){
 
     disableSubmitBtn.value = true;
@@ -91,7 +94,8 @@ function submit(){
                          
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="tutor in tutors" :key="tutor.Tutor_Code">
-                                    <input type="radio" v-model="form.tutor" :id="tutor.Tutor_Code" :name="tutor.Tutor_Code" :value="tutor.Tutor_Code + '..' + tutor.Tutor_Names" class="hidden peer" />
+                                    <input type="radio" v-model="form.tutor" :id="tutor.Tutor_Code" :name="tutor.Tutor_Code" :value="tutor.Tutor_Code" class="hidden peer" 
+                                        @change="getDescription(tutor.Tutor_Names)"/>
                                     <label :for="tutor.Tutor_Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor

@@ -21,6 +21,7 @@ const success = ref({});
 const form = useForm({
     academicYear: props.currentYr,
     intake: '',
+    intakeDescription: '',
    
 });
 const initialMode = ref(null);
@@ -33,6 +34,10 @@ const disableSubmitBtn = ref(false);
 //         initialMode.value = props.courseLevels.CourseLevelCode + '..' + props.courseLevels.CourseLevelDescription;
 //     } 
 // });
+
+function getDescription(description){
+    form.intakeDescription = description;
+}
 
 function submit(){
 
@@ -121,7 +126,8 @@ function submit(){
                          
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="intake in intakes" :key="intake.Code">
-                                    <input type="radio" v-model="form.intake" :id="intake.Code" :name="intake.Code" :value="intake.Code + '..' + intake.Description" class="hidden peer" />
+                                    <input type="radio" v-model="form.intake" :id="intake.Code" :name="intake.Code" :value="intake.Code" class="hidden peer"  
+                                        @change="getDescription(intake.Description)"/>
                                     <label :for="intake.Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor

@@ -1,2 +1,8 @@
 [2025-10-12 16:05:55] local.ERROR: [2025-10-12 16:05:55] inserting into db took 39.42 ms  
 [2025-10-12 16:08:08] local.ERROR: [2025-10-12 16:08:08] getting course levels took 1447.04 ms  
+[2025-10-14 09:27:11] local.ERROR: [2025-10-14 09:27:11] getting intake took 1669.15 ms  
+[2025-10-14 09:29:10] local.ERROR: [2025-10-14 09:29:10] getting intake took 953.41 ms  
+[2025-10-14 09:31:54] local.ERROR: [2025-10-14 09:31:54] getting tutors took 1103.9 ms  
+[2025-10-14 09:32:19] local.ERROR: [2025-10-14 09:32:19] getting tutors took 1414.03 ms  
+[2025-10-14 09:32:41] local.ERROR: [2025-10-14 09:32:41] getting tutors took 1502.7 ms  
+[2025-10-14 09:34:42] local.ERROR: [2025-10-14 09:34:42] getting tutors took 1771.77 ms  
