@@ -594,6 +594,7 @@ class ApplicationController extends Controller
             'unitDescription' => 'nullable|string',
         ]);
        try{
+            
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
@@ -602,7 +603,6 @@ class ApplicationController extends Controller
             $applicantCourse->unit_code = $validated['unitCode'];
             $applicantCourse->unit_description = ($validated['singleSubject'] != null) ? $validated['unitDescription'] : 'null';
             $applicantCourse->unit_status = ($validated['singleSubject'] != null) ? 'Single Subject' : 'Full Course';
-            
 
             if (!$applicantCourse->save()) {
                 return redirect()->back()->withErrors([
