@@ -12,6 +12,8 @@ const props = defineProps({
         default: () => []
     }
 });
+const disableSubmitBtn = ref(false);
+
 
 const uniqueLevels = computed(() => {
   if (!props.units || !Array.isArray(props.units)) return []
@@ -23,9 +25,7 @@ const uniqueLevels = computed(() => {
   return [...new Set(levels)].sort()
 });
 
-const sortedUnits = Object.values(props.units)
-    // .sort((a, b) => a.CourseLevel.localeCompare(b.CourseLevel))
-    .sort((a, b) => a.UnitDescription.localeCompare(b.UnitDescription));
+
 
 
 
@@ -33,6 +33,7 @@ const errors = ref({});
 const success = ref({});
 const form = useForm({
     singleSubject: '',
+    fullCourse: '',
     courseLevel: '',
     levelDescription: '',
     unitCode:'',
@@ -40,17 +41,21 @@ const form = useForm({
 
 function getLevelDescription(levelDescription){
     form.levelDescription = levelDescription;
+    form.courseLevel = form.fullCourse;
+
 }
 
 function getAllDescription(levelCode, levelDescription, unitDescription){
     form.courseLevel = levelCode;
     form.levelDescription = levelDescription;
     form.unitDescription = unitDescription;
+    form.unitCode = form.singleSubject;
+
 }
 
 function submit(){
+    disableSubmitBtn.value = true;
 
-  
     router.post('/application/post-course-type', form, {
         onError : (allErrors) => {
             for(let error in allErrors){
@@ -109,11 +114,11 @@ function submit(){
                                 
                             </div>
                         </div>
-                         <!-- Business Courses -->
+                         <!-- IT Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="level, index in uniqueLevels" :key="index">
                                    
-                                    <input type="radio" v-model="form.courseLevel" :id="index" :name="index" :value="level" class="hidden peer" 
+                                    <input type="radio" v-model="form.fullCourse    " :id="index" :name="index" :value="level" class="hidden peer" 
                                         @change="getLevelDescription(level)"/>
                                     <label :for="index" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
@@ -153,7 +158,7 @@ function submit(){
                         </div>
                          <!-- IT Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-2 mt-2">
-                                <li v-for="unit in sortedUnits" :key="unit.UnitCode">
+                                <li v-for="unit in props.units" :key="unit.UnitCode">
                                     <input type="radio" v-model="form.singleSubject" :id="unit.UnitCode" :name="unit.UnitCode" :value="unit.UnitCode" class="hidden peer" 
                                         @change="getAllDescription(unit.CourseLevel, unit.CourseLevelDescription, unit.UnitDescription)"/>
                                     <label :for="unit.UnitCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
@@ -189,7 +194,7 @@ function submit(){
                 </div>
 
                  <div class="w-1/4">
-                    <button type="submit" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
+                    <button type="submit" :disabled="disableSubmitBtn" :class="{'cursor-not-allowed' : disableSubmitBtn}" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                     rounded-full shadow-md 
                                     bg-gradient-to-b from-lime-400 to-green-500 
                                     hover:from-lime-500 hover:to-green-600 

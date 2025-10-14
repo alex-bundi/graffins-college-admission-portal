@@ -247,7 +247,7 @@ class ApplicationController extends Controller
                 'departmentDescription' => 'required|string',
             ]);
             
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             // test
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->department_code = trim($validated['departmentCode']);
@@ -346,8 +346,7 @@ class ApplicationController extends Controller
                 ];
                 $newApplication = Applicant::create($application);
                 if($newApplication->exists){
-                
-                    session()->put('applicant_data.application_no', $newApplication->id);
+                     $this->retrieveOrUpdateSessionData('put', 'application_no', $newApplication->id);
                      
                     $applicantCourse = [
                         'mode_of_study' =>$validated['mode_of_study'] == 'inclass' ? 1 : 2,
@@ -359,7 +358,8 @@ class ApplicationController extends Controller
                   
 
                     if($newApplicantCourse->exists){
-                        session()->put('applicant_data.applicationCourseID', $newApplicantCourse->id);
+                        $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
+
                         return redirect()->route('department');
                     }   
                 }
@@ -376,8 +376,9 @@ class ApplicationController extends Controller
                     ];
 
                     $newApplicantCourse = ApplicantCourse::create($applicantCourse);
-                    session()->put('applicant_data.applicationCourseID', $newApplicantCourse->id);
-                    session()->put('applicant_data.application_no', $applications->id);
+                    $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
+                    $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
+
                 } else {
                     $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
                     if (!$applicantCourse->save()) {
@@ -385,8 +386,8 @@ class ApplicationController extends Controller
                             'error' => 'Failed to save the mode of study. Please try again.'
                         ]);
                     }
-                    session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
-                    session()->put('applicant_data.application_no', $applications->id);
+                    $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
+                    $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
                 }
                 
                 
@@ -447,7 +448,7 @@ class ApplicationController extends Controller
             'courseDescription' => 'required|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_code = trim($validated['courseCode']);
@@ -468,20 +469,12 @@ class ApplicationController extends Controller
 
     }
 
-    // public function getCourseLevels(){
-    //    try{
-    //          $unitFeesQuery = $this->generalQueries->unitFeesQuery();
-    //     $unitFeesURL = config('app.odata') . "{$unitFeesQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
-    //     $unitFeesData = $this->getOdata($unitFeesURL);
-    //     $unitFees = $unitFeesData['value'];
-    //    }
-            
-    // }
+
 
     public function getCourseTypePage(){
         try{
              $applicant = null;
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicanCourseCode = $applicantCourse->course_code;
                 $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
@@ -571,7 +564,7 @@ class ApplicationController extends Controller
                     $courseDescri = $matches[1];
                 }
             } 
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_level = trim($courseLevel);
@@ -592,30 +585,16 @@ class ApplicationController extends Controller
         }
     }
     public function postCourseType(Request $request){
-        dd($request->all());
         $validated = $request->validate([
-            'courseLevel' => 'nullable|string',
             'singleSubject' => 'nullable|string',
+            'fullCourse' => 'nullable|string',
+            'courseLevel' => 'nullable|string',
+            'unitCode' => 'nullable|string',
+            'levelDescription' => 'nullable|string',
         ]);
         try{
-            $courseLevel = '';
-            $courseUnit = '';
-            if ($validated['singleSubject'] != null){
-                $pattern = '/^([^.]+)\.\./';
-                if (preg_match($pattern, $validated['singleSubject'], $matches)) {
-                    $courseLevel = trim($matches[1]);
-                }
-
-                $unitPattern = '/\.\.(.+)$/';
-                if (preg_match($pattern, $validated['singleSubject'] , $matches)) {
-                    $courseUnit = $matches[1];
-                }
-            } else {
-                $courseLevel = $validated['courseLevel'];
-            }
-
-            $applicationID =session('applicant_data')['applicationCourseID'];
-            
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+            dd($validated['levelDescription']);
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_level = $validated['courseLevel'];
             $applicantCourse->level_description = $validated['levelDescription'];
