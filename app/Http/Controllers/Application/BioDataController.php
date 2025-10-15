@@ -28,6 +28,7 @@ class BioDataController extends Controller
     protected $generalQueries;
     protected $businessCentralAccess;
     protected $user;
+    protected $start;
 
 
     public function __construct()
@@ -35,6 +36,7 @@ class BioDataController extends Controller
         $this->generalQueries = new GeneralQueries();
         $this->businessCentralAccess = new BusinessCentralAPIController;
         $this->user = Auth::user();
+        $this->start = microtime(true);
 
     }
 
@@ -200,7 +202,7 @@ class BioDataController extends Controller
         ]);
         try{
             
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID = $this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->first_name = $validated['firstName'];
             $applicant->second_name = $validated['secondName'];
@@ -223,6 +225,7 @@ class BioDataController extends Controller
 
             }
 
+
             return redirect()->route('contacts');
             
         }catch(Exception $e){
@@ -235,7 +238,7 @@ class BioDataController extends Controller
 
     public function getContactPage(){
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicantCourse = null;
 
@@ -258,7 +261,7 @@ class BioDataController extends Controller
             'phoneNo' => 'required|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->phone_no = $validated['phoneNo'];
             if (!$applicant->save()) {
@@ -266,6 +269,8 @@ class BioDataController extends Controller
                     'error' => 'Failed to save. Please try again.'
                 ]);
             }
+            $this->testPerformance($this->start, 'performance', 'inserting contacts');
+
 
             return redirect()->route('nationality');
             
@@ -279,17 +284,23 @@ class BioDataController extends Controller
 
     public function getNationalityPage(){
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)->first();
             
             $countriesQuery = $this->generalQueries->countriesQuery();
             $countriesURL = config('app.odata') . "{$countriesQuery}";
-            $countriesData = $this->getOdata($countriesURL);
-            $countries = $countriesData['value'];
+            $countriesData = $this->businessCentralAccess->getOdata($countriesURL);
+            $response = $this->validateAPIResponse($countriesData);
+           
+            if ($response) {
+                return $response;
+            }
+            $countries = $countriesData['data']['value'];
 
             $applicantCourse = null;
 
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            $this->testPerformance($this->start, 'performance', 'getting Nationalities');
             
             
             return Inertia::render('Application/BioData/Nationality', [
@@ -309,30 +320,22 @@ class BioDataController extends Controller
     public function postNationality(Request $request){
          $validated = $request->validate([
             'country' => 'required|string',
+            'countryName' => 'required|string',
         ]);
         try{
-             if($validated['country'] != null){
-                $countryCodePtrn = '/^([^.]+)\.\./';
-                $countryDescriPtrn = '/\.\.(.+)$/';
-                if (preg_match($countryCodePtrn, $validated['country'], $matches)) {
-                     $countryCode = trim($matches[1]);
-                }
+             
 
-                if (preg_match($countryDescriPtrn, $validated['country'] , $matches)) {
-                    $countryDescription = $matches[1];
-                }
-
-                 $applicationID =session('applicant_data')['application_no'];
-                $applicant = Applicant::where('id', $applicationID)->first();
-                $applicant->nationality = $countryCode;
-                $applicant->country_name = $countryDescription;
-                if (!$applicant->save()) {
-                    return redirect()->back()->withErrors([
-                        'error' => 'Failed to save. Please try again.'
-                    ]);
-                }
-                
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no');
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->nationality = $validated['country'];
+            $applicant->country_name = $validated['countryName'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
             }
+            $this->testPerformance($this->start, 'performance', 'inserting Nationality to db');
+
             return redirect()->route('email.address');
             
         }catch(Exception $e){
@@ -369,7 +372,7 @@ class BioDataController extends Controller
             'email' => 'required|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->email = trim($validated['email']);
             if (!$applicant->save()) {
@@ -399,16 +402,22 @@ class BioDataController extends Controller
 
     public function getResidencePage(){
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
 
             $residenceQuery = $this->generalQueries->residenceQuery();
             $residenceURL = config('app.odata') . "{$residenceQuery}?" . '$filter=' . rawurlencode("Type eq 'Location'");
-            $residenceData = $this->getOdata($residenceURL);
-            $residence = $residenceData['value'];
+            $residenceData =  $this->businessCentralAccess->getOdata($residenceURL);
+            $response = $this->validateAPIResponse($residenceData);
+           
+            if ($response) {
+                return $response;
+            }
+            $residence = $residenceData['data']['value'];
             $applicantCourse = null;
 
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            $this->testPerformance($this->start, 'performance', 'getting residences');
             
             // dd($residence);
             
@@ -429,30 +438,20 @@ class BioDataController extends Controller
     public function postResidence(Request $request){
         $validated = $request->validate([
             'residence' => 'required|string',
+            'residenceDescription' => 'required|string',
         ]);
         try{
-            if($validated['residence'] != null){
-                $residenceCodePtrn = '/^([^.]+)\.\./';
-                $residenceDescriPtrn = '/\.\.(.+)$/';
-                if (preg_match($residenceCodePtrn, $validated['residence'], $matches)) {
-                     $residenceCode = trim($matches[1]);
-                }
-
-                if (preg_match($residenceDescriPtrn, $validated['residence'] , $matches)) {
-                    $residenceDescription = $matches[1];
-                }
-
-                 $applicationID =session('applicant_data')['application_no'];
-                $applicant = Applicant::where('id', $applicationID)->first();
-                $applicant->residence = $residenceCode;
-                $applicant->residence_description = $residenceDescription;
-                if (!$applicant->save()) {
-                    return redirect()->back()->withErrors([
-                        'error' => 'Failed to save. Please try again.'
-                    ]);
-                }
-                
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'application_no');
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->residence = $validated['residence'];
+            $applicant->residence_description = $validated['residenceDescription'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
             }
+            $this->testPerformance($this->start, 'performance', 'inserting residence into db');
+
             return redirect()->route('marketing');
             
         }catch(Exception $e){
@@ -465,17 +464,25 @@ class BioDataController extends Controller
 
     public function getMarketingPage(){
          try{
-             $applicationID =session('applicant_data')['application_no'];
+             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
 
             $marketingQuery = $this->generalQueries->marketingQuery();
             $marketingURL = config('app.odata') . "{$marketingQuery}";
-            $marketingData = $this->getOdata($marketingURL);
-            $marketing = $marketingData['value'];
+            $marketingData =  $this->businessCentralAccess->getOdata($marketingURL);
+            $response = $this->validateAPIResponse($marketingData);
+           
+            if ($response) {
+                return $response;
+            }
+            $marketing = $marketingData['data']['value'];
+
 
             $applicantCourse = null;
 
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+            $this->testPerformance($this->start, 'performance', 'getting marketing data');
+
             
             return Inertia::render('Application/BioData/Marketing', [
                 'marketingAreas' => $marketing,
@@ -494,30 +501,20 @@ class BioDataController extends Controller
     public function postMarketing(Request $request){
         $validated = $request->validate([
             'aboutUs' => 'required|string',
+            'marketingDescription' => 'required|string',
         ]);
         try{
-            if($validated['aboutUs'] != null){
-                $aboutUsCodePtrn = '/^([^.]+)\.\./';
-                $aboutUsDescriPtrn = '/\.\.(.+)$/';
-                if (preg_match($aboutUsCodePtrn, $validated['aboutUs'], $matches)) {
-                     $aboutUsCode = trim($matches[1]);
-                }
-
-                if (preg_match($aboutUsDescriPtrn, $validated['aboutUs'] , $matches)) {
-                    $aboutUsDescription = $matches[1];
-                }
-
-                 $applicationID =session('applicant_data')['application_no'];
-                $applicant = Applicant::where('id', $applicationID)->first();
-                $applicant->marketing = $aboutUsCode;
-                $applicant->marketing_description = $aboutUsDescription;
-                if (!$applicant->save()) {
-                    return redirect()->back()->withErrors([
-                        'error' => 'Failed to save. Please try again.'
-                    ]);
-                }
-                
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->marketing = $validated['aboutUs'];
+            $applicant->marketing_description = $validated['marketingDescription'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
             }
+            $this->testPerformance($this->start, 'performance', 'inserting about us into db');
+
 
             return redirect()->route('allergies');
             
@@ -531,7 +528,7 @@ class BioDataController extends Controller
 
     public function getAllergiesPage(){
         try{
-             $applicationID =session('applicant_data')['application_no'];
+             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
 
              $applicantCourse = null;
@@ -556,7 +553,7 @@ class BioDataController extends Controller
             'allergy' => 'required|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->allergies = $validated['allergy'] == 'yes' ? 1 : 0;
             if (!$applicant->save()) {
@@ -581,7 +578,7 @@ class BioDataController extends Controller
 
      public function getAllergyDescriptionPage(){
         try{
-             $applicationID =session('applicant_data')['application_no'];
+             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
 
             $applicantCourse = null;
@@ -605,7 +602,7 @@ class BioDataController extends Controller
             'allergyDescription' => 'required|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->allergy_description = $validated['allergyDescription'];
             if (!$applicant->save()) {
@@ -625,7 +622,7 @@ class BioDataController extends Controller
 
     public function getEmergencyContactPage(){
         try{
-             $applicationID =session('applicant_data')['application_no'];
+             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
             
             $applicantCourse = null;
@@ -811,7 +808,7 @@ class BioDataController extends Controller
 
     public function getBiodataSummary(){
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
             $applicantCourse = null;
@@ -835,7 +832,7 @@ class BioDataController extends Controller
             'personalDataSummary' => 'nullable|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->application_status = 'submitted';
             if (!$applicant->save()) {
@@ -928,7 +925,7 @@ class BioDataController extends Controller
             'dob' => 'required|date',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->dob = $validated['dob'];
             if (!$applicant->save()) {
@@ -964,7 +961,7 @@ class BioDataController extends Controller
             'gender' => 'required|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->gender = (int) $validated['gender'];
             if (!$applicant->save()) {
@@ -1000,9 +997,9 @@ class BioDataController extends Controller
             'passportID' => 'required|string',
         ]);
         try{
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
-            $applicant->id_passport_No = trim($validated['passportID']);
+            $applicant->id_passport_No = strtoupper(trim($validated['passportID']));
             if (!$applicant->save()) {
                 return redirect()->back()->withErrors([
                     'error' => 'Failed to save. Please try again.'

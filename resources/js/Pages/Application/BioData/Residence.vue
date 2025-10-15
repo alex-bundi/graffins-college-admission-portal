@@ -16,17 +16,28 @@ const props = defineProps({
     }
 });
 
-const placeOfResidence = ref(props.applicant ? (props.applicant.residence + '..' + props.applicant.residence_description) : null)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    residence: placeOfResidence,
+    residence: props.applicant && props.applicant.residence != null ? props.applicant.residence : null,
+    residenceDescription: props.applicant && props.applicant.residence_description != null ? props.applicant.residence_description : null,
 });
+
+const initialMode = ref('');
+
+onMounted(() => {
+    initialMode.value = props.applicant && props.applicant.residence != null ? props.applicant.residence : null;
+})
+
+function getDescription(description){
+    form.residenceDescription = description;
+}
+
 const disableSubmitBtn = ref(false);
 
 const hasChanged = computed(() => {
     return (
-        form.residence !== (placeOfResidence.value ?? null)
+        form.residence !== (initialMode.value ?? null)
     );
 });
 function submit(){
@@ -78,9 +89,10 @@ function submit(){
         <div class="mt-4"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                 
-                <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                <ul class="grid w-full gap-6 md:grid-cols-3 mt-2">
                     <li v-for="residence in residences" :key="residence.Title_Code">
-                        <input type="radio" v-model="form.residence" :id="residence.Title_Code" :name="residence.Title_Code" :value="residence.Title_Code + '..' + residence.Description" class="hidden peer" />
+                        <input type="radio" v-model="form.residence" :id="residence.Title_Code" :name="residence.Title_Code" :value="residence.Title_Code" 
+                            class="hidden peer" @change="getDescription(residence.Description)" />
                         <label :for="residence.Title_Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor

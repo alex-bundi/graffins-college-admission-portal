@@ -92,7 +92,7 @@ function submit(){
                             type="text"
                             id="phone_no"
                             v-model="form.passportID"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider uppercase"
                             
                             required/> 
                             

@@ -20,7 +20,8 @@ const marketingArea = ref((props.applicant ? (props.applicant.marketing + '..' +
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    aboutUs: marketingArea,
+    aboutUs: props.applicant && props.applicant.marketing ? props.applicant.marketing : null,
+    marketingDescription: props.applicant && props.applicant.marketing_description ? props.applicant.marketing_description : null,
 });
 const disableSubmitBtn = ref(false);
 
@@ -29,6 +30,10 @@ const hasChanged = computed(() => {
         form.aboutUs !== (marketingArea.value ?? null)
     );
 });
+
+function getDescription(description){
+    form.marketingDescription = description;
+}
 
 function submit(){
     disableSubmitBtn.value = true;
@@ -82,9 +87,10 @@ function submit(){
         <div class="mt-4"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                 
-                <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                <ul class="grid w-full gap-6 md:grid-cols-3 mt-2">
                     <li v-for="marketingArea in marketingAreas">
-                        <input type="radio" v-model="form.aboutUs" :id="marketingArea.Marketing_Code" :name="marketingArea.Marketing_Code" :value="marketingArea.Marketing_Code + '..' + marketingArea.Marketing_Description" class="hidden peer" />
+                        <input type="radio" v-model="form.aboutUs" :id="marketingArea.Marketing_Code" :name="marketingArea.Marketing_Code" :value="marketingArea.Marketing_Code" 
+                            class="hidden peer" @change="getDescription(marketingArea.Marketing_Description)" />
                         <label :for="marketingArea.Marketing_Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor

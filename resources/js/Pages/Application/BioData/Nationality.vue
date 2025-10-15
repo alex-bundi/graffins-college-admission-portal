@@ -20,7 +20,11 @@ const errors = ref({});
 const success = ref({});
 const form = useForm({
     country: props.applicant ? nationality : null,
+    countryName:'',
 });
+console.log(props.countries);
+const sortedNationalities = Object.values(props.countries)
+    .sort((a, b) => a.Name.localeCompare(b.Name));
 
 const hasChanged = computed(() => {
     return (
@@ -28,6 +32,10 @@ const hasChanged = computed(() => {
     );
 });
 const disableSubmitBtn = ref(false);
+
+function getDescription(description){
+    form.countryName = description;
+}
 
 function submit(){
     disableSubmitBtn.value = true;
@@ -80,9 +88,10 @@ function submit(){
         <div class="mt-4"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                 
-                <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                    <li  v-for="country in countries">
-                        <input type="radio" v-model="form.country" :id="country.Code" :name="country.Code" :value="country.Code + '..' + country.Name" class="hidden peer" />
+                <ul class="grid w-full gap-6 md:grid-cols-3 mt-2">
+                    <li  v-for="country in sortedNationalities">
+                        <input type="radio" v-model="form.country" :id="country.Code" :name="country.Code" :value="country.Code" class="hidden peer" 
+                            @change="getDescription(country.Name)"/>
                         <label :for="country.Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                             bg-white border border-gray-200 rounded-lg cursor-pointer  
                             peer-checked:border-primaryColor

@@ -1,8 +1,7 @@
-[2025-10-12 16:05:55] local.ERROR: [2025-10-12 16:05:55] inserting into db took 39.42 ms  
-[2025-10-12 16:08:08] local.ERROR: [2025-10-12 16:08:08] getting course levels took 1447.04 ms  
-[2025-10-14 09:27:11] local.ERROR: [2025-10-14 09:27:11] getting intake took 1669.15 ms  
-[2025-10-14 09:29:10] local.ERROR: [2025-10-14 09:29:10] getting intake took 953.41 ms  
-[2025-10-14 09:31:54] local.ERROR: [2025-10-14 09:31:54] getting tutors took 1103.9 ms  
-[2025-10-14 09:32:19] local.ERROR: [2025-10-14 09:32:19] getting tutors took 1414.03 ms  
-[2025-10-14 09:32:41] local.ERROR: [2025-10-14 09:32:41] getting tutors took 1502.7 ms  
-[2025-10-14 09:34:42] local.ERROR: [2025-10-14 09:34:42] getting tutors took 1771.77 ms  
+[2025-10-15 17:05:23] local.ERROR: [2025-10-15 17:05:23] inserting Nationality to db took 37.11 ms  
+[2025-10-15 17:09:43] local.ERROR: [2025-10-15 17:09:43] getting residences took 1796.29 ms  
+[2025-10-15 17:14:50] local.ERROR: [2025-10-15 17:14:49] getting residences took 1972.97 ms  
+[2025-10-15 17:17:50] local.ERROR: [2025-10-15 17:17:50] getting residences took 2115.05 ms  
+[2025-10-15 17:22:28] local.ERROR: [2025-10-15 17:22:28] getting residences took 1650.23 ms  
+[2025-10-15 17:22:32] local.ERROR: [2025-10-15 17:22:32] inserting residence into db took 54.75 ms  
+[2025-10-15 17:22:35] local.ERROR: [2025-10-15 17:22:35] getting marketing data took 1596.43 ms  
