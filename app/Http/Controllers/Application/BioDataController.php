@@ -664,7 +664,7 @@ class BioDataController extends Controller
             }
 
            
-            $applicationID =session('applicant_data')['application_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
            
             $emergencyContact = [
                 'full_name' => trim($validated['fullName']),
@@ -709,28 +709,40 @@ class BioDataController extends Controller
     public function postUploadID(Request $request){
          $validated = $request->validate([
             
-            'passport_id_file' => 'required|file',
+            'passport_id_file' => 'required|file|max:2048',
 
+        ], [
+            'passport_id_file.max' => 'The uploaded file exceeds the allowed size of 2MB.',
         ]);
-        try{
-            if($request->hasFile('passport_id_file')){
-                if ($request->file('passport_id_file')->isValid()) {
+        // try{
+            if($request->hasFile($validated['passport_id_file'])){
+                if ($request->file($validated['passport_id_file'])->isValid()) {
                  
-                    $applicationID =session('applicant_data')['application_no'];
+                    $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
                     $safeEmail = Str::slug(Str::before($this->user->email, '@'));
-                    $file = $request->file('passport_id_file');
+                    $file = $request->file($validated['passport_id_file']);
                     $filename = $applicationID . '_' . $safeEmail.'.'. $file->getClientOriginalExtension();
 
                     $destination = storage_path('app\passport_files');
                     if (!is_dir($destination)) {
                         mkdir($destination, 0755, true);
                     }
-                    $file->move($destination, $filename);
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
+
                     
-                    $applicationID =session('applicant_data')['application_no'];
+                    if(file_exists($fullPath)){
+                        dd('file exists');
+                    } else {
+                        dd('file does not exists');
+
+                    }
+                    $file->move($destination, $filename);
+                    
+                    $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
                     $applicant = Applicant::where('id', $applicationID)->first();
                     $applicant-> passport_file_path = $fullPath;
+
+                    $this->testPerformance($this->start, 'performance', 'processing passport file');
                     if (!$applicant->save()) {
                         return redirect()->back()->withErrors([
                             'error' => 'Failed to save. Please try again.'
@@ -741,12 +753,12 @@ class BioDataController extends Controller
 
             return redirect()->route('upload.photo');
             
-        }catch(Exception $e){
+        // }catch(Exception $e){
 
-            return redirect()->back()->withErrors([
-                'error' => $e->getMessage()
-            ]);
-        }
+        //     return redirect()->back()->withErrors([
+        //         'error' => $e->getMessage()
+        //     ]);
+        // }
 
     }
 
@@ -768,13 +780,15 @@ class BioDataController extends Controller
 
     public function postUploadPhoto(Request $request){
          $validated = $request->validate([  
-            'passportImage' => 'required|image|mimes:jpeg,png',
+            'passportImage' => 'required|image|mimes:jpeg,png||max:2048',
+        ], [
+            'passportImage.max' => 'The uploaded file exceeds the allowed size of 2MB.',
         ]);
         try{
             if($request->hasFile('passportImage')){
                 if ($request->file('passportImage')->isValid()) {
                  
-                    $applicationID =session('applicant_data')['application_no'];
+                    $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
                     $safeEmail = Str::slug(Str::before($this->user->email, '@'));
                     $file = $request->file('passportImage');
                     $filename = $applicationID . '_' . $safeEmail.'.'. $file->getClientOriginalExtension();
@@ -783,8 +797,11 @@ class BioDataController extends Controller
                     if (!is_dir($destination)) {
                         mkdir($destination, 0755, true);
                     }
-                    $file->move($destination, $filename);
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
+
+                    
+
+                    $file->move($destination, $filename);
                     $applicationID =session('applicant_data')['application_no'];
                     $applicant = Applicant::where('id', $applicationID)->first();
                     $applicant->student_image_file_path = $fullPath;

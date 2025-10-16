@@ -1,7 +1,0 @@
-[2025-10-15 17:05:23] local.ERROR: [2025-10-15 17:05:23] inserting Nationality to db took 37.11 ms  
-[2025-10-15 17:09:43] local.ERROR: [2025-10-15 17:09:43] getting residences took 1796.29 ms  
-[2025-10-15 17:14:50] local.ERROR: [2025-10-15 17:14:49] getting residences took 1972.97 ms  
-[2025-10-15 17:17:50] local.ERROR: [2025-10-15 17:17:50] getting residences took 2115.05 ms  
-[2025-10-15 17:22:28] local.ERROR: [2025-10-15 17:22:28] getting residences took 1650.23 ms  
-[2025-10-15 17:22:32] local.ERROR: [2025-10-15 17:22:32] inserting residence into db took 54.75 ms  
-[2025-10-15 17:22:35] local.ERROR: [2025-10-15 17:22:35] getting marketing data took 1596.43 ms  

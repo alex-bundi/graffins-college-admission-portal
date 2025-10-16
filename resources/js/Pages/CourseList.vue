@@ -21,7 +21,6 @@ const applicationCount = computed(() => {
     return Object.keys(props.applications).length;
 })
 
-console.log(applicationCount.value);
 </script>
 
 <template>
