@@ -2383,3 +2383,30 @@
 #62 C:\\Development\\Laravel Development\\graffins-college-admission-portal\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(23): require_once('...')
 #63 {main}
 "} 
+[2025-10-18 08:28:30] local.ERROR: Command "migrae" is not defined.
+
+Did you mean one of these?
+    migrate
+    migrate:fresh
+    migrate:install
+    migrate:refresh
+    migrate:reset
+    migrate:rollback
+    migrate:status {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"migrae\" is not defined.
+
+Did you mean one of these?
+    migrate
+    migrate:fresh
+    migrate:install
+    migrate:refresh
+    migrate:reset
+    migrate:rollback
+    migrate:status at C:\\Development\\Laravel Development\\graffins-college-admission-portal\\vendor\\symfony\\console\\Application.php:743)
+[stacktrace]
+#0 C:\\Development\\Laravel Development\\graffins-college-admission-portal\\vendor\\symfony\\console\\Application.php(301): Symfony\\Component\\Console\\Application->find()
+#1 C:\\Development\\Laravel Development\\graffins-college-admission-portal\\vendor\\symfony\\console\\Application.php(194): Symfony\\Component\\Console\\Application->doRun()
+#2 C:\\Development\\Laravel Development\\graffins-college-admission-portal\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#3 C:\\Development\\Laravel Development\\graffins-college-admission-portal\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#4 C:\\Development\\Laravel Development\\graffins-college-admission-portal\\artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#5 {main}
+"} 

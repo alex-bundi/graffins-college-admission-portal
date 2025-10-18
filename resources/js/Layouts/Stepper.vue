@@ -38,15 +38,7 @@ const steps = [
   { id: 22, title: "Student ID", route: "student.id", completed: props.completedSteps.includes('student.id') },
   
   // Regulations routes
-  { id: 23, title: "Regulations 1", route: "page.one", completed: props.completedSteps.includes('page.one') },
-  { id: 24, title: "Regulations 2", route: "page.two", completed: props.completedSteps.includes('page.two') },
-  { id: 25, title: "Regulations 3", route: "page.three", completed: props.completedSteps.includes('page.three') },
-  { id: 26, title: "Regulations 4", route: "page.four", completed: props.completedSteps.includes('page.four') },
-  { id: 27, title: "Regulations 5", route: "page.five", completed: props.completedSteps.includes('page.five') },
-  { id: 28, title: "Regulations 6", route: "page.six", completed: props.completedSteps.includes('page.six') },
-  { id: 29, title: "Regulations 7", route: "page.seven", completed: props.completedSteps.includes('page.seven') },
-  { id: 30, title: "Regulations 8", route: "page.eight", completed: props.completedSteps.includes('page.eight') },
-  { id: 31, title: "Declaration", route: "declaration", completed: props.completedSteps.includes('declaration') },
+  { id: 23, title: "Rules & Regulations", route: "rules.regulations", completed: props.completedSteps.includes('rules.regulations') },
   
   // Payment routes
   { id: 32, title: "Amount Payable", route: "amount.payable", completed: props.completedSteps.includes('amount.payable') },

@@ -147,16 +147,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('regulations')->group(function () {
         
-        Route::get('/page-one', [RegulationsController::class, 'getPageOne'])->name('page.one');
-        Route::get('/page-two', [RegulationsController::class, 'getPageTwo'])->name('page.two');
-        Route::get('/page-three', [RegulationsController::class, 'getPageThree'])->name('page.three');
-        Route::get('/page-four', [RegulationsController::class, 'getPageFour'])->name('page.four');
-        Route::get('/page-five', [RegulationsController::class, 'getPageFive'])->name('page.five');
-        Route::get('/page-six', [RegulationsController::class, 'getPageSix'])->name('page.six');
-        Route::get('/page-seven', [RegulationsController::class, 'getPageSeven'])->name('page.seven');
-        Route::get('/page-eight', [RegulationsController::class, 'getPageEight'])->name('page.eight');
-        Route::get('/declaration', [RegulationsController::class, 'getDeclaration'])->name('declaration');
-
+        Route::get('/rules-regulations', [RegulationsController::class, 'getRulesRegulations'])->name('rules.regulations');
+        Route::post('/post-rules-regulations', [RegulationsController::class, 'postRulesRegulations'])->name('post.rules.regulations');
 
     });
 

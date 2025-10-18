@@ -802,7 +802,7 @@ class BioDataController extends Controller
                     } 
 
                     $file->move($destination, $filename);
-                    $applicationID =session('applicant_data')['application_no'];
+                    $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
                     $applicant = Applicant::where('id', $applicationID)->first();
                     $applicant->student_image_file_path = $fullPath;
                     if (!$applicant->save()) {
@@ -813,7 +813,7 @@ class BioDataController extends Controller
 
                 }
             }
-            return redirect()->route('page.one');
+            return redirect()->route('rules.regulations');
             
         }catch(Exception $e){
             return redirect()->back()->withErrors([

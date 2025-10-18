@@ -7,11 +7,17 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Exception;
 use App\Models\EmergencyContact;
+use App\Traits\GeneralTrait;
+use App\Models\Applicant;
+
+
 
 
 
 class RegulationsController extends Controller
 {
+    use GeneralTrait;
+
     protected function getCompletedSteps($applicantCourse = null, $applicant = null){
         $completedSteps = [];
         
@@ -146,104 +152,36 @@ class RegulationsController extends Controller
         return $completedSteps;
     }
 
-    public function getPageOne(){
+    public function getRulesRegulations(){
         $applicant = null;
         $applicantCourse = null;
 
         $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
         
-        return Inertia::render('Regulations/PageOne', [
+        return Inertia::render('Regulations/Rules_Regulations', [
             'completedSteps' => $completedSteps,
         ]);
     }
 
-    public function getPageTwo(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/PageTwo', [
-            'completedSteps' => $completedSteps,
+    public function postRulesRegulations(Request $request){
+        $validated = $request->validate([  
+            'accepted' => 'required',
         ]);
-    }
-
-    public function getPageThree(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/PageThree', [
-            'completedSteps' => $completedSteps,
-        ]);
-    }
-
-    public function getPageFour(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/PageFour', [
-            'completedSteps' => $completedSteps,
-        ]);
-    }
-    public function getPageFive(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/PageFive', [
-            'completedSteps' => $completedSteps,
-        ]);
-    }
-
-    public function getPageSix(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/PageSix', [
-            'completedSteps' => $completedSteps,
-        ]);
-    }
-
-    public function getPageSeven(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/PageSeven', [
-            'completedSteps' => $completedSteps,
-        ]);
-    }
-
-    public function getPageEight(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/PageEight', [
-            'completedSteps' => $completedSteps,
-        ]);
-
-    }
-
-    public function getDeclaration(){
-        $applicant = null;
-        $applicantCourse = null;
-
-        $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-        
-        return Inertia::render('Regulations/Declaration', [
-            'completedSteps' => $completedSteps,
-        ]);
-
+        try{
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
+            $applicant = Applicant::where('id', $applicationID)->first();
+            $applicant->declaration_accepted = $validated['accepted'];
+            if (!$applicant->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save. Please try again.'
+                ]);
+            }
+            return redirect()->route('bio.data.summary');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
 }
