@@ -234,9 +234,89 @@ class BusinessCentralAPIController extends Controller
 
                 return $data;
             }
-            // return $e->getMessage();
+
+        }
+    }
+
+    public function initializeSoapProcess(){
+        try{
+            $accessToken = '';
+            if (file_exists($this->savedAccessTokenFile) && filesize($this->savedAccessTokenFile) > 0) {
+                $authToken = fopen($this->savedAccessTokenFile, 'r');
+                $accessToken = fread($authToken, filesize($this->savedAccessTokenFile));
+                fclose($authToken);
+                $authToken = '';
+
+            } else {
+                $accessToken = $this->getAccessToken(); 
+            }
+            // $accessToken = $auth->getAccessToken();  // use only when you encounter the error SOAP-ERROR: Parsing WSDL: Couldn't load from 'https://api.businesscentral.dynamics.com/v2.0/9db19b6a-d4cf-4625-b29e-0f5028f72d99/Graffins-
+            // It is getting the access token
             
-            // return redirect()->back()->with('error', $e->getMessage());
+            //-----------------------------------------------------------------------------------
+            // SOAP client options with OAuth token in the headers
+            $opts = [
+                'http' => [
+                    'header' => "Authorization: Bearer " . $accessToken . "\r\n"
+                ],
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ]
+            ];
+            $context = stream_context_create($opts);
+
+            return $context;
+        } catch (Exception | ServerException $e) {
+            $currentTime = date("Y-m-d H:i:s");
+
+            if($e->getCode() == 401 ) {
+                
+                $trials = 1;                            
+
+                do {
+                   $this->refreshToken();
+                   $this->initializeSoapProcess();
+                    $trials -= 1;
+                }while($trials != 0);
+                 
+                
+
+                $response = $e->getResponse();
+                $logMessage = $currentTime . '_' . 'access_token_'. $response->getBody()->getContents();
+                Log::channel('access_token')->error($logMessage);
+                
+                $data = [
+                    'statusCode' => $e->getCode(),
+                    'message' => 'We’re experiencing an issue with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
+                ];
+
+                return $data;
+            }
+            if($e->getCode() == 0 ) {
+                 $response = $e->getResponse();
+                $logMessage = $currentTime . '_' . 'internet_connection'. $response->getBody()->getContents();
+                Log::channel('internet_connection')->error($logMessage);
+                
+                $data = [
+                    'statusCode' => $e->getCode(),
+                    'message' => 'No internet connection. Please check your connection and try again.',
+                ];
+
+                return $data;
+            }else{
+                  $response = $e->getResponse();
+                $logMessage = $currentTime . '_' . 'internet_connection'. $response->getBody()->getContents();
+                Log::channel('internet_connection')->error($logMessage);
+                
+                $data = [
+                    'statusCode' => $e->getCode(),
+                    'message' => 'We’re experiencing an issue with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
+                ];
+
+                return $data;
+            }
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

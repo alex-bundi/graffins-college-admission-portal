@@ -553,9 +553,10 @@ class BioDataController extends Controller
             'allergy' => 'required|string',
         ]);
         try{
+
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
-            $applicant->allergies = $validated['allergy'] == 'yes' ? 1 : 0;
+            $applicant->allergies = $validated['allergy'] == 'yes' ? 1 : 2;
             if (!$applicant->save()) {
                 return redirect()->back()->withErrors([
                     'error' => 'Failed to save. Please try again.'

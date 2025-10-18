@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Exception;
+use SoapFault;
+use SoapClient;
 use App\Models\Applicant;
 use App\Models\ApplicantCourse;
 use App\Traits\OdataTrait;
@@ -39,17 +41,24 @@ class BusinessCentralSoapController extends Controller
                 ->first();
 
             if (!$applicant) {
-                $data = [
-                    'hasSubmittedApplication' => false,
-                ];
-                return;
+               
+                return 'Application not Submitted';
 
             } 
-            $data = [
-                'hasApplication' => true,
-                'applicantNo' => $applicant->application_No
-            ];
-            return $data;
+
+            if($applicant->application_no != null){
+                $data = [
+                    'hasApplication' => null,
+                    'applicant' => $applicant,
+                ];
+                return $data;
+            } else {
+                $data = [
+                    'hasApplication' => $applicant->application_no,
+                    'applicant' => $applicant,
+                ];
+                return $data;
+            }
 
         } catch(Exception $e){
             return response()->json([
@@ -64,29 +73,92 @@ class BusinessCentralSoapController extends Controller
         try {
             // 
             $applicationExists = $this->validateApplication();
-            return response()->json([
-                'success' => true,
-                'data' => $applicationExists,
-            ], 200);
+            $applicantNoBC = '';
 
+            if($applicationExists == 'Application not Submitted'){
+                
+            }
 
+           
+            if($applicationExists['hasApplication'] == null){
+                
+            } else if($applicationExists['hasApplication'] != null){
+                $applicantNoBC = $applicationExists['applicant']['application_no'];
+               
+            }
 
-            // return response()->json([
-            //     'success' => true,
-            //     'data' => 'APP01',
-            // ], 200);
+            $context = $this->businessCentralAccess->initializeSoapProcess();
+            $soapClient = new SoapClient(
+                config('app.webService'), 
+                [
+                    'stream_context' => $context,
+                    'trace' => 1,
+                    'exceptions' => 1
+                    
+                ]
+            );
 
+            $params = new \stdClass();
+            $params->applicationNo = $applicantNoBC;
+            $params->firstName = trim(ucfirst($applicationExists['applicant']['first_name']));
+            $params->secondName = trim(ucfirst($applicationExists['applicant']['second_name']));
+            $params->lastName = trim(ucfirst($applicationExists['applicant']['last_name']));
+            $params->email = strtolower(trim($applicationExists['applicant']['email']));
+            $params->portalPassword = strtolower(trim('1234'));
+            $params->nationality = trim($applicationExists['applicant']['nationality']);
+            $params->residence = (trim($applicationExists['applicant']['residence']));
+            $params->marketing = trim($applicationExists['applicant']['marketing']);
+            $params->allergies = (int)($applicationExists['applicant']['allergies']);
+            $params->allergyDescription = trim($applicationExists['applicant']['allergy_description']);
+            $params->phoneNo = trim($applicationExists['applicant']['phone_no']);
+            $params->passportID = trim($applicationExists['applicant']['id_passport_No']);
+            $params->dateOfBirth = trim($applicationExists['applicant']['dob']);
+            $params->gender = trim($applicationExists['applicant']['gender']);
 
-            // Error
-            return response()->json([
-                'error' => true,
-                'message' => 'BC insert error',
-            ], 200);
+            $imageFilePath = $applicationExists['applicant']['student_image_file_path'];
+            if($imageFilePath && file_exists($imageFilePath)){
+                $fileContent = file_get_contents($imageFilePath);
+                $base64 = base64_encode($fileContent);
 
-        } catch(Exception $e){
+                
+            }
+            $params->studentImageBase64 = $base64;
+
+            $passportFilePath = $applicationExists['applicant']['passport_file_path'];
+            if($passportFilePath && file_exists($passportFilePath)){
+                $fileContent = file_get_contents($passportFilePath);
+                $passportFileBase64 = base64_encode($passportFilePath);
+
+                
+            }
+            $params->documentBase64 = $passportFileBase64;
+            $params->documentFileName = 'student_id';
+        
+            $result = $soapClient->CreateApplicantAccount($params);
+
+            if($result){
+
+                // Insert Application No
+                $applicant = Applicant::where('id', $applicationExists['applicant']['id'])->first();
+                $applicant->phone_no = $result->return_value;
+                $applicant->save();
+                return response()->json([
+                    'success' => true,
+                    'data' => $result,
+                ], 200);
+        
+            }else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
+                ], 404);
+            }
+
+        } catch(SoapFault | Exception $e){
             return response()->json([
                 'error' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'statusCode' => $e->faultcode,
             ], 404);
             
         }
