@@ -34,20 +34,26 @@ onMounted(async () => {
             
             if (bioData?.success === true) {
                 personalInfo.value = true;
-                // const emergencyData = await processEmergencyContacts(bioData.data.return_value);
-                // console.log('Emergency data:', emergencyData);
+                const emergencyData = await processEmergencyContacts(bioData.data.return_value);
+                console.log('Emergency data:', emergencyData);
+                if(emergencyData?.success === true){
+                    emergencyContactsInfo.value = true;
+
+                }else {
+                    errors.value.message = emergencyData.message;
+                    return;
+                }
 
                 //     if(emergencyData?.success === true){
-                            emergencyContactsInfo.value = true;
                 //         const courseData = await processApplicantCourse(bioData.data.return_value);
                 //          console.log('Course data:', courseData);
 
                 //          if(courseData?.success === true){
-                                courseInfo.value = true;
+                                // courseInfo.value = true;
                 //             const applicationConversion = await processApplicationConversion(bioData.data.return_value);
                 //             console.log('Conversion data:', applicationConversion);
                 //             if(applicationConversion?.success === true){
-                                    isRegistrationComplete.value = true;
+                                    // isRegistrationComplete.value = true;
                 //                 router.visit('/payments/amount-payable')
 
                 //             }

@@ -135,7 +135,7 @@ Route::middleware('auth')->group(function () {
         // Application Processing
         Route::get('/application-processing', [ApplicationController::class, 'getApplicationProcessingPage'])->name('application.processing');
         Route::get('/processing-bio-data', [BusinessCentralSoapController::class, 'createApplicationInBC']);
-        // Route::get('/processing-emergency-contacts/{applicantNo}', [ApplicationController::class, 'InsertEmergencyContacts']);
+        Route::get('/processing-emergency-contacts/{applicantNo}', [BusinessCentralSoapController::class, 'insertEmergencyContacts']);
         // Route::get('/processing-applicant-coourse/{applicantNo}', [ApplicationController::class, 'InsertApplicantCourse']);
         // Route::get('/processing-converting-application/{applicantNo}', [ApplicationController::class, 'ConvertApplicationToCustomer']);
 

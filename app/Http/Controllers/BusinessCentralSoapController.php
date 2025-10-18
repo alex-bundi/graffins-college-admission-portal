@@ -46,7 +46,7 @@ class BusinessCentralSoapController extends Controller
 
             } 
 
-            if($applicant->application_no != null){
+            if($applicant->application_no == null){
                 $data = [
                     'hasApplication' => null,
                     'applicant' => $applicant,
@@ -88,8 +88,6 @@ class BusinessCentralSoapController extends Controller
             }
 
             $context = $this->businessCentralAccess->initializeSoapProcess();
-           
-            
             $soapClient = new SoapClient(
                 config('app.webService'), 
                 [
@@ -142,8 +140,9 @@ class BusinessCentralSoapController extends Controller
 
                 // Insert Application No
                 $applicant = Applicant::where('id', $applicationExists['applicant']['id'])->first();
-                $applicant->phone_no = $result->return_value;
+                $applicant->application_no = $result->return_value;
                 $applicant->save();
+                $this->testPerformance($this->start, 'performance', 'Creating Application in Business central took ');
                 return response()->json([
                     'success' => true,
                     'data' => $result,
@@ -151,12 +150,71 @@ class BusinessCentralSoapController extends Controller
         
             }else {
                 return response()->json([
-                    'success' => false,
+                    'error' => false,
                     'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
                 ], 404);
             }
 
         } catch(SoapFault | Exception $e){
+            if($e->getCode() == 0){
+                $trials = 1;
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                    // $this->createApplicationInBC();
+
+                
+            }
+            return response()->json([
+                'error' => false,
+                'message' => $e->getMessage(),
+                'statusCode' => $e->getCode(),
+            ], 404);
+            
+        }
+    }
+
+    public function insertEmergencyContacts($applicationID){
+        try {
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'application_no');
+            $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
+            $context = $this->businessCentralAccess->initializeSoapProcess();
+            $soapClient = new SoapClient(
+                config('app.webService'), 
+                [
+                    'stream_context' => $context,
+                    'trace' => 1,
+                    'exceptions' => 1
+                    
+                ]
+            );
+            $params = new \stdClass();
+            $params->applicationNo = trim($applicationID);
+            $params->fullName = trim(ucfirst($emergencyContact->full_name));
+            $params->phoneNo = trim(($emergencyContact->phone_no));
+            $params->relationship = ($emergencyContact->relationship);
+            
+            
+            $result = $soapClient->UpsertEmergencyContacts($params);
+            if($result){
+                    return response()->json([
+                        'success' => true,
+                        'data' => $result,
+                    ], 200);
+            
+                } else {
+                    return response()->json([
+                    'error' => false,
+                    'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
+                    ], 404);
+                }
+
+        }catch(SoapFault | Exception $e){
+            if($e->getCode() == 0){
+                $trials = 1;
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                    // $this->createApplicationInBC();
+
+                
+            }
             return response()->json([
                 'error' => false,
                 'message' => $e->getMessage(),
