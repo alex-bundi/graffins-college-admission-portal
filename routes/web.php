@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GeneralController;
+use App\Http\Controllers\BusinessCentralSoapController;
 use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Application\BioDataController;
 use App\Http\Controllers\CourseController;
@@ -133,10 +134,10 @@ Route::middleware('auth')->group(function () {
 
         // Application Processing
         Route::get('/application-processing', [ApplicationController::class, 'getApplicationProcessingPage'])->name('application.processing');
-        Route::get('/processing-bio-data', [ApplicationController::class, 'CreateApplicantInERP']);
-        Route::get('/processing-emergency-contacts/{applicantNo}', [ApplicationController::class, 'InsertEmergencyContacts']);
-        Route::get('/processing-applicant-coourse/{applicantNo}', [ApplicationController::class, 'InsertApplicantCourse']);
-        Route::get('/processing-converting-application/{applicantNo}', [ApplicationController::class, 'ConvertApplicationToCustomer']);
+        Route::get('/processing-bio-data', [BusinessCentralSoapController::class, 'createApplicationInBC']);
+        // Route::get('/processing-emergency-contacts/{applicantNo}', [ApplicationController::class, 'InsertEmergencyContacts']);
+        // Route::get('/processing-applicant-coourse/{applicantNo}', [ApplicationController::class, 'InsertApplicantCourse']);
+        // Route::get('/processing-converting-application/{applicantNo}', [ApplicationController::class, 'ConvertApplicationToCustomer']);
 
         // Admission Letter
         Route::get('/download-admission-letter/{studentNo}', [ApplicationController::class, 'downloadAdmissionLetter'])->name('download.admission.letter');
@@ -144,6 +145,8 @@ Route::middleware('auth')->group(function () {
 
 
     });
+
+   
 
     Route::prefix('regulations')->group(function () {
         

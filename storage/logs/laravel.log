@@ -2410,3 +2410,7 @@ Did you mean one of these?
 #4 C:\\Development\\Laravel Development\\graffins-college-admission-portal\\artisan(13): Illuminate\\Foundation\\Application->handleCommand()
 #5 {main}
 "} 
+[2025-10-18 10:22:19] local.ERROR: Cannot use App\Http\Controllers\GeneralController as GeneralController because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot use App\\Http\\Controllers\\GeneralController as GeneralController because the name is already in use at C:\\Development\\Laravel Development\\graffins-college-admission-portal\\routes\\web.php:5)
+[stacktrace]
+#0 {main}
+"} 
