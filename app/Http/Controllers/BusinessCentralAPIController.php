@@ -238,7 +238,7 @@ class BusinessCentralAPIController extends Controller
         }
     }
 
-    public function initializeSoapProcess(){
+    public function initializeSoapProcess($refresh= false){
         try{
             $accessToken = '';
             if (file_exists($this->savedAccessTokenFile) && filesize($this->savedAccessTokenFile) > 0) {
@@ -250,6 +250,12 @@ class BusinessCentralAPIController extends Controller
             } else {
                 $accessToken = $this->getAccessToken(); 
             }
+
+            if ($refresh){
+                $accessToken = $this->getAccessToken(); 
+
+            }
+
             // $accessToken = $auth->getAccessToken();  // use only when you encounter the error SOAP-ERROR: Parsing WSDL: Couldn't load from 'https://api.businesscentral.dynamics.com/v2.0/9db19b6a-d4cf-4625-b29e-0f5028f72d99/Graffins-
             // It is getting the access token
             
@@ -264,6 +270,8 @@ class BusinessCentralAPIController extends Controller
                     'verify_peer_name' => false,
                 ]
             ];
+            
+
             $context = stream_context_create($opts);
 
             return $context;

@@ -88,6 +88,8 @@ class BusinessCentralSoapController extends Controller
             }
 
             $context = $this->businessCentralAccess->initializeSoapProcess();
+           
+            
             $soapClient = new SoapClient(
                 config('app.webService'), 
                 [
@@ -158,7 +160,7 @@ class BusinessCentralSoapController extends Controller
             return response()->json([
                 'error' => false,
                 'message' => $e->getMessage(),
-                'statusCode' => $e->faultcode,
+                'statusCode' => $e->getCode(),
             ], 404);
             
         }

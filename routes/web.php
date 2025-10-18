@@ -142,6 +142,7 @@ Route::middleware('auth')->group(function () {
         // Admission Letter
         Route::get('/download-admission-letter/{studentNo}', [ApplicationController::class, 'downloadAdmissionLetter'])->name('download.admission.letter');
 
+        // test
 
 
     });
