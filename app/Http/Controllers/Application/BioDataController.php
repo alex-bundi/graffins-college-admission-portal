@@ -712,15 +712,17 @@ class BioDataController extends Controller
             'passport_id_file' => 'required|file|max:2048',
 
         ], [
+            'passport_id_file.required' => 'test',
+
             'passport_id_file.max' => 'The uploaded file exceeds the allowed size of 2MB.',
         ]);
-        // try{
-            if($request->hasFile($validated['passport_id_file'])){
-                if ($request->file($validated['passport_id_file'])->isValid()) {
+        try{
+            if($request->hasFile('passport_id_file')){
+                if ($request->file('passport_id_file')->isValid()) {
                  
                     $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
                     $safeEmail = Str::slug(Str::before($this->user->email, '@'));
-                    $file = $request->file($validated['passport_id_file']);
+                    $file = $request->file('passport_id_file');
                     $filename = $applicationID . '_' . $safeEmail.'.'. $file->getClientOriginalExtension();
 
                     $destination = storage_path('app\passport_files');
@@ -731,11 +733,8 @@ class BioDataController extends Controller
 
                     
                     if(file_exists($fullPath)){
-                        dd('file exists');
-                    } else {
-                        dd('file does not exists');
-
-                    }
+                        unlink($fullPath);
+                    } 
                     $file->move($destination, $filename);
                     
                     $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
@@ -753,12 +752,11 @@ class BioDataController extends Controller
 
             return redirect()->route('upload.photo');
             
-        // }catch(Exception $e){
-
-        //     return redirect()->back()->withErrors([
-        //         'error' => $e->getMessage()
-        //     ]);
-        // }
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
 
     }
 
@@ -799,7 +797,9 @@ class BioDataController extends Controller
                     }
                     $fullPath = $destination . DIRECTORY_SEPARATOR . $filename;
 
-                    
+                    if(file_exists($fullPath)){
+                        unlink($fullPath);
+                    } 
 
                     $file->move($destination, $filename);
                     $applicationID =session('applicant_data')['application_no'];
