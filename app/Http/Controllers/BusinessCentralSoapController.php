@@ -88,6 +88,7 @@ class BusinessCentralSoapController extends Controller
             }
 
             $context = $this->businessCentralAccess->initializeSoapProcess();
+            
            
             $soapClient = new SoapClient(
                 config('app.webService'), 
@@ -98,8 +99,6 @@ class BusinessCentralSoapController extends Controller
                     
                 ]
             );
-
-          
 
             $params = new \stdClass();
             $params->applicationNo = $applicantNoBC;
@@ -136,16 +135,17 @@ class BusinessCentralSoapController extends Controller
             }
             $params->documentBase64 = $passportFileBase64;
             $params->documentFileName = 'student_id';
+            
         
             $result = $soapClient->CreateApplicantAccount($params);
-
             if($result){
-
                 // Insert Application No
-                $applicant = Applicant::where('id', $applicationExists['applicant']['id'])->first();
+                $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
+                $applicant = Applicant::where('id', $$applicationID)->first();
                 $applicant->application_no = $result->return_value;
                 $applicant->save();
-                $this->testPerformance($this->start, 'performance', 'Creating Application in Business central took ');
+
+                $this->testPerformance($this->start, 'performance', 'Creating Application in Business central took');
                 return response()->json([
                     'success' => true,
                     'data' => $result,
@@ -159,6 +159,7 @@ class BusinessCentralSoapController extends Controller
             }
 
         } catch(SoapFault | Exception $e){
+            // dd($e->getMessage());
             if($e->getCode() == 0){
                 $trials = 1;
                 $this->businessCentralAccess->initializeSoapProcess(true);

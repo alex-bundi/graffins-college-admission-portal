@@ -34,15 +34,15 @@ onMounted(async () => {
             
             if (bioData?.success === true) {
                 personalInfo.value = true;
-                const emergencyData = await processEmergencyContacts(bioData.data.return_value);
-                console.log('Emergency data:', emergencyData);
-                if(emergencyData?.success === true){
-                    emergencyContactsInfo.value = true;
+                // const emergencyData = await processEmergencyContacts(bioData.data.return_value);
+                // console.log('Emergency data:', emergencyData);
+                // if(emergencyData?.success === true){
+                //     emergencyContactsInfo.value = true;
 
-                }else {
-                    errors.value.message = emergencyData.message;
-                    return;
-                }
+                // }else {
+                //     errors.value.message = emergencyData.message;
+                //     return;
+                // }
 
                 //     if(emergencyData?.success === true){
                 //         const courseData = await processApplicantCourse(bioData.data.return_value);
@@ -68,7 +68,7 @@ onMounted(async () => {
             processed = true;
         } catch (error) {
             errors.value.error = error;
-            console.error('Error in onMounted:', error);
+            console.error('Error is :', error);
         }
     }
 });
@@ -150,7 +150,7 @@ async function processApplicationConversion(applicantNo) {
                     Application Processing...
                 </h1>
                  <p class="font-josefin text-red-500 tracking-wider font-bold mt-4 text-base">
-                    Don’t refresh — the page will redirect automatically.
+                    Please Don’t refresh the page — the page will redirect automatically.
                 </p>
             </div>
         </div>
