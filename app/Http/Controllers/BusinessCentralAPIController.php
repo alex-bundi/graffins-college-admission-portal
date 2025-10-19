@@ -275,20 +275,20 @@ class BusinessCentralAPIController extends Controller
             $context = stream_context_create($opts);
 
             return $context;
-        } catch (Exception | ServerException $e) {
+        } catch (ClientException | ServerException $e) {
             $currentTime = date("Y-m-d H:i:s");
 
             if($e->getCode() == 401 ) {
                 
                 $trials = 1;                            
 
-                do {
-                   $this->refreshToken();
+                // do {
+                //    $this->refreshToken();
+                //    $this->initializeSoapProcess();
+                //     $trials -= 1;
+                // }while($trials != 0);
+                 $this->refreshToken();
                    $this->initializeSoapProcess();
-                    $trials -= 1;
-                }while($trials != 0);
-                 
-                
 
                 $response = $e->getResponse();
                 $logMessage = $currentTime . '_' . 'access_token_'. $response->getBody()->getContents();
@@ -297,18 +297,6 @@ class BusinessCentralAPIController extends Controller
                 $data = [
                     'statusCode' => $e->getCode(),
                     'message' => 'We’re experiencing an issue with one of our internal services. This may affect some features temporarily. We’re working to resolve it.',
-                ];
-
-                return $data;
-            }
-            if($e->getCode() == 0 ) {
-                 $response = $e->getResponse();
-                $logMessage = $currentTime . '_' . 'internet_connection'. $response->getBody()->getContents();
-                Log::channel('internet_connection')->error($logMessage);
-                
-                $data = [
-                    'statusCode' => $e->getCode(),
-                    'message' => 'No internet connection. Please check your connection and try again.',
                 ];
 
                 return $data;
@@ -325,6 +313,18 @@ class BusinessCentralAPIController extends Controller
                 return $data;
             }
             return redirect()->back()->with('error', $e->getMessage());
+        } catch(Exception $e){
+
+            $currentTime = date("Y-m-d H:i:s");
+            $logMessage = $currentTime . '_' . 'error'. $e->getMessage();
+            Log::channel('business_central_api')->error($logMessage);
+            
+            $data = [
+                'statusCode' => $e->getCode(),
+                'message' => 'No internet connection. Please check your connection and try again.',
+            ];
+
+            return $data;
         }
     }
 }

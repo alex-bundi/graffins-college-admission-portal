@@ -60,7 +60,7 @@ onMounted(async () => {
                 //             // return;
                 //          }
                 //     }
-            } else if(bioData.error != null){
+            } else if(bioData.error === true){
                 errors.value.message = bioData.message;
                 return;
             }

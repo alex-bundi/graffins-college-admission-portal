@@ -30,7 +30,7 @@ class BusinessCentralSoapController extends Controller
         $this->generalQueries = new GeneralQueries();
         $this->user = Auth::user();
         $this->businessCentralAccess = new BusinessCentralAPIController;
-        $this->start = microtime(true);  
+        $this->start = date("Y-m-d H:i:s");  
     }
 
     public function validateApplication(){
@@ -88,6 +88,7 @@ class BusinessCentralSoapController extends Controller
             }
 
             $context = $this->businessCentralAccess->initializeSoapProcess();
+           
             $soapClient = new SoapClient(
                 config('app.webService'), 
                 [
@@ -97,6 +98,8 @@ class BusinessCentralSoapController extends Controller
                     
                 ]
             );
+
+          
 
             $params = new \stdClass();
             $params->applicationNo = $applicantNoBC;
@@ -159,12 +162,12 @@ class BusinessCentralSoapController extends Controller
             if($e->getCode() == 0){
                 $trials = 1;
                 $this->businessCentralAccess->initializeSoapProcess(true);
-                    // $this->createApplicationInBC();
+                $this->createApplicationInBC();
 
                 
             }
             return response()->json([
-                'error' => false,
+                'error' => true,
                 'message' => $e->getMessage(),
                 'statusCode' => $e->getCode(),
             ], 404);
@@ -195,17 +198,19 @@ class BusinessCentralSoapController extends Controller
             
             $result = $soapClient->UpsertEmergencyContacts($params);
             if($result){
-                    return response()->json([
-                        'success' => true,
-                        'data' => $result,
-                    ], 200);
-            
-                } else {
-                    return response()->json([
-                    'error' => false,
-                    'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
-                    ], 404);
-                }
+                $this->testPerformance($this->start, 'performance', 'Inserting Emergency Contacts in Business central took ');
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $result,
+                ], 200);
+        
+            } else {
+                return response()->json([
+                'error' => false,
+                'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
+                ], 404);
+            }
 
         }catch(SoapFault | Exception $e){
             if($e->getCode() == 0){
