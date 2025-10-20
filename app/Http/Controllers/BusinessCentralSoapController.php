@@ -78,7 +78,6 @@ class BusinessCentralSoapController extends Controller
             if($applicationExists == 'Application not Submitted'){
                 
             }
-
            
             if($applicationExists['hasApplication'] == null){
                 
@@ -86,11 +85,9 @@ class BusinessCentralSoapController extends Controller
                 $applicantNoBC = $applicationExists['applicant']['application_no'];
                
             }
-
             $context = $this->businessCentralAccess->initializeSoapProcess();
             
-           
-            $soapClient = new SoapClient(
+            $soapClient = new \SoapClient(
                 config('app.webService'), 
                 [
                     'stream_context' => $context,
@@ -139,11 +136,14 @@ class BusinessCentralSoapController extends Controller
         
             $result = $soapClient->CreateApplicantAccount($params);
             if($result){
+                dd($result);
                 // Insert Application No
-                $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
-                $applicant = Applicant::where('id', $$applicationID)->first();
-                $applicant->application_no = $result->return_value;
-                $applicant->save();
+                // $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
+                // $applicant = Applicant::where('id', $$applicationID)->first();
+                // $applicant->application_no = $result->return_value;
+                // $applicant->save();
+                
+
 
                 $this->testPerformance($this->start, 'performance', 'Creating Application in Business central took');
                 return response()->json([
@@ -158,7 +158,7 @@ class BusinessCentralSoapController extends Controller
                 ], 404);
             }
 
-        } catch(SoapFault | Exception $e){
+        } catch(\SoapFault | Exception $e){
             // dd($e->getMessage());
             if($e->getCode() == 0){
                 $trials = 1;
