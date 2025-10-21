@@ -30,7 +30,7 @@ class BusinessCentralSoapController extends Controller
         $this->generalQueries = new GeneralQueries();
         $this->user = Auth::user();
         $this->businessCentralAccess = new BusinessCentralAPIController;
-        $this->start = date("Y-m-d H:i:s");  
+        $this->start = microtime(true);  
     }
 
     public function validateApplication(){
@@ -69,7 +69,7 @@ class BusinessCentralSoapController extends Controller
         }
     }
 
-    public function createApplicationInBC(){
+    public function createApplicationInBC($retryCount = 0, $maxRetries = 3){
         try {
             // 
             $applicationExists = $this->validateApplication();
@@ -104,6 +104,7 @@ class BusinessCentralSoapController extends Controller
                     'previousURL' => url()->previous(),
                 ]);
             }
+
             
             $params = new \stdClass();
             $params->applicationNo = $applicantNoBC;
@@ -122,12 +123,15 @@ class BusinessCentralSoapController extends Controller
             $params->dateOfBirth = trim($applicationExists['applicant']['dob']);
             $params->gender = trim($applicationExists['applicant']['gender']);
 
+            $base64 = '';
             $imageFilePath = $applicationExists['applicant']['student_image_file_path'];
             if($imageFilePath && file_exists($imageFilePath)){
                 $fileContent = file_get_contents($imageFilePath);
                 $base64 = base64_encode($fileContent);
             }
             $params->studentImageBase64 = $base64;
+
+            $passportFileBase64 = '';
             $passportFilePath = $applicationExists['applicant']['passport_file_path'];
             if($passportFilePath && file_exists($passportFilePath)){
                 $fileContent = file_get_contents($passportFilePath);
@@ -135,20 +139,30 @@ class BusinessCentralSoapController extends Controller
             }
             $params->documentBase64 = $passportFileBase64;
             $params->documentFileName = 'student_id';
+            $params->religion = $applicationExists['applicant']['religion'];
             $result = $soapClient->CreateApplicantAccount($params);
-            dd($result);
 
             if($result){
-                
                 // Insert Application No
-                // $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
-                // $applicant = Applicant::where('id', $$applicationID)->first();
-                // $applicant->application_no = $result->return_value;
-                // $applicant->save();
+                $applicationID =(int) $this->retrieveOrUpdateSessionData('get', 'application_no');
+                $applicant = Applicant::where('id', $applicationID)->first();
+
+                if($applicant){
+                    $currentAppNo = (string)($applicant->application_no ?? '');
+                    $newAppNo = (string)($result->return_value ?? '');
+                    
+                    if($currentAppNo !== $newAppNo){
+                        $applicant->application_no = $newAppNo;
+                        $applicant->save();
+                    }
+                }
+                
                 
 
+               
 
                 $this->testPerformance($this->start, 'performance', 'Creating Application in Business central took');
+                // dd('here');
                 return response()->json([
                     'success' => true,
                     'data' => $result,
@@ -162,13 +176,11 @@ class BusinessCentralSoapController extends Controller
             }
 
         } catch(\SoapFault | Exception $e){
-            // dd($e->getMessage());
-            if($e->getCode() == 0){
-                $trials = 1;
-                $this->businessCentralAccess->initializeSoapProcess(true);
-                $this->createApplicationInBC();
-
+            if($e->getCode() == 0 && $retryCount < $maxRetries){
                 
+                // Refresh token
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                return $this->createApplicationInBC($retryCount + 1, $maxRetries);
             }
             return response()->json([
                 'error' => true,

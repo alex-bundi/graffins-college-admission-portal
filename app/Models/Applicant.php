@@ -32,6 +32,8 @@ class Applicant extends Model
         'dob',
         'id_passport_No',
         'declaration_accepted',
+        'student_no',
+        'religion'
     ];
 
     protected $hidden = [

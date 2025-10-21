@@ -261,7 +261,8 @@ class BusinessCentralAPIController extends Controller
 
             $opts = [
                 'http' => [
-                    'header' => "Authorization: Bearer " . $accessToken . "\r\n"
+                    'header' => "Authorization: Bearer " . $accessToken . "\r\n",
+                    'timeout' => 10,
                 ],
                 'ssl' => [
                     'verify_peer' => false,
@@ -269,29 +270,17 @@ class BusinessCentralAPIController extends Controller
                 ]
             ];
             $context = stream_context_create($opts);
-            $data = [
+            return [
                 'success' => true,
                 'context' => $context,
             ];
-            dd($data);
 
-            return $data;
-
-        } catch (ClientException | ServerException $e) {
-            $currentTime = date("Y-m-d H:i:s");
-
-            $data = [
+        } catch (ClientException | ServerException | Exception $e) {
+            // \Log::error('SOAP initialization error: ' . $e->getMessage());
+            return [
                 'error' => true,
                 'message' => $e->getMessage(),
             ];
-            return $data;
-        } catch(Exception $e){
-            $data = [
-                'error' => true,
-                'message' => $e->getMessage(),
-            ];
-            return $data;
-
         }
     }
 }

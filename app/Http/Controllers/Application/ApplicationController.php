@@ -32,7 +32,7 @@ class ApplicationController extends Controller
         $this->generalQueries = new GeneralQueries();
         $this->user = Auth::user();
         $this->businessCentralAccess = new BusinessCentralAPIController;
-        $this->start = date("Y-m-d H:i:s");
+        $this->start = microtime(true);
         
 
     }
