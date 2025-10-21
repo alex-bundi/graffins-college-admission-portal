@@ -1,0 +1,7 @@
+[2025-10-21 05:50:20] local.ERROR: [2025-10-21 05:50:20] getting Nationalities took 900.92 ms  
+[2025-10-21 05:50:23] local.ERROR: [2025-10-21 05:50:23] inserting Nationality to db took 95.81 ms  
+[2025-10-21 05:50:50] local.ERROR: [2025-10-21 05:50:50] getting residences took 962.48 ms  
+[2025-10-21 05:50:54] local.ERROR: [2025-10-21 05:50:54] inserting residence into db took 93.6 ms  
+[2025-10-21 05:50:55] local.ERROR: [2025-10-21 05:50:55] getting marketing data took 1015.22 ms  
+[2025-10-21 05:50:58] local.ERROR: [2025-10-21 05:50:58] inserting about us into db took 51.66 ms  
+[2025-10-21 05:51:22] local.ERROR: [2025-10-21 05:51:22] processing passport file took 829.39 ms  

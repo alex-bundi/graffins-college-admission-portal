@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\BusinessCentralSoapController;
+use App\Http\Controllers\BusinessCentralAPIController;
 use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Application\BioDataController;
 use App\Http\Controllers\CourseController;
@@ -142,10 +143,14 @@ Route::middleware('auth')->group(function () {
         // Admission Letter
         Route::get('/download-admission-letter/{studentNo}', [ApplicationController::class, 'downloadAdmissionLetter'])->name('download.admission.letter');
 
-        // test
+        
 
 
     });
+
+    // test
+    Route::get('/test-SOAP-API', [BusinessCentralAPIController::class, 'initializeSoapProcess']);
+
 
    
 

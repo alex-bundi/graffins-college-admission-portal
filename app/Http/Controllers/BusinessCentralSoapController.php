@@ -86,17 +86,25 @@ class BusinessCentralSoapController extends Controller
                
             }
             $context = $this->businessCentralAccess->initializeSoapProcess();
-            
-            $soapClient = new \SoapClient(
-                config('app.webService'), 
-                [
-                    'stream_context' => $context,
-                    'trace' => 1,
-                    'exceptions' => 1
-                    
-                ]
-            );
 
+            
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            }
+            
             $params = new \stdClass();
             $params->applicationNo = $applicantNoBC;
             $params->firstName = trim(ucfirst($applicationExists['applicant']['first_name']));
@@ -118,25 +126,20 @@ class BusinessCentralSoapController extends Controller
             if($imageFilePath && file_exists($imageFilePath)){
                 $fileContent = file_get_contents($imageFilePath);
                 $base64 = base64_encode($fileContent);
-
-                
             }
             $params->studentImageBase64 = $base64;
-
             $passportFilePath = $applicationExists['applicant']['passport_file_path'];
             if($passportFilePath && file_exists($passportFilePath)){
                 $fileContent = file_get_contents($passportFilePath);
                 $passportFileBase64 = base64_encode($passportFilePath);
-
-                
             }
             $params->documentBase64 = $passportFileBase64;
             $params->documentFileName = 'student_id';
-            
-        
             $result = $soapClient->CreateApplicantAccount($params);
+            dd($result);
+
             if($result){
-                dd($result);
+                
                 // Insert Application No
                 // $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
                 // $applicant = Applicant::where('id', $$applicationID)->first();

@@ -240,6 +240,7 @@ class BusinessCentralAPIController extends Controller
 
     public function initializeSoapProcess($refresh= false){
         try{
+            
             $accessToken = '';
             if (file_exists($this->savedAccessTokenFile) && filesize($this->savedAccessTokenFile) > 0) {
 
@@ -256,6 +257,7 @@ class BusinessCentralAPIController extends Controller
                 $accessToken = $this->getAccessToken();
 
             }
+            
 
             $opts = [
                 'http' => [
@@ -267,14 +269,28 @@ class BusinessCentralAPIController extends Controller
                 ]
             ];
             $context = stream_context_create($opts);
+            $data = [
+                'success' => true,
+                'context' => $context,
+            ];
+            dd($data);
 
-            return $context;
+            return $data;
 
         } catch (ClientException | ServerException $e) {
             $currentTime = date("Y-m-d H:i:s");
-            return $e->getMessage();
+
+            $data = [
+                'error' => true,
+                'message' => $e->getMessage(),
+            ];
+            return $data;
         } catch(Exception $e){
-            return $e->getMessage();
+            $data = [
+                'error' => true,
+                'message' => $e->getMessage(),
+            ];
+            return $data;
 
         }
     }
