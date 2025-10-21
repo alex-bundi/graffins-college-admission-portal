@@ -16,7 +16,7 @@ const props = defineProps({
 
 const errors = ref({}); 
 const success = ref({});
-let processed = false;
+let processed = ref(false);
 
 // Application steps
 const personalInfo = ref(false);
@@ -26,7 +26,7 @@ const convertingApplication = ref(false)
 const isRegistrationComplete = ref(false)
 
 onMounted(async () => {
-    if (!processed) {
+    if (!processed.value) {
         try {
             // First operation
             const bioData = await processBioData();
@@ -34,38 +34,44 @@ onMounted(async () => {
             
             if (bioData?.success === true) {
                 personalInfo.value = true;
-                // const emergencyData = await processEmergencyContacts(bioData.data.return_value);
-                // console.log('Emergency data:', emergencyData);
-                // if(emergencyData?.success === true){
-                //     emergencyContactsInfo.value = true;
 
-                // }else {
-                //     errors.value.message = emergencyData.message;
-                //     return;
-                // }
+                const emergencyData = await processEmergencyContacts(bioData.data.return_value);
+                console.log('Emergency data:', emergencyData);
+                if(emergencyData?.success === true){
+                    emergencyContactsInfo.value = true;
 
-                //     if(emergencyData?.success === true){
-                //         const courseData = await processApplicantCourse(bioData.data.return_value);
-                //          console.log('Course data:', courseData);
+                    const courseData = await processApplicantCourse(bioData.data.return_value);
+                    console.log('Course data:', courseData);
+                    if(courseData?.success === true){
+                        courseInfo.value = true;
 
-                //          if(courseData?.success === true){
-                                // courseInfo.value = true;
-                //             const applicationConversion = await processApplicationConversion(bioData.data.return_value);
-                //             console.log('Conversion data:', applicationConversion);
-                //             if(applicationConversion?.success === true){
-                                    // isRegistrationComplete.value = true;
-                //                 router.visit('/payments/amount-payable')
+                        const applicationConversion = await processApplicationConversion(bioData.data.return_value);
+                        console.log('Conversion data:', applicationConversion);
+                        if(applicationConversion?.success === true){
+                            isRegistrationComplete.value = true;
+                            router.visit('/payments/amount-payable')
 
-                //             }
-                //             // return;
-                //          }
-                //     }
+                        }else {
+                            errors.value.message = applicationConversion.message;
+                            return;
+                        }
+
+
+                    }else {
+                        errors.value.message = courseData.message;
+                        return;
+                    }
+
+                }else {
+                    errors.value.message = emergencyData.message;
+                    return;
+                }
             } else if(bioData.error === true){
                 errors.value.message = bioData.message;
                 return;
             }
             
-            processed = true;
+            processed.value = true;
         } catch (error) {
             errors.value.error = error;
             console.error('Error is :', error);
@@ -114,16 +120,16 @@ async function processBioData() {
 }
 
 async function processEmergencyContacts(applicantNo) {
-    const response = await fetch(`/application/processing-emergency-contacts/${applicantNo}`);
+    const response = await fetch(`/application/processing-emergency-contacts`);
     return await response.json();
 }
 async function processApplicantCourse(applicantNo) {
-    const response = await fetch(`/application/processing-applicant-coourse/${applicantNo}`);
+    const response = await fetch(`/application/processing-applicant-course`);
     return await response.json();
 }
 
 async function processApplicationConversion(applicantNo) {
-    const response = await fetch(`/application/processing-converting-application/${applicantNo}`);
+    const response = await fetch(`/application/processing-converting-application`);
     return await response.json();
 }
 

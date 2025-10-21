@@ -27,12 +27,17 @@ class PaymentController extends Controller
 
     public function getAmountPayable(){
         try{
-            $applicationID =session('applicant_data')['application_no'];
-            $studentNo = session('applicant_data')['student_no'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
-            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+
+            if($applicant){
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+                $studentNo = $applicant->student_no;
+            }
+
+            
 
             $studentUnitsQuery = $this->generalQueries->studentUnitsQuery();
             $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}' and Course_Code eq '{$applicantCourse->course_code}' and Course_Level eq '{$applicantCourse->course_level}'");
@@ -46,7 +51,8 @@ class PaymentController extends Controller
                     $totalFees += $unit['Unit_Fees'];
                 }
             }
-            session()->put('applicant_data.fee_amount', $totalFees);
+            $this->retrieveOrUpdateSessionData('put','fee_amount', $totalFees);
+            // session()->put('applicant_data.', $totalFees);
 
             return Inertia::render('Payments/AmountPayable',[
                 'applicantCourse' => $applicantCourse,
@@ -64,7 +70,7 @@ class PaymentController extends Controller
 
     public function getPaymentInstructions(){
         try{
-            $totalFees =session('applicant_data')['fee_amount'];
+            $totalFees =$this->retrieveOrUpdateSessionData('get','fee_amount');
             return Inertia::render('Payments/PaymentInstructions', [
                 'totalFees' => $totalFees,
             ]);
@@ -79,12 +85,17 @@ class PaymentController extends Controller
 
     public function getUpdatePaymentForm(){
         try{
-            $applicationID =session('applicant_data')['application_no'];
-            $studentNo = session('applicant_data')['student_no'];
+            $applicationID = $this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
-            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+
+            if($applicant){
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+                $studentNo = $applicant->student_no;
+            }
+      
+
 
             $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
             $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}' and CourseCode eq '{$applicantCourse->course_code}' and CourseLevel eq '{$applicantCourse->course_level}'");
@@ -118,12 +129,14 @@ class PaymentController extends Controller
         ]);
 
         try{
-            $applicationID =session('applicant_data')['application_no'];
-            $studentNo = session('applicant_data')['student_no'];
+            $applicationID= $this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
-            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+            if($applicant){
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+                $studentNo = $applicant->student_no;
+            }
 
             $context = $this->initializeSoapProcess();
             $soapClient = new \SoapClient(

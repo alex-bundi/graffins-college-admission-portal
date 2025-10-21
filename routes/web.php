@@ -136,9 +136,9 @@ Route::middleware('auth')->group(function () {
         // Application Processing
         Route::get('/application-processing', [ApplicationController::class, 'getApplicationProcessingPage'])->name('application.processing');
         Route::get('/processing-bio-data', [BusinessCentralSoapController::class, 'createApplicationInBC']);
-        Route::get('/processing-emergency-contacts/{applicantNo}', [BusinessCentralSoapController::class, 'insertEmergencyContacts']);
-        // Route::get('/processing-applicant-coourse/{applicantNo}', [ApplicationController::class, 'InsertApplicantCourse']);
-        // Route::get('/processing-converting-application/{applicantNo}', [ApplicationController::class, 'ConvertApplicationToCustomer']);
+        Route::get('/processing-emergency-contacts', [BusinessCentralSoapController::class, 'insertEmergencyContacts']);
+        Route::get('/processing-applicant-course', [BusinessCentralSoapController::class, 'insertApplicantCourse']);
+        Route::get('/processing-converting-application', [BusinessCentralSoapController::class, 'ConvertApplicationToCustomer']);
 
         // Admission Letter
         Route::get('/download-admission-letter/{studentNo}', [ApplicationController::class, 'downloadAdmissionLetter'])->name('download.admission.letter');

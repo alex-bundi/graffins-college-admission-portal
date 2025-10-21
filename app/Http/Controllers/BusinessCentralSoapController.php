@@ -157,12 +157,8 @@ class BusinessCentralSoapController extends Controller
                     }
                 }
                 
-                
-
-               
 
                 $this->testPerformance($this->start, 'performance', 'Creating Application in Business central took');
-                // dd('here');
                 return response()->json([
                     'success' => true,
                     'data' => $result,
@@ -191,53 +187,286 @@ class BusinessCentralSoapController extends Controller
         }
     }
 
-    public function insertEmergencyContacts($applicationID){
+    public function insertEmergencyContacts($retryCount = 0, $maxRetries = 3){
         try {
             $applicationID = $this->retrieveOrUpdateSessionData('get', 'application_no');
+            
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
             $context = $this->businessCentralAccess->initializeSoapProcess();
-            $soapClient = new SoapClient(
-                config('app.webService'), 
-                [
-                    'stream_context' => $context,
-                    'trace' => 1,
-                    'exceptions' => 1
-                    
-                ]
-            );
+
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            }
+            $applicationExists = $this->validateApplication();
+            $applicantNoBC = '';
+
+            if($applicationExists == 'Application not Submitted'){
+                
+            }
+           
+            if($applicationExists['hasApplication'] == null){
+                
+            } else if($applicationExists['hasApplication'] != null){
+                $applicantNoBC = $applicationExists['applicant']['application_no'];
+               
+            }
+
             $params = new \stdClass();
-            $params->applicationNo = trim($applicationID);
+            $params->applicationNo = $applicantNoBC;
             $params->fullName = trim(ucfirst($emergencyContact->full_name));
             $params->phoneNo = trim(($emergencyContact->phone_no));
             $params->relationship = ($emergencyContact->relationship);
             
             
-            $result = $soapClient->UpsertEmergencyContacts($params);
+            $result = $soapClient->UpsertApplicantEmergencyContacts($params);
             if($result){
-                $this->testPerformance($this->start, 'performance', 'Inserting Emergency Contacts in Business central took ');
+                if($result->return_value == true){
+                    $this->testPerformance($this->start, 'performance', 'Inserting Emergency Contacts in Business central took ');
 
-                return response()->json([
-                    'success' => true,
-                    'data' => $result,
-                ], 200);
+                    return response()->json([
+                        'success' => true,
+                        'data' => $result,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'There was an error inserting the Emergency contacts. Please try again, and if the issue continues, contact our support team for assistance.',
+                        'data' => $result,
+                    ], 404);
+                }
+                
         
             } else {
                 return response()->json([
-                'error' => false,
+                'error' => true,
                 'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
                 ], 404);
             }
 
         }catch(SoapFault | Exception $e){
-            if($e->getCode() == 0){
+            if($e->getCode() == 0 && $retryCount < $maxRetries){
                 $trials = 1;
                 $this->businessCentralAccess->initializeSoapProcess(true);
-                    // $this->createApplicationInBC();
+                return $this->insertEmergencyContacts($retryCount + 1, $maxRetries);
+
 
                 
             }
             return response()->json([
                 'error' => false,
+                'message' => $e->getMessage(),
+                'statusCode' => $e->getCode(),
+            ], 404);
+            
+        }
+    }
+
+
+    public function insertApplicantCourse($retryCount = 0, $maxRetries = 3){
+        try{
+            
+            // Get Applicant data
+            $applicationID =session('applicant_data')['application_no'];
+            $applicant = Applicant::where('id', $applicationID)
+                ->where('application_status', 'submitted')
+                ->first();
+
+            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+
+            if (!$applicantCourse) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Applicant not found'
+                ], 404);
+            } 
+
+
+            $context = $this->businessCentralAccess->initializeSoapProcess();
+
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            }
+
+            $applicationExists = $this->validateApplication();
+            $applicantNoBC = '';
+
+            if($applicationExists == 'Application not Submitted'){
+                
+            }
+           
+            if($applicationExists['hasApplication'] == null){
+                
+            } else if($applicationExists['hasApplication'] != null){
+                $applicantNoBC = $applicationExists['applicant']['application_no'];
+               
+            }
+
+
+            $params = new \stdClass();
+            $params->applicationNo = ($applicantNoBC);
+            $params->department = ($applicantCourse->department_code);
+            $params->modeOfStudy = (int) ($applicantCourse->mode_of_study);
+            $params->courseCode = $applicantCourse->course_code;
+            $params->courseLevel = $applicantCourse->course_level;
+            $params->startDate = $applicantCourse->start_date;
+            $params->endDate = $applicantCourse->end_date;
+            $params->classTime = $applicantCourse->class_time;
+            $params->courseType = $applicantCourse->unit_status;
+            $params->unitCode = $applicantCourse->unit_code;
+            $params->intake = $applicantCourse->intake_code;
+            $params->tutor = $applicantCourse->tutor_code;
+            $params->academicYr = $applicantCourse->academic_year;
+
+            
+            
+            $result = $soapClient->UpsertApplicantCourse($params);
+
+            if($result){
+
+              
+
+                if($result->return_value == true){
+                    $this->testPerformance($this->start, 'performance', 'Insertng Course details in Business central took');
+
+                    return response()->json([
+                        'success' => true,
+                        'data' => $result,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'There was an error inserting the Applicant course. Please try again, and if the issue continues, contact our support team for assistance.',
+                        'data' => $result,
+                    ], 404);
+                }
+        
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
+                ], 404);
+            }
+
+          
+        }catch(Exception $e){
+            if($e->getCode() == 0 && $retryCount < $maxRetries){
+                
+                // Refresh token
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                return $this->InsertApplicantCourse($retryCount + 1, $maxRetries);
+            }
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'statusCode' => $e->getCode(),
+            ], 404);
+        }
+    }
+
+
+    public function ConvertApplicationToCustomer($retryCount = 0, $maxRetries = 3){
+        try{
+            $applicationExists = $this->validateApplication();
+            $applicantNoBC = '';
+
+            if($applicationExists == 'Application not Submitted'){
+                
+            }
+           
+            if($applicationExists['hasApplication'] == null){
+                
+            } else if($applicationExists['hasApplication'] != null){
+                $applicantNoBC = $applicationExists['applicant']['application_no'];
+                $applicantPassportID = $applicationExists['applicant']['id_passport_No'];
+               
+            }
+            $context = $this->businessCentralAccess->initializeSoapProcess();
+
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            }
+
+            $params = new \stdClass();
+            $params->applicationNo = trim($applicantNoBC);
+            $params->passportID = trim($applicantPassportID);
+            $result = $soapClient->UpsertApplicantToCustomer($params);
+            if($result){
+                // Insert Application No
+                $applicationID =(int) $this->retrieveOrUpdateSessionData('get', 'application_no');
+                $applicant = Applicant::where('id', $applicationID)->first();
+
+                if($applicant){
+                    $currentAppNo = (string)($applicant->student_no ?? '');
+                    $newAppNo = (string)($result->return_value ?? '');
+                    
+                    if($currentAppNo !== $newAppNo){
+                        $applicant->student_no = $newAppNo;
+                        $applicant->save();
+                    }
+                }
+                
+
+                $this->testPerformance($this->start, 'performance', 'Converting Application to customer in Business central took');
+                return response()->json([
+                    'success' => true,
+                    'data' => $result,
+                ], 200);
+        
+            }else {
+                return response()->json([
+                    'error' => false,
+                    'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
+                ], 404);
+            }
+
+        }catch(\SoapFault | Exception $e){
+            if($e->getCode() == 0 && $retryCount < $maxRetries){
+                
+                // Refresh token
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                return $this->ConvertApplicationToCustomer($retryCount + 1, $maxRetries);
+            }
+            return response()->json([
+                'error' => true,
                 'message' => $e->getMessage(),
                 'statusCode' => $e->getCode(),
             ], 404);

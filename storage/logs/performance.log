@@ -1,1 +1,4 @@
-[2025-10-21 14:20:16] local.ERROR: [2025-10-21 14:20:16] Creating Application in Business central took took 5981.26 ms  
+[2025-10-21 17:17:35] local.ERROR: [2025-10-21 17:17:35] Creating Application in Business central took took 5878.82 ms  
+[2025-10-21 17:17:40] local.ERROR: [2025-10-21 17:17:40] Inserting Emergency Contacts in Business central took  took 4031.68 ms  
+[2025-10-21 17:17:45] local.ERROR: [2025-10-21 17:17:45] Insertng Course details in Business central took took 3676.3 ms  
+[2025-10-21 17:17:53] local.ERROR: [2025-10-21 17:17:53] Converting Application to customer in Business central took took 7455.34 ms  
