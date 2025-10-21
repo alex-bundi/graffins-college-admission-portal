@@ -12,6 +12,8 @@ use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use App\Models\EmergencyContact;
+use App\Http\Controllers\BusinessCentralAPIController;
+
 
 
 class PaymentController extends Controller
@@ -19,10 +21,16 @@ class PaymentController extends Controller
     use OdataTrait;
     use GeneralTrait;
     protected $generalQueries;
+    protected $businessCentralAccess;
+    protected $start;
+
 
     public function __construct()
     {
         $this->generalQueries = new GeneralQueries();
+        $this->businessCentralAccess = new BusinessCentralAPIController;
+        $this->start = microtime(true);
+
     }
 
     public function getAmountPayable(){
@@ -41,9 +49,14 @@ class PaymentController extends Controller
 
             $studentUnitsQuery = $this->generalQueries->studentUnitsQuery();
             $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}' and Course_Code eq '{$applicantCourse->course_code}' and Course_Level eq '{$applicantCourse->course_level}'");
-            $studentUnits = $this->getOdata($studentUnitsURL);
-            $studentUnitsData = $studentUnits['value'];
+            $studentUnits = $this->businessCentralAccess->getOdata($studentUnitsURL);
+            $response = $this->validateAPIResponse($studentUnits);
+        
+            if ($response) {
+                return $response;
+            }
 
+            $studentUnitsData = $studentUnits['data']['value'];
             $totalFees = 0;
 
             foreach ($studentUnitsData as $unit) {
@@ -51,6 +64,7 @@ class PaymentController extends Controller
                     $totalFees += $unit['Unit_Fees'];
                 }
             }
+
             $this->retrieveOrUpdateSessionData('put','fee_amount', $totalFees);
             // session()->put('applicant_data.', $totalFees);
 
@@ -99,10 +113,14 @@ class PaymentController extends Controller
 
             $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
             $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}' and CourseCode eq '{$applicantCourse->course_code}' and CourseLevel eq '{$applicantCourse->course_level}'");
-            $studentPayments = $this->getOdata($studentPaymentsURL);
-            // $studentPaymentsData = $studentPayments['value'][0];
+            $studentPayments =  $this->businessCentralAccess->getOdata($studentPaymentsURL);
+            $response = $this->validateAPIResponse($studentPayments);
+        
+            if ($response) {
+                return $response;
+            }
 
-             if (!empty($studentPayments['value']) && count($studentPayments['value']) > 0) {
+             if (!empty($studentPayments['data']['value']) && count($studentPayments['data']['value']) > 0) {
                     $studentPaymentsData = $studentPayments['value'][0];
             }else {
                 $studentPaymentsData = null;
@@ -120,7 +138,7 @@ class PaymentController extends Controller
 
     }
 
-    public function postPayment(Request $request){
+    public function postPayment(Request $request, $retryCount = 0, $maxRetries = 3){
         $validated = $request->validate([
             'amountPaid' => 'required|numeric',
             'datePaid' => 'required|date',
@@ -138,16 +156,25 @@ class PaymentController extends Controller
                 $studentNo = $applicant->student_no;
             }
 
-            $context = $this->initializeSoapProcess();
-            $soapClient = new \SoapClient(
-                config('app.webService'), 
-                [
-                    'stream_context' => $context,
-                    'trace' => 1,
-                    'exceptions' => 1
-                    
-                ]
-            );
+             $context = $this->businessCentralAccess->initializeSoapProcess();
+
+            
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            }
 
             $params = new \stdClass();
             $params->studentNo = $studentNo;
@@ -155,12 +182,17 @@ class PaymentController extends Controller
             $params->courseLevel = $applicantCourse->course_level;
             $params->amountPaid = $validated['amountPaid'];
             $params->datePaid = $validated['datePaid'];
-            $params->paymentRef = $validated['paymentReference'];
+            $params->paymentRef = trim($validated['paymentReference']);
             $params->paymentMode = (int) $validated['modeOfPayment'];
 
-            $result = $soapClient->InsertCapturePayment($params);
+            $result = $soapClient->InsertPayment($params);
             if($result){
-                if($result->return_value){
+                if($result->return_value == true){
+                    if($applicant){
+                        $applicant->payment_updated = true;
+                        $applicant->save();
+                    }
+
                     return redirect()->route('student.id')->with('success', 'Payment details captured successfully');
 
                 } else{
@@ -172,7 +204,13 @@ class PaymentController extends Controller
             
 
             
-        }catch(Exception $e){
+        }catch(\SoapFault | Exception $e){
+            if($e->getCode() == 0 && $retryCount < $maxRetries){
+                
+                // Refresh token
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                return $this->postPayment($request, $retryCount + 1, $maxRetries);
+            }
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);

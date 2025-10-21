@@ -33,7 +33,9 @@ class Applicant extends Model
         'id_passport_No',
         'declaration_accepted',
         'student_no',
-        'religion'
+        'religion',
+        'payment_updated',
+        'student_id_verification_updated',
     ];
 
     protected $hidden = [

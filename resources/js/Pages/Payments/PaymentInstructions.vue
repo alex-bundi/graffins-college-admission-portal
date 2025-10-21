@@ -15,7 +15,7 @@ const success = ref({});
 </script>
 
 <template>
-    <Head title="Rules & Regulations" />
+    <Head title="Payment Instructions" />
     <AuthenticatedLayout>
         <div>
                 <Notifications :errors="errors" :success="success"/> 

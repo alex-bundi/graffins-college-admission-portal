@@ -10,6 +10,7 @@ const props = defineProps({
     studentPayments: Object,
 });
 
+
 let paymentMode = ref(null);
 
 if((props.studentPayments != null) && (props.studentPayments.Payment_Mode == 'Bank')){

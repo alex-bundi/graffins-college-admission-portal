@@ -796,6 +796,7 @@ class ApplicationController extends Controller
             'idVerificationURL' => 'required|string',
         ]);
         try{
+            dd('here');
             $studentNo = session('applicant_data')['student_no'];
             $context = $this->initializeSoapProcess();
             $soapClient = new \SoapClient(

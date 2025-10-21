@@ -21,7 +21,7 @@ const success = ref({});
 </script>
 
 <template>
-    <Head title="Rules & Regulations" />
+    <Head title="Amount Payable" />
     <AuthenticatedLayout>
         <div>
                 <Notifications :errors="errors" :success="success"/> 
@@ -58,9 +58,9 @@ const success = ref({});
 
                     </p>
                     <ul class="flex flex-col font-bold space-y-4 p-4 font-josefin text-sm tracking-wider">
-                        <li>
+                        <!-- <li>
                             - Summary: 
-                        </li>
+                        </li> -->
                         <li>
                             <h3>
                                 Department:
@@ -86,7 +86,7 @@ const success = ref({});
                             - Units:
                             <ul>
                                 <li v-for="unit in studentUnits" class="font-monteserat text-black font-bold pl-4 pt-3">
-                                   -> {{ unit.Unit_Code }}
+                                   -> {{ unit.Unit_Description }}
                                 </li>
                             </ul>
                         </li>
