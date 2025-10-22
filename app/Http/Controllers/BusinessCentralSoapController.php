@@ -146,7 +146,6 @@ class BusinessCentralSoapController extends Controller
                 // Insert Application No
                 $applicationID =(int) $this->retrieveOrUpdateSessionData('get', 'application_no');
                 $applicant = Applicant::where('id', $applicationID)->first();
-
                 if($applicant){
                     $currentAppNo = (string)($applicant->application_no ?? '');
                     $newAppNo = (string)($result->return_value ?? '');
@@ -433,6 +432,8 @@ class BusinessCentralSoapController extends Controller
                 // Insert Application No
                 $applicationID =(int) $this->retrieveOrUpdateSessionData('get', 'application_no');
                 $applicant = Applicant::where('id', $applicationID)->first();
+                $this->retrieveOrUpdateSessionData('put', 'student_no', $result->return_value);
+
 
                 if($applicant){
                     $currentAppNo = (string)($applicant->student_no ?? '');

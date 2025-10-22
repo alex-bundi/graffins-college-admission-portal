@@ -148,12 +148,13 @@ class PaymentController extends Controller
 
         try{
             $applicationID= $this->retrieveOrUpdateSessionData('get','application_no' );
+            $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
+
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'submitted')
                 ->first();
             if($applicant){
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
-                $studentNo = $applicant->student_no;
             }
 
              $context = $this->businessCentralAccess->initializeSoapProcess();
