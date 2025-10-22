@@ -773,11 +773,19 @@ class ApplicationController extends Controller
 
     public function getStudentIDPage(){
         try{
-            $studentNo = session('applicant_data')['student_no'];
+            $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
             $studentQuery = $this->generalQueries->studentsQuery();
             $studentURL = config('app.odata') . "{$studentQuery}?". '$filter=' . rawurlencode("No eq '{$studentNo}'");
-            $students= $this->getOdata($studentURL);
-            $studentsData = $students['value'][0];
+            $students=  $this->businessCentralAccess->getOdata($studentURL);
+            $response = $this->validateAPIResponse($students);
+        
+            if ($response) {
+                return $response;
+            }
+
+            $studentsData = $students['data']['value'][0];
+
+            $this->testPerformance($this->start, 'performance', 'getting Students from ERP');
             return Inertia::render('Application/AccessStudentID', [
                 'studentsData' => $studentsData,
             ]);
@@ -790,24 +798,31 @@ class ApplicationController extends Controller
 
     }
 
-    public function postStudentID(Request $request){
+    public function postStudentID(Request $request , $retryCount = 0, $maxRetries = 3){
         $validated = $request->validate([
             'studentPortalPWD' => 'required|string',
             'idVerificationURL' => 'required|string',
         ]);
         try{
-            dd('here');
-            $studentNo = session('applicant_data')['student_no'];
-            $context = $this->initializeSoapProcess();
-            $soapClient = new \SoapClient(
-                config('app.webService'), 
-                [
-                    'stream_context' => $context,
-                    'trace' => 1,
-                    'exceptions' => 1
-                    
-                ]
-            );
+            $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
+             $context = $this->businessCentralAccess->initializeSoapProcess();
+
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            }
 
             $params = new \stdClass();
             $params->studentNo = $studentNo;
@@ -826,7 +841,13 @@ class ApplicationController extends Controller
                 }
             }
             
-        }catch(Exception $e){
+        }catch(\SoapFault | Exception $e){
+            if($e->getCode() == 0 && $retryCount < $maxRetries){
+                
+                // Refresh token
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                return $this->postStudentID($request, $retryCount + 1, $maxRetries);
+            }
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
@@ -850,17 +871,26 @@ class ApplicationController extends Controller
 
     public function downloadAdmissionLetter($studentNo){
         try{
-            $context = $this->initializeSoapProcess();
-            $soapClient = new \SoapClient(
-                config('app.webService'), 
-                [
-                    'stream_context' => $context,
-                    'trace' => 1,
-                    'exceptions' => 1
-                    
-                ]
-            );
-            $studentNo = session('applicant_data')['student_no'];
+            $context = $this->businessCentralAccess->initializeSoapProcess();
+
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            };
+
+            $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
             $params = new \stdClass();
             $params->studentNo = $studentNo;
             
@@ -890,6 +920,78 @@ class ApplicationController extends Controller
             ]);
         }
     }
+
+    public function getStudentIDPDFPage(){
+        try{
+            $studentNo = $this->retrieveOrUpdateSessionData('get','student_no');
+            return Inertia::render('Application/StudentIDDownload', [
+                'studentNo' => $studentNo,
+            ]);
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+     public function postStudentIDPDFPage(){
+        try{
+            $context = $this->businessCentralAccess->initializeSoapProcess();
+
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            };
+
+            $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
+            $params = new \stdClass();
+            $params->studentNo = $studentNo;
+            
+            $result = $soapClient->GetStudentID($params);
+            if($result){
+                if($result->return_value === 'Could Not find student'){
+                    return redirect()->back()->with('error', 'Could Not find student');
+                }
+                if($this->is_base64($result->return_value)){
+                    $base64Data = $result->return_value;
+                    $pdf_decoded = base64_decode ($base64Data);
+
+                    $fileName = 'Student_ID' . '_' . $studentNo . '_' . '.pdf';
+                    file_put_contents($fileName, $pdf_decoded);
+
+                    return response($pdf_decoded)
+                        ->header('Content-Type', 'application/pdf')
+                        ->header('Content-Disposition', "attachment; filename=\"$fileName\"");
+                } else {
+                    return redirect()->back()->with('error', 'The result is not a valid base64 string.');
+
+                }
+            }
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
+    }
+
+
+
      public function getFinalPage(){
         return Inertia::render('Application/Final');
 

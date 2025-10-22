@@ -16,7 +16,7 @@ const success = ref({});
 </script>
 
 <template>
-    <Head title="Download Admission Letter" />
+    <Head title="Download Student ID PDF" />
     <AuthenticatedLayout>
         <div>
                 <Notifications :errors="errors" :success="success"/> 
@@ -28,7 +28,7 @@ const success = ref({});
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
-                    📄 Download Admission Letter
+                    📄 Download Student ID
                 </h1>
 
                 <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
@@ -40,17 +40,17 @@ const success = ref({});
       
         <div class="mt-4">
                 <p class="font-josefin font-bold text-base sm:text-xl tracking-wider">
-                    Click below to download your official Admission Letter.
+                    Click below to download your official Student ID.
                 </p>
-                <a :href="route('download.admission.letter', props.studentNo)" class="flex items-center gap-2 px-6 py-3 text-amber-500 text-xl font-josefin tracking-wider font-bold  mb-4 hover:text-green-600">
-                    [Download Admission Letter]
+                <a :href="route('post.download.student.id', props.studentNo)" class="flex items-center gap-2 px-6 py-3 text-amber-500 text-xl font-josefin tracking-wider font-bold  mb-4 hover:text-green-600">
+                    [Download Student ID]
                 </a>
         </div>
 
         
         <div>
              <div class="w-1/4">
-                <Link :href="route('download.student.id')" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
+                <Link :href="route('final')" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
                                 rounded-full shadow-md 
                                 bg-gradient-to-b from-lime-400 to-green-500 
                                 hover:from-lime-500 hover:to-green-600 

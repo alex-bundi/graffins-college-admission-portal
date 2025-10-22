@@ -131,6 +131,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/post-student-id', [ApplicationController::class, 'postStudentID'])->name('post.upload.photo');
 
         Route::get('/admission-letter', [ApplicationController::class, 'getAdmissionLetterPage'])->name('admission.letter');
+        Route::get('/download-student-id', [ApplicationController::class, 'getStudentIDPDFPage'])->name('download.student.id');
+        Route::get('/post-download-student-id', [ApplicationController::class, 'postStudentIDPDFPage'])->name('post.download.student.id');
         Route::get('/final', [ApplicationController::class, 'getFinalPage'])->name('final');
 
         // Application Processing
