@@ -128,6 +128,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/post-personal-information-summary', [BioDataController::class, 'postBiodataSummary'])->name('post.bio.data.summary');
         
         Route::get('/student-id', [ApplicationController::class, 'getStudentIDPage'])->name('student.id');
+        Route::get('/edit-student-id/{applicationID}', [ApplicationController::class, 'editStudentID'])->name('edit.student.id');
         Route::post('/post-student-id', [ApplicationController::class, 'postStudentID'])->name('post.upload.photo');
 
         Route::get('/admission-letter', [ApplicationController::class, 'getAdmissionLetterPage'])->name('admission.letter');
@@ -168,6 +169,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/amount-payable', [PaymentController::class, 'getAmountPayable'])->name('amount.payable');
         Route::get('/payment-instructions', [PaymentController::class, 'getPaymentInstructions'])->name('payment.instructions');
         Route::get('/update-payment', [PaymentController::class, 'getUpdatePaymentForm'])->name('update.payment');
+        Route::get('/edit-update-payment/{applicationID}', [PaymentController::class, 'editPayment'])->name('edit.payment');
         Route::post('/post-update-payment', [PaymentController::class, 'postPayment'])->name('post.payment');
         
 

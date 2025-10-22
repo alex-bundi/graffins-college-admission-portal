@@ -30,6 +30,7 @@ class CourseController extends Controller
             $email = Auth::user()->email; 
 
             $applications = Applicant::where('email', $email)->get();
+            // dd($applications);
             
             return Inertia::render('CourseList',[
                 'applications' => $applications,

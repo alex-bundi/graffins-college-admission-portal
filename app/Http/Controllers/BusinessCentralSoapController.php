@@ -441,6 +441,7 @@ class BusinessCentralSoapController extends Controller
                     
                     if($currentAppNo !== $newAppNo){
                         $applicant->student_no = $newAppNo;
+                        $applicant->application_status = 'processed';
                         $applicant->save();
                     }
                 }

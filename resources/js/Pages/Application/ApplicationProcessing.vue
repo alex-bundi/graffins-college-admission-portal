@@ -48,6 +48,7 @@ onMounted(async () => {
                         const applicationConversion = await processApplicationConversion(bioData.data.return_value);
                         console.log('Conversion data:', applicationConversion);
                         if(applicationConversion?.success === true){
+                            convertingApplication.value = true;
                             isRegistrationComplete.value = true;
                             router.visit('/payments/amount-payable')
 
@@ -79,39 +80,7 @@ onMounted(async () => {
     }
 });
 
-// onMounted(async () => {
-//     if (!processed) {
-//         try {
-//             // First operation
-//             const bioData = await processBioData();
-//             console.log('Bio data:', bioData);
-            
-//             if (bioData?.success === true) {
-//                 const emergencyData = await processEmergencyContacts(bioData.data.return_value);
-//                 console.log('Emergency data:', emergencyData);
 
-//                     if(emergencyData?.success === true){
-//                         const courseData = await processApplicantCourse(bioData.data.return_value);
-//                          console.log('Course data:', courseData);
-
-//                          if(courseData?.success === true){
-//                             const applicationConversion = await processApplicationConversion(bioData.data.return_value);
-//                             console.log('Conversion data:', applicationConversion);
-//                             if(applicationConversion?.success === true){
-//                                 router.visit('/payments/amount-payable')
-
-//                             }
-//                             // return;
-//                          }
-//                     }
-//             }
-            
-//             processed = true;
-//         } catch (error) {
-//             console.error('Error in onMounted:', error);
-//         }
-//     }
-// });
 
 // Simplified functions that just handle their specific logic
 async function processBioData() {

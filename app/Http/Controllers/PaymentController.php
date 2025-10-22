@@ -12,6 +12,7 @@ use App\Traits\OdataTrait;
 use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use App\Models\EmergencyContact;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BusinessCentralAPIController;
 
 
@@ -23,6 +24,7 @@ class PaymentController extends Controller
     protected $generalQueries;
     protected $businessCentralAccess;
     protected $start;
+    protected $user;
 
 
     public function __construct()
@@ -30,6 +32,7 @@ class PaymentController extends Controller
         $this->generalQueries = new GeneralQueries();
         $this->businessCentralAccess = new BusinessCentralAPIController;
         $this->start = microtime(true);
+        $this->user = Auth::user();
 
     }
 
@@ -37,14 +40,17 @@ class PaymentController extends Controller
         try{
             $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)
-                ->where('application_status', 'submitted')
+                ->where('application_status', 'processed')
                 ->first();
 
-            if($applicant){
-                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
-                $studentNo = $applicant->student_no;
-            }
 
+            if(!$applicant){
+               return redirect()->back()->withErrors([
+                    'error' => 'The application could not be processed. Please try again. If the issue persists, contact support for assistance.'
+                ]); 
+            }
+            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+            $studentNo = $applicant->student_no;
             
 
             $studentUnitsQuery = $this->generalQueries->studentUnitsQuery();
@@ -75,6 +81,7 @@ class PaymentController extends Controller
             ]);
 
         }catch(Exception $e){
+            dd($e->getMessage());
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
@@ -101,7 +108,7 @@ class PaymentController extends Controller
         try{
             $applicationID = $this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)
-                ->where('application_status', 'submitted')
+                ->where('application_status', 'processed')
                 ->first();
 
             if($applicant){
@@ -138,6 +145,44 @@ class PaymentController extends Controller
 
     }
 
+    public function editPayment($applicationID){
+        try{
+            $applicant = Applicant::where('email', $this->user->email)
+                ->where('id' , $applicationID)
+                ->first();
+
+            if($applicant){
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+                $studentNo = $applicant->student_no;
+            }
+      
+
+
+            $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
+            $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}' and CourseCode eq '{$applicantCourse->course_code}' and CourseLevel eq '{$applicantCourse->course_level}'");
+            $studentPayments =  $this->businessCentralAccess->getOdata($studentPaymentsURL);
+            $response = $this->validateAPIResponse($studentPayments);
+        
+            if ($response) {
+                return $response;
+            }
+
+             if (!empty($studentPayments['data']['value']) && count($studentPayments['data']['value']) > 0) {
+                    $studentPaymentsData = $studentPayments['data']['value'][0];
+            }else {
+                $studentPaymentsData = null;
+            }
+            return Inertia::render('Payments/UpdatePayment', [
+                'studentPayments' => $studentPaymentsData,
+            ]);
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function postPayment(Request $request, $retryCount = 0, $maxRetries = 3){
         $validated = $request->validate([
             'amountPaid' => 'required|numeric',
@@ -151,8 +196,9 @@ class PaymentController extends Controller
             $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
 
             $applicant = Applicant::where('id', $applicationID)
-                ->where('application_status', 'submitted')
+                ->where('application_status', 'processed')
                 ->first();
+
             if($applicant){
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
             }

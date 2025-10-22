@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('applicant', function (Blueprint $table) {
             //
-            $table->boolean('payment_updated')->nullable();
-            $table->boolean('student_id_verification_updated')->nullable();
+            $table->boolean('payment_updated')->nullable()->default(false);
+            $table->boolean('student_id_verification_updated')->nullable()->default(false);
 
         });
     }

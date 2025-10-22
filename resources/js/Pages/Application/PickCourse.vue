@@ -136,15 +136,16 @@ function submit(){
                     <!-- Business Courses section -->
                     <section v-show="props.department == 'WBM'">
                         <!-- Header -->
-                        <div class="p-6 bg-white rounded-md ">
-                            <h2 class="font-monteserat text-base tracking-wider">
+                        <div class="p-6 underline underline-offset-4 ">
+                            <h2 class="flex justify-center font-monteserat text-xl tracking-wider">
                                 🖥️ Business Department
                             </h2>
                         </div>
                          <!-- Business Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="course in businessCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode + '..' + course.CourseDescription" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" 
+                                        @change="getDescription(course.CourseDescription)"/>
                                     <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
@@ -165,15 +166,16 @@ function submit(){
                     <!-- English Courses section -->
                     <section v-show="props.department == 'WENG'">
                         <!-- Header -->
-                        <div class="p-6 bg-white rounded-md ">
-                            <h2 class="font-monteserat text-base tracking-wider">
+                        <div class="p-6 underline underline-offset-4 ">
+                            <h2 class="flex justify-center font-monteserat text-xl tracking-wider">
                                 🗣️ Language Skills Department
                             </h2>
                         </div>
                          <!-- English Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="course in engCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode + '..' + course.CourseDescription" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" 
+                                        @change="getDescription(course.CourseDescription)"/>
                                     <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor

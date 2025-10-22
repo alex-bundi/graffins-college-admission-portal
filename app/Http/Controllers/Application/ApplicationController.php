@@ -798,6 +798,43 @@ class ApplicationController extends Controller
 
     }
 
+    public function editStudentID($applicationID){
+        try{
+            $applications = Applicant::where('email', $this->user->email)
+                ->where('id' , $applicationID)
+                ->first();
+
+            if(!$applications){
+                return redirect()->back()->withErrors([
+                    'error' => 'Application not found'
+                ]);
+            }
+            $this->retrieveOrUpdateSessionData('put','student_no', $applications->student_no);
+
+            $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
+            $studentQuery = $this->generalQueries->studentsQuery();
+            $studentURL = config('app.odata') . "{$studentQuery}?". '$filter=' . rawurlencode("No eq '{$studentNo}'");
+            $students=  $this->businessCentralAccess->getOdata($studentURL);
+            $response = $this->validateAPIResponse($students);
+        
+            if ($response) {
+                return $response;
+            }
+
+            $studentsData = $students['data']['value'][0];
+
+            $this->testPerformance($this->start, 'performance', 'getting Students from ERP');
+            return Inertia::render('Application/AccessStudentID', [
+                'studentsData' => $studentsData,
+            ]);
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function postStudentID(Request $request , $retryCount = 0, $maxRetries = 3){
         $validated = $request->validate([
             'studentPortalPWD' => 'required|string',
@@ -831,7 +868,15 @@ class ApplicationController extends Controller
             $result = $soapClient->InsertStudentIDDetails($params);
 
             if($result){
+
                 if($result->return_value){
+                     $applicationID= $this->retrieveOrUpdateSessionData('get','application_no' );
+
+                    $applicant = Applicant::where('id', $applicationID)->first();
+                    if($applicant){
+                        $applicant->student_id_verification_updated = true;
+                        $applicant->save();
+                    }
                     return redirect()->route('admission.letter')->with('success', 'Student ID details captured successfully');
 
                 } else{
