@@ -386,7 +386,7 @@ const applicationCount = computed(() => {
                                         </div>
                                     </div>
 
-                                    <div class="flex ">
+                                    <div class="flex flex-col space-y-4 sm:space-y-0  sm:flex-row">
                                         
                                         <div v-if="(application.payment_updated == 0)" class="mt-4 w-full">
                                             <div>
