@@ -124,7 +124,7 @@ function submit(){
                             </h2>
                         </div>
                          
-                        <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                        <ul class="grid w-full gap-6 md:grid-cols-2 mt-2">
                                 <li v-for="intake in intakes" :key="intake.Code">
                                     <input type="radio" v-model="form.intake" :id="intake.Code" :name="intake.Code" :value="intake.Code" class="hidden peer"  
                                         @change="getDescription(intake.Description)"/>
