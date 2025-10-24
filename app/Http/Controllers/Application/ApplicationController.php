@@ -208,7 +208,7 @@ class ApplicationController extends Controller
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
             $departmentsData = $this->businessCentralAccess->getOdata($departmentsURL);
-            $response = $this->validateAPIResponse($departmentsData);
+            $response = $this->validateAPIResponse($departmentsData, url()->previous());
            
             if ($response) {
                 return $response;
@@ -421,7 +421,7 @@ class ApplicationController extends Controller
             // $coursesURL = config('app.odata') . "{$courseQuery}?" . '$filter=' . rawurlencode("DepartmentCode eq '{$applicantCourse->department_code}'");
 
             $courseData = $this->businessCentralAccess->getOdata($coursesURL);
-            $response = $this->validateAPIResponse($courseData);
+            $response = $this->validateAPIResponse($courseData, url()->previous());
            
             if ($response) {
                 return $response;
@@ -483,7 +483,7 @@ class ApplicationController extends Controller
                 $unitFeesQuery = $this->generalQueries->unitFeesQuery();
                 $unitFeesURL = config('app.odata') . "{$unitFeesQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
                 $unitFeesData = $this->businessCentralAccess->getOdata($unitFeesURL);
-                $response = $this->validateAPIResponse($unitFeesData);
+                $response = $this->validateAPIResponse($unitFeesData, url()->previous());
            
                 if ($response) {
                     return $response;
@@ -500,7 +500,7 @@ class ApplicationController extends Controller
                 $courseLevelsQuery = $this->generalQueries->courseLevelsQuery();
                 $courseLevelsURL = config('app.odata') . "{$courseLevelsQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
                 $courseLevelsData = $this->businessCentralAccess->getOdata($courseLevelsURL);
-                $response = $this->validateAPIResponse($courseLevelsData);
+                $response = $this->validateAPIResponse($courseLevelsData, url()->previous());
            
                 if ($response) {
                     return $response;
@@ -519,7 +519,7 @@ class ApplicationController extends Controller
                 $courseLevelsURL = config('app.odata') . "{$courseLevelsQuery}?". '$filter=' . rawurlencode("CourseCode eq '{$applicanCourseCode}'");
                 $courseLevelsData = $this->businessCentralAccess->getOdata($courseLevelsURL);
 
-                $response = $this->validateAPIResponse($courseLevelsData);
+                $response = $this->validateAPIResponse($courseLevelsData, url()->previous());
            
                 if ($response) {
                     return $response;
@@ -671,7 +671,7 @@ class ApplicationController extends Controller
             $classTimeQuery = $this->generalQueries->classTimeQuery();
             $classTimeURL = config('app.odata') . "{$classTimeQuery}";
             $classTimeData = $this->businessCentralAccess->getOdata($classTimeURL);
-            $response = $this->validateAPIResponse($classTimeData);
+            $response = $this->validateAPIResponse($classTimeData, url()->previous());
         
             if ($response) {
                 return $response;
@@ -777,7 +777,7 @@ class ApplicationController extends Controller
             $studentQuery = $this->generalQueries->studentsQuery();
             $studentURL = config('app.odata') . "{$studentQuery}?". '$filter=' . rawurlencode("No eq '{$studentNo}'");
             $students=  $this->businessCentralAccess->getOdata($studentURL);
-            $response = $this->validateAPIResponse($students);
+            $response = $this->validateAPIResponse($students, url()->previous());
         
             if ($response) {
                 return $response;
@@ -815,7 +815,7 @@ class ApplicationController extends Controller
             $studentQuery = $this->generalQueries->studentsQuery();
             $studentURL = config('app.odata') . "{$studentQuery}?". '$filter=' . rawurlencode("No eq '{$studentNo}'");
             $students=  $this->businessCentralAccess->getOdata($studentURL);
-            $response = $this->validateAPIResponse($students);
+            $response = $this->validateAPIResponse($students, url()->previous());
         
             if ($response) {
                 return $response;
@@ -1092,7 +1092,7 @@ class ApplicationController extends Controller
             $intakeQuery = $this->generalQueries->intakesQuery();
             $intakeURL = config('app.odata')  . "{$intakeQuery}?" . '$filter=' . rawurlencode("AcademicYear eq '{$currentYr}'");
             $intakes=  $this->businessCentralAccess->getOdata($intakeURL);
-            $response = $this->validateAPIResponse($intakes);
+            $response = $this->validateAPIResponse($intakes, url()->previous());
         
             if ($response) {
                 return $response;
@@ -1146,7 +1146,7 @@ class ApplicationController extends Controller
             $tutorsQuery = $this->generalQueries->tutorsQuery();
             $tutorsURL = config('app.odata')  . "{$tutorsQuery}?" . '$filter=' . rawurlencode("Course_Code eq '{$applicantCourse->course_code}'");
             $tutors=  $this->businessCentralAccess->getOdata($tutorsURL);
-            $response = $this->validateAPIResponse($tutors);
+            $response = $this->validateAPIResponse($tutors, url()->previous());
         
             if ($response) {
                 return $response;

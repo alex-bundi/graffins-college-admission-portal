@@ -79,7 +79,7 @@ function submit(){
 
         <div class="mt-12"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
                    
 
                    
@@ -92,7 +92,7 @@ function submit(){
                             </h2>
                         </div>
                          
-                        <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                        <ul class="grid w-full gap-6 md:grid-cols-3 mt-2">
                                 <li v-for="tutor in tutors" :key="tutor.Tutor_Code">
                                     <input type="radio" v-model="form.tutor" :id="tutor.Tutor_Code" :name="tutor.Tutor_Code" :value="tutor.Tutor_Code" class="hidden peer" 
                                         @change="getDescription(tutor.Tutor_Names)"/>

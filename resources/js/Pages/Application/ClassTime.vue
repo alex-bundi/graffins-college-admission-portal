@@ -85,7 +85,7 @@ function submit(){
         <div class="mt-12"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
               
-                <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                <ul class="grid w-full gap-6 md:grid-cols-3 mt-2">
                     <li v-for="classTime in props.classTimes" :key="classTime.Code">
                         <input type="radio" v-model="form.time" :id="classTime.Code" :name="classTime.Code" :value="classTime.Code" class="hidden peer" />
                         <label :for="classTime.Code" class="inline-flex items-center justify-between w-full p-5 text-gray-500 

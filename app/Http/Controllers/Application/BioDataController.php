@@ -290,7 +290,7 @@ class BioDataController extends Controller
             $countriesQuery = $this->generalQueries->countriesQuery();
             $countriesURL = config('app.odata') . "{$countriesQuery}";
             $countriesData = $this->businessCentralAccess->getOdata($countriesURL);
-            $response = $this->validateAPIResponse($countriesData);
+            $response = $this->validateAPIResponse($countriesData, url()->previous());
            
             if ($response) {
                 return $response;
@@ -408,7 +408,7 @@ class BioDataController extends Controller
             $residenceQuery = $this->generalQueries->residenceQuery();
             $residenceURL = config('app.odata') . "{$residenceQuery}?" . '$filter=' . rawurlencode("Type eq 'Location'");
             $residenceData =  $this->businessCentralAccess->getOdata($residenceURL);
-            $response = $this->validateAPIResponse($residenceData);
+            $response = $this->validateAPIResponse($residenceData, url()->previous());
            
             if ($response) {
                 return $response;
@@ -470,7 +470,7 @@ class BioDataController extends Controller
             $marketingQuery = $this->generalQueries->marketingQuery();
             $marketingURL = config('app.odata') . "{$marketingQuery}";
             $marketingData =  $this->businessCentralAccess->getOdata($marketingURL);
-            $response = $this->validateAPIResponse($marketingData);
+            $response = $this->validateAPIResponse($marketingData, url()->previous());
            
             if ($response) {
                 return $response;
@@ -878,7 +878,7 @@ class BioDataController extends Controller
             $countriesURL = config('app.odata') . "{$countriesQuery}";
             $countriesData = $this->businessCentralAccess->getOdata($countriesURL);
             
-            $response = $this->validateAPIResponse($countriesData);
+            $response = $this->validateAPIResponse($countriesData, url()->previous());
            
             if ($response) {
                 return $response;

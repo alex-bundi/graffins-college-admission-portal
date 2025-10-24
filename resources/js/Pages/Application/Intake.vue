@@ -84,7 +84,7 @@ function submit(){
 
         <div class="mt-12"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                    
 
                     <section>
@@ -124,7 +124,7 @@ function submit(){
                             </h2>
                         </div>
                          
-                        <ul class="grid w-full gap-6 md:grid-cols-2 mt-2">
+                        <ul class="grid w-full gap-6 md:grid-cols-3 mt-2">
                                 <li v-for="intake in intakes" :key="intake.Code">
                                     <input type="radio" v-model="form.intake" :id="intake.Code" :name="intake.Code" :value="intake.Code" class="hidden peer"  
                                         @change="getDescription(intake.Description)"/>

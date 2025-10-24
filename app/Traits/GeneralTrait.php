@@ -70,12 +70,12 @@ trait GeneralTrait {
         Log::channel($logfile)->error($logMessage);
     }
 
-    public function validateAPIResponse($apiResponse){
+    public function validateAPIResponse($apiResponse, $previousURL){
         
         if ($apiResponse['statusCode'] == 401 || $apiResponse['statusCode'] == 0) {
             return redirect()->route('api.errors')->with([
                 'data' => $apiResponse,
-                'previousURL' => url()->previous(),
+                'previousURL' => $previousURL,
             ]);
         } 
     }

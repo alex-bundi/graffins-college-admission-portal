@@ -73,13 +73,15 @@ function submit(){
 
 const listItems = ref({});
 
-if (props.department == 'WCAPS'){
-    listItems.value = itCourses
-} else if (props.department == 'WENG'){
-    listItems.value = engCourses
-} else if (props.department == 'WBM'){
-    listItems.value = businessCourses
-}
+onMounted(() => {
+    if (props.department == 'WCAPS'){
+        listItems.value = itCourses
+    } else if (props.department == 'WENG'){
+        listItems.value = engCourses
+    } else if (props.department == 'WBM'){
+        listItems.value = businessCourses
+    }
+})
 
 function filterList(){
     var searchInput, searchInputValue , i;
@@ -95,7 +97,7 @@ function filterList(){
             if(courseDescription.includes(searchInputValue)){
                 console.log(courseDescription);
             } else {
-                // delete listItems.value[i];
+                delete listItems.value[i];
             }
         }
     }
@@ -146,11 +148,21 @@ function filterList(){
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
                <div class="">
                     <!-- It Courses section -->
-                    <section v-show="props.department == 'WCAPS'">
+                    <section >
                         <!-- Header -->
                         <div class="p-6 underline underline-offset-4">
                             <h2 class="flex justify-center font-monteserat text-xl tracking-wider">
-                                💼 Technology Department
+                                <span v-show="department == 'WCAPS'">
+                                    💼 Technology Department
+                                </span>
+
+                                 <span v-show="department == 'WBM'">
+                                    🖥️ Business Department
+                                </span>
+
+                                <span v-show="department == 'WENG'">
+                                    🗣️ Language Skills Department
+                                </span>
                             </h2>
                         </div>
                          <!-- IT Courses -->
@@ -176,65 +188,6 @@ function filterList(){
                         </ul>
                     </section>
 
-                    <!-- Business Courses section -->
-                    <section v-show="props.department == 'WBM'">
-                        <!-- Header -->
-                        <div class="p-6 underline underline-offset-4 ">
-                            <h2 class="flex justify-center font-monteserat text-xl tracking-wider">
-                                🖥️ Business Department
-                            </h2>
-                        </div>
-                         <!-- Business Courses -->
-                        <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li v-for="course in businessCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" 
-                                        @change="getDescription(course.CourseDescription)"/>
-                                    <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
-                                        peer-checked:border-primaryColor
-                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                        dark:text-gray-400 ">                           
-                                        <div class="block">
-                                            <div class="w-full text-lg font-semibold">{{ course.CourseDescription }}</div>
-                                        </div>
-                                        
-                                    </label>
-                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.courseCode">{{ form.errors.courseCode }}</div>
-
-                                </li>
-                             
-                            </ul>
-                    </section>
-
-                    <!-- English Courses section -->
-                    <section v-show="props.department == 'WENG'">
-                        <!-- Header -->
-                        <div class="p-6 underline underline-offset-4 ">
-                            <h2 class="flex justify-center font-monteserat text-xl tracking-wider">
-                                🗣️ Language Skills Department
-                            </h2>
-                        </div>
-                         <!-- English Courses -->
-                        <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
-                                <li v-for="course in engCourses" :key="course.CourseCode">
-                                    <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" 
-                                        @change="getDescription(course.CourseDescription)"/>
-                                    <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
-                                        peer-checked:border-primaryColor
-                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                        dark:text-gray-400 ">                           
-                                        <div class="block">
-                                            <div class="w-full text-lg font-semibold">{{ course.CourseDescription }}</div>
-                                        </div>
-                                        
-                                    </label>
-                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.courseCode">{{ form.errors.courseCode }}</div>
-
-                                </li>
-                             
-                            </ul>
-                    </section>
                </div>
 
                 <div class="w-1/4">

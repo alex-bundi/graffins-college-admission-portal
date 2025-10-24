@@ -76,18 +76,18 @@ function submit(){
 
         <div class="mt-12"> 
             <form action="" method="post" class="flex flex-col space-y-6" @submit.prevent="submit">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="">
                    
 
                     <section>
                         <!-- Header -->
-                        <div class="p-6 bg-white rounded-md ">
-                            <h2 class="font-monteserat text-base tracking-wider">
+                        <div class="p-6 underline underline-offset-4 ">
+                            <h2 class="flex justify-center font-monteserat text-xl tracking-wider">
                                 Course Levels
                             </h2>
                         </div>
                          <!-- English Courses -->
-                        <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
+                        <ul class="grid grid-cols-1 w-full gap-6 sm:grid-cols-3 mt-2">
                                 <li v-for="level in courseLevels" :key="level.CourseLevelCode">
                                     <input type="radio" v-model="form.courseLevel" :id="level.CourseLevelCode" :name="level.CourseLevelCode" :value="level.CourseLevelCode + '..' + level.CourseLevelDescription" class="hidden peer" />
                                     <label :for="level.CourseLevelCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
