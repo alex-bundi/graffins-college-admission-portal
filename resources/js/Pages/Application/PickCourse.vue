@@ -15,6 +15,7 @@ const props = defineProps({
         default: () => []
     }
 });
+console.log(props.applicantCourse)
 
 const itCourses = Object.values(props.courses)
     .filter(course => course.DepartmentCode == 'WCAPS')
