@@ -10,3 +10,5 @@
 [2025-10-24 12:10:49] local.ERROR: [2025-10-24 12:10:49] inserting residence into db took 36.85 ms  
 [2025-10-24 12:10:50] local.ERROR: [2025-10-24 12:10:50] getting marketing data took 840.86 ms  
 [2025-10-24 12:10:54] local.ERROR: [2025-10-24 12:10:54] inserting about us into db took 40.5 ms  
+[2025-10-27 12:51:49] local.ERROR: [2025-10-27 12:51:49] getting intake took 1526.76 ms  
+[2025-10-27 12:52:04] local.ERROR: [2025-10-27 12:52:04] getting tutors took 1505.58 ms  

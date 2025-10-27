@@ -38,7 +38,6 @@ Route::middleware('guest')->group(function () {
 Route::get('/countries', [BioDataController::class, 'getCountries']);
 
 // API Erros
-Route::get('/api-errors', [GeneralController::class, 'getAPIErrorsPage'])->name('api.errors');
 
 
 Route::middleware('auth')->group(function () {
@@ -155,6 +154,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/test-SOAP-API', [BusinessCentralAPIController::class, 'initializeSoapProcess']);
 
 
+    Route::get('/api-errors', [GeneralController::class, 'getAPIErrorsPage'])->name('api.errors');
    
 
     Route::prefix('regulations')->group(function () {

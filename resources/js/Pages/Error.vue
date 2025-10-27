@@ -3,7 +3,7 @@ import { Link, Head } from '@inertiajs/vue3'
 import { usePage } from '@inertiajs/vue3'
 
 const page = usePage();
-console.log(page.props)
+console.log(page.props.flash.previousURL)
 const statusCode = page.props.flash.data.statusCode || 500;
 const data = page.props.flash.data.message || { message: 'An unexpected error occurred. Please try again later.' }
 const previousURL = page.props.flash.data.previousURL || '/'
@@ -33,7 +33,7 @@ const previousURL = page.props.flash.data.previousURL || '/'
 
 
             <div>
-                <Link :href="previousURL" class="group relative inline-flex h-[calc(48px+8px)] items-center justify-center rounded-full bg-neutral-950 py-1 pl-6 pr-14 font-medium text-neutral-50">
+                <Link :href="page.props.flash.previousURL" class="group relative inline-flex h-[calc(48px+8px)] items-center justify-center rounded-full bg-neutral-950 py-1 pl-6 pr-14 font-medium text-neutral-50">
                     <span class="z-10 pr-2 tracking-wider font-josefin font-bold">Try Again</span>
                     <div class="absolute right-1 inline-flex h-12 w-12 items-center justify-end rounded-full bg-neutral-700 transition-[width] group-hover:w-[calc(100%-8px)]">
                         <div class="mr-3.5 flex items-center justify-center">

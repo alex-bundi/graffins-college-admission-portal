@@ -7,17 +7,19 @@ import StepperComponent from '@/Layouts/Stepper.vue';
 
 const props = defineProps({
     courseLevels: Object,
+    applicantCourse: Object,
     completedSteps: {
         type: Array,
         default: () => []
     }
 });
 
-console.log(props.courseLevels)
+console.log(props.applicantCourse)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
     courseLevel: '',
+    levelDescription: '',
    
 });
 const initialMode = ref(null);
@@ -26,10 +28,15 @@ const disableSubmitBtn = ref(false);
 
 onMounted(() => {
     if((props.applicantCourse != null)){
-        form.courseLevel = props.courseLevels.CourseLevelCode + '..' + props.courseLevels.CourseLevelDescription;
-        initialMode.value = props.courseLevels.CourseLevelCode + '..' + props.courseLevels.CourseLevelDescription;
+        form.courseLevel = props.applicantCourse.course_level;
+        initialMode.value = props.applicantCourse.course_level ;
     } 
 });
+
+function getLevelDescription(levelDescription){
+    form.levelDescription = levelDescription;
+
+}
 
 function submit(){
 
@@ -45,9 +52,9 @@ function submit(){
         },
 
     });
-
- 
 }
+
+
 </script>
 
 <template>
@@ -89,7 +96,8 @@ function submit(){
                          <!-- English Courses -->
                         <ul class="grid grid-cols-1 w-full gap-6 sm:grid-cols-3 mt-2">
                                 <li v-for="level in courseLevels" :key="level.CourseLevelCode">
-                                    <input type="radio" v-model="form.courseLevel" :id="level.CourseLevelCode" :name="level.CourseLevelCode" :value="level.CourseLevelCode + '..' + level.CourseLevelDescription" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseLevel" :id="level.CourseLevelCode" :name="level.CourseLevelCode" :value="level.CourseLevelCode" class="hidden peer" 
+                                        @change="getLevelDescription(level.CourseLevelDescription)"/>
                                     <label :for="level.CourseLevelCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor

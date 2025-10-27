@@ -513,6 +513,7 @@ class ApplicationController extends Controller
                 return Inertia::render('Application/ENGLevels', [
                     'courseLevels' => $courseLevels,
                     'completedSteps' => $completedSteps,
+                    'applicantCourse' => $applicantCourse,
                     
                 ]);
             }else if ($applicantCourse->department_code == 'WBM'){
@@ -548,28 +549,16 @@ class ApplicationController extends Controller
     public function postCourseLevel(Request $request){
         $validated = $request->validate([
             'courseLevel' => 'required|string',
+            'levelDescription' => 'required|string',
         ]);
 
         try{
-            $courseLevel = '';
-            $courseDescri = '';
-            if ($validated['courseLevel'] != null){
-                $courseCodePtrn = '/^([^.]+)\.\./';
-                $courseDescriPattern = '/\.\.(.+)$/';
-
-                if (preg_match($courseCodePtrn, $validated['courseLevel'], $matches)) {
-                    $courseLevel = trim($matches[1]);
-                }
-
-                if (preg_match($courseDescriPattern, $validated['courseLevel'] , $matches)) {
-                    $courseDescri = $matches[1];
-                }
-            } 
+           
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            $applicantCourse->course_level = trim($courseLevel);
-            $applicantCourse->course_description = $courseDescri;
+            $applicantCourse->course_level = $validated['courseLevel'];
+            $applicantCourse->course_description = $validated['levelDescription'];
             $applicantCourse->unit_status = 'Full Course';
             if (!$applicantCourse->save()) {
                 return redirect()->back()->withErrors([
