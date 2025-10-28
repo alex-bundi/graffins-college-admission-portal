@@ -25,6 +25,8 @@ const uniqueLevels = computed(() => {
   return [...new Set(levels)].sort()
 });
 
+console.log(props.units);
+
 
 
 
@@ -52,7 +54,6 @@ function getAllDescription(levelCode, levelDescription, unitDescription){
     form.unitCode = form.singleSubject;
 
 }
-console.log(props.units)
 
 function submit(){
     disableSubmitBtn.value = true;

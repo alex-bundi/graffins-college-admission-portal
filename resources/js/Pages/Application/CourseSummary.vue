@@ -264,7 +264,7 @@ function submitCourseSummary(){
         <div>
              <div class="flex flex-col">
                 <div class=" overflow-x-auto">
-                <div class="min-w-full inline-block align-middle">
+                <div class="min-w-full inline-block align-middle"> 
                     
                     <div class="overflow-hidden ">
                         <table class=" min-w-full rounded-xl">

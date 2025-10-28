@@ -73,6 +73,7 @@ function submit(){
 }
 
 const listItems = ref({});
+const filteredItems = ref({});
 
 onMounted(() => {
     if (props.department == 'WCAPS'){
@@ -82,27 +83,30 @@ onMounted(() => {
     } else if (props.department == 'WBM'){
         listItems.value = businessCourses
     }
+    filteredItems.value = { ...listItems.value };
 })
 
 function filterList(){
-    var searchInput, searchInputValue , i;
+    var searchInput, searchInputValue;
 
-    // get typed value
     searchInput = document.getElementById('search_input');
     searchInputValue = searchInput.value.toLowerCase();
 
     if(searchInputValue != ''){
-        for(i = 0;  i < Object.keys(listItems.value).length; i++){
+        const filtered = {};
+        
+        for(let i = 0; i < Object.keys(listItems.value).length; i++){
             const courseDescription = listItems.value[i]['CourseDescription'].toLowerCase();
             
             if(courseDescription.includes(searchInputValue)){
-                console.log(courseDescription);
-            } else {
-                delete listItems.value[i];
+                filtered[i] = listItems.value[i];
             }
         }
+        
+        filteredItems.value = filtered;
+    } else {
+        filteredItems.value = { ...listItems.value };
     }
-    
 }
 </script>
 
@@ -168,7 +172,7 @@ function filterList(){
                         </div>
                          <!-- IT Courses -->
                         <ul class="grid grid-cols-1 w-full gap-6 md:grid-cols-3 mt-2">
-                                <li v-for="course in listItems" :key="course.CourseCode">
+                                <li v-for="course in filteredItems" :key="course.CourseCode">
                                     <input type="radio" v-model="form.courseCode" :id="course.CourseCode" :name="course.CourseCode" :value="course.CourseCode" class="hidden peer" 
                                         @change="getDescription(course.CourseDescription)"/>
                                     <label :for="course.CourseCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
