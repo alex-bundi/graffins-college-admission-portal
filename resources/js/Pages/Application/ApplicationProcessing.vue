@@ -118,7 +118,7 @@ async function processApplicationConversion(applicantNo) {
         <div class="flex flex-row space-x-6 items-center">
              <div>
                 <div
-                    class="inline-block rounded-md h-20 min-h-[1em] w-0.5 self-stretch bg-green-400 dark:bg-white/10"></div>
+                    class="inline-block rounded-md h-24 min-h-[1em] w-0.5 self-stretch bg-green-400 dark:bg-white/10"></div>
             </div>
             <div>
                 <h1 class="font-monteserat text-xl tracking-wider md:text-4xl">
@@ -127,7 +127,20 @@ async function processApplicationConversion(applicantNo) {
                  <p class="font-josefin text-red-500 tracking-wider font-bold mt-4 text-base">
                     Please Don’t refresh the page — the page will redirect automatically.
                 </p>
+
+
+                 <div class="mt-5">
+                    <div class="flex items-center p-4 mb-4 rounded-xl text-sm mt-4 bg-amber-50 text-black" role="alert">
+                        <svg class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.0043 13.3333V9.16663M9.99984 6.66663H10.0073M9.99984 18.3333C5.39746 18.3333 1.6665 14.6023 1.6665 9.99996C1.6665 5.39759 5.39746 1.66663 9.99984 1.66663C14.6022 1.66663 18.3332 5.39759 18.3332 9.99996C18.3332 14.6023 14.6022 18.3333 9.99984 18.3333Z" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="font-semibold mr-1 font-josefin text-base tracking-wider">Processing may take a short while. We appreciate your patience.</span> 
+                        
+                    </div>
+                </div>
             </div>
+
+           
         </div>
         
         <section class="flex w-full mt-6">

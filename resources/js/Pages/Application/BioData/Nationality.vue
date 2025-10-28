@@ -19,16 +19,17 @@ const nationality = ref(props.applicant ? props.applicant.nationality + '..' + p
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    country: props.applicant ? nationality : null,
+    country: props.applicant ? props.applicant.nationality : null,
     countryName:'',
 });
-console.log(props.countries);
+
+
 const sortedNationalities = Object.values(props.countries)
     .sort((a, b) => a.Name.localeCompare(b.Name));
 
 const hasChanged = computed(() => {
     return (
-        form.country !== (nationality.value ?? null)
+        form.country !== (props.applicant.nationality ?? null)
     );
 });
 const disableSubmitBtn = ref(false);
@@ -39,6 +40,7 @@ function getDescription(description){
 
 function submit(){
     disableSubmitBtn.value = true;
+    console.log(hasChanged.value)
 
     if (hasChanged.value == true) {
         router.post('/application/post-nationality', form, {
@@ -47,10 +49,7 @@ function submit(){
                 errors.value[error] = allErrors[error]
                 }
                 disableSubmitBtn.value = false;
-
-            
             },
-
         });
     } else {
         router.visit('/application/email-address');
