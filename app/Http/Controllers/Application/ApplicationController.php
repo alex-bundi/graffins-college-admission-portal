@@ -717,7 +717,7 @@ class ApplicationController extends Controller
 
             $applicationID =session('applicant_data')['applicationCourseID'];
             
-            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->get();
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/CourseSummary', [
                 'applicantCourse' => $applicantCourse,
