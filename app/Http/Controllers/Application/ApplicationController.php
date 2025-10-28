@@ -906,6 +906,10 @@ class ApplicationController extends Controller
 
     public function downloadAdmissionLetter($studentNo){
         try{
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+            
+            $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+
             $context = $this->businessCentralAccess->initializeSoapProcess();
 
             if($context['success'] == true){
@@ -928,6 +932,7 @@ class ApplicationController extends Controller
             $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
             $params = new \stdClass();
             $params->studentNo = $studentNo;
+            $params->courseLevel = $applicantCourse->course_level;
             
             $result = $soapClient->GetAdmissionLetter($params);
             if($result){
@@ -1114,7 +1119,7 @@ class ApplicationController extends Controller
             ]);
 
            
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->academic_year = trim($validated['academicYear']);
@@ -1131,7 +1136,7 @@ class ApplicationController extends Controller
 
     public function getTutorsPage(){
          try{
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $tutorsQuery = $this->generalQueries->tutorsQuery();
             $tutorsURL = config('app.odata')  . "{$tutorsQuery}?" . '$filter=' . rawurlencode("Course_Code eq '{$applicantCourse->course_code}'");
@@ -1167,7 +1172,7 @@ class ApplicationController extends Controller
 
          
             
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->tutor_code = trim($validated['tutor'] );
