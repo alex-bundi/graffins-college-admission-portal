@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -10,6 +10,13 @@ const props = defineProps({
     totalFees: Number,
     studentUnits: Object,
 });
+
+onMounted(() => {
+    const formattedFee = new Intl.NumberFormat('en-KE', {
+        style: 'currency',
+        currency: 'KES',
+    }).format(props.totalFees);
+})
 
 // console.log(props.applicantCourse)
 // console.log(props.totalFees)
@@ -46,7 +53,7 @@ const success = ref({});
         <div class="mt-4">
             <p class="font-josefin font-bold text-base tracking-wider">
                 <span class="font-monteserat font-extrabold">🧾 Total Invoice Amount: KES <span class="text-primaryColor text-xl">
-                    {{ totalFees }}
+                    {{ formattedFee }}
                 </span>:</span> 
 
             </p>

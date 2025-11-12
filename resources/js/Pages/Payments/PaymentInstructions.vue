@@ -9,6 +9,13 @@ const props = defineProps({
     totalFees: Number,
 });
 
+onMounted(() => {
+    const formattedFee = new Intl.NumberFormat('en-KE', {
+        style: 'currency',
+        currency: 'KES',
+    }).format(props.totalFees);
+})
+
 const errors = ref({});
 const success = ref({});
 
@@ -64,7 +71,7 @@ const success = ref({});
                         </li>
                         <li>
                            <span class="font-monteserat"> Amount:</span> KES <span class="text-primaryColor text-xl">
-                                {{ totalFees }}
+                                {{ formattedFee }}
                             </span>
                         </li>
                         <li>
