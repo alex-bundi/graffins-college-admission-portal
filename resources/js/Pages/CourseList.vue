@@ -339,7 +339,7 @@ const applicationCount = computed(() => {
 
                                     <div class="flex flex-col space-y-4 sm:space-y-0  sm:flex-row">
                                         
-                                        <div v-if="(application.payment_updated == 0)" class="mt-4 w-full">
+                                        <div v-if="((application.payment_updated == 0) || (application.student_no != null))" class="mt-4 w-full">
                                             <div>
                                                 <Link :href="route('edit.payment' , application.id)" class="flex space-x-3 text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none 
                                                 focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 
@@ -357,7 +357,7 @@ const applicationCount = computed(() => {
                                         </div>
 
 
-                                        <div v-if="(application.student_id_verification_updated == 0)" class="mt-4 w-full">
+                                        <div v-if="((application.payment_updated == 0) || (application.student_no != null))" class="mt-4 w-full">
                                             <div>
                                                 <Link :href="route('edit.student.id' , application.id)" class="flex space-x-3 text-white bg-[#3b983b] hover:bg-[#3b983b]/90 focus:ring-4 focus:outline-none 
                                                 focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 

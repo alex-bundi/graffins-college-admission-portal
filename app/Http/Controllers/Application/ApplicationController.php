@@ -558,7 +558,7 @@ class ApplicationController extends Controller
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
             $applicantCourse->course_level = $validated['courseLevel'];
-            $applicantCourse->course_description = $validated['levelDescription'];
+            $applicantCourse->level_description = $validated['levelDescription'];
             $applicantCourse->unit_status = 'Full Course';
             if (!$applicantCourse->save()) {
                 return redirect()->back()->withErrors([

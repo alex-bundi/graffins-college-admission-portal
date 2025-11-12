@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -18,8 +18,8 @@ console.log(props.applicantCourse)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    courseLevel: '',
-    levelDescription: '',
+    courseLevel: props.applicantCourse?.course_level ?? null,
+    levelDescription: props.applicantCourse.level_description  ?? null,
    
 });
 const initialMode = ref(null);
@@ -36,22 +36,38 @@ onMounted(() => {
 function getLevelDescription(levelDescription){
     form.levelDescription = levelDescription;
 
-}
+} 
+
+const hasChanged = computed(() => {
+    return (
+        
+        form.courseLevel !== (props.applicantCourse?.course_level ?? null) ||
+        form.levelDescription !== (props.applicantCourse.level_description  ?? null)
+    );
+});
 
 function submit(){
 
     disableSubmitBtn.value = true;
-    router.post('/application/post-course-levels', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
 
-           
-        },
+    console.log(hasChanged.value )
 
-    });
+     if (hasChanged.value == true) {
+         router.post('/application/post-course-levels', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
+            },
+
+        });
+    } else {
+        router.visit('/application/class-start-date');
+    }
+    
+
+   
 }
 
 

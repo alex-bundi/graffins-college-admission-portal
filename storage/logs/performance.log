@@ -50,3 +50,5 @@
 [2025-10-28 09:21:42] local.ERROR: [2025-10-28 09:21:42] Inserting Emergency Contacts in Business central took  took 2675.69 ms  
 [2025-10-28 09:21:44] local.ERROR: [2025-10-28 09:21:44] Insertng Course details in Business central took took 2426.68 ms  
 [2025-10-28 09:21:50] local.ERROR: [2025-10-28 09:21:50] Converting Application to customer in Business central took took 5573.43 ms  
+[2025-11-12 09:30:46] local.ERROR: [2025-11-12 09:30:46] getting intake took 863.65 ms  
+[2025-11-12 09:30:54] local.ERROR: [2025-11-12 09:30:54] getting tutors took 845.1 ms  

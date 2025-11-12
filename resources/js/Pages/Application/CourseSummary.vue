@@ -77,6 +77,31 @@ function submitCourseSummary(){
                 <Notifications :errors="errors" :success="success"/> 
         </div>
 
+
+        <section class="mt-4 bg-gray-50 ">
+            <div class="w-full  px-4 mx-auto">
+                <!-- Start coding here -->
+                <div class="relative overflow-hidden bg-white shadow-md  sm:rounded-lg">
+                    <div class="flex-row items-center justify-between p-4 space-y-3 sm:flex sm:space-y-0 sm:space-x-4">
+                        <div>
+                            <h5 class="mr-3 font-monteserat font-semibold ">Your Courses</h5>
+                            <p class="text-gray-500 font-josefin font-bold tracking-wider ">Manage all your existing courses or add a new one</p>
+                        </div>
+                        <button type="button"
+                                class="flex items-center justify-center px-4 py-2 text-sm  text-white rounded-lg font-josefin font-bold tracking-wider
+                                bg-primaryColor hover:bg-darkPrimaryColor focus:ring focus:ring-primaryColor focus:outline-none ">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-2 -ml-1" viewBox="0 0 20 20" fill="currentColor"
+                            aria-hidden="true">
+                            <path
+                            d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
+                        </svg>
+                        Add new user
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="grid grid-cols-1 gap-6 mt-12"> 
             <div class="sm:m-4">
                 <div class="flex flex-col">
@@ -109,34 +134,34 @@ function submitCourseSummary(){
                                             Start Date
                                         </th>
 
-                                        <th scope="col" class="p-5 text-left text-sm leading-6 font-semibold  capitalize rounded-t-xl"> Actions </th>
+                                        <!-- <th scope="col" class="p-5 text-left text-sm leading-6 font-semibold  capitalize rounded-t-xl"> Actions </th> -->
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-300 ">
                                     <tr v-for="course in applicantCourse"
                                         class="bg-white font-josefin font-bold tracking-wider transition-all duration-500 hover:bg-gray-50">
-                                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
+                                        <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900 ">
                                             {{ course.course_description }}
                                         </td>
-                                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> 
+                                        <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> 
                                             {{ course.course_level }}
                                         </td>
-                                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> 
+                                        <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> 
                                             {{ course.department_description }}
                                         </td>
-                                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> 
+                                        <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> 
                                             {{ (course.mode_of_study == 1) ? 'Inclass' : 'Online' }}
                                         </td>
-                                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> 
+                                        <td class="p-5 whitespace-nowrap text-sm leading-6 text-gray-900"> 
                                             {{ course.intake_description }}
                                         </td>
-                                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> 
+                                        <td class="p-5 whitespace-nowrap text-sm leading-6 text-gray-900"> 
                                             {{ course.tutor_name }}
                                         </td>
-                                        <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> 
+                                        <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> 
                                             {{ course.start_date }}
                                         </td>
-                                        <td class=" p-5 ">
+                                        <!-- <td class=" p-5 ">
                                             <div class="flex items-center gap-1">
                                                 <button class="p-2  rounded-full  group transition-all duration-500  flex item-center">
                                                     <svg class="cursor-pointer" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -154,7 +179,7 @@ function submitCourseSummary(){
                                                     </svg>
                                                 </button>
                                             </div>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 </tbody>
                             </table>
