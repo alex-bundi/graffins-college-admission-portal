@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BusinessCentralAPIController;
 
 
-
-
 class ApplicationController extends Controller
 {
     use OdataTrait;
@@ -137,7 +135,7 @@ class ApplicationController extends Controller
         }
         
         // Check session data for regulations and payments
-        $sessionData = session('user_data', []);
+        $sessionData = session('user', []);
         
         // Regulations completion - track these in session when user completes each page
         $regulationSteps = ['page.one', 'page.two', 'page.three', 'page.four', 'page.five', 'page.six', 'page.seven', 'page.eight'];
@@ -175,14 +173,14 @@ class ApplicationController extends Controller
 
     public function getEditCourse($applicationID){
         try {
-            
+           
             $applications = Applicant::where('email', $this->user->email)
                 ->where('id' , $applicationID)
                 ->first();
             $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applications);
             session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
-                session()->put('applicant_data.application_no', $applications->id);
+            session()->put('applicant_data.application_no', $applications->id);
 
             return Inertia::render('Application/ModeOfStudy', [
                 'applicantCourse' => $applicantCourse,
@@ -311,6 +309,16 @@ class ApplicationController extends Controller
         }
     }
 
+    public function addNewCourse(){
+        try {
+            dd(session());
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     private function ValidateApplications(){
         try{
           
@@ -414,7 +422,7 @@ class ApplicationController extends Controller
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
 
             if(!$applicantCourse){
-                return redirect()->route('mode.of.study')->with('success', 'Could not process application. Please contact support');;
+                return redirect()->route('mode.of.study')->with('success', 'Could not process application. Please contact support');
             }
 
             $courseQuery = $this->generalQueries->coursesQuery();
@@ -1179,6 +1187,30 @@ class ApplicationController extends Controller
             $applicantCourse->tutor_name = trim($validated['tutorName'] );
             $applicantCourse->save();
             return redirect()->route('course.summary');
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function confirmCourse(Request $request ){
+        try{
+             $validated = $request->validate([
+                'courseID' => 'required|integer',
+            ]);
+
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+            
+            $applicantCourse = ApplicantCourse::where('id', $validated['courseID'])->first();
+            $applicantCourse->application_status = 'submitted';
+            if (!$applicantCourse->save()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to save the start date. Please try again.'
+                ]);
+            }
+            return redirect()->route('course.summary')->with('success', 'Your course was submitted successfully! You can add a new one or move on to the next steps.');
+
         }catch(Exception $e){
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()

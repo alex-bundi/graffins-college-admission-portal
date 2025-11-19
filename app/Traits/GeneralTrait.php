@@ -85,7 +85,7 @@ trait GeneralTrait {
         if($action == 'put'){
             
             $data = $sessionKey . '.' .$key;
-            session()->put($data, $value);
+            session([$data => $value]);
             return;
         }
         if ($action == 'get'){

@@ -78,6 +78,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/course-summary', [ApplicationController::class, 'getCourseSummmary'])->name('course.summary');
         Route::post('/post-course-summary', [ApplicationController::class, 'postCourseSummmary'])->name('post.course.summary');
 
+        Route::post('/post-course-confirmation', [ApplicationController::class, 'confirmCourse'])->name('confirm.course');
+
+
         Route::get('/start-bio-data', [ApplicationController::class, 'getStartBioData'])->name('start.bio.data');
 
 
@@ -145,6 +148,7 @@ Route::middleware('auth')->group(function () {
         // Admission Letter
         Route::get('/download-admission-letter/{studentNo}', [ApplicationController::class, 'downloadAdmissionLetter'])->name('download.admission.letter');
 
+        Route::get('/add-new-Course', [ApplicationController::class, 'addNewCourse'])->name('add.new.course');
         
 
 
