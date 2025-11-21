@@ -193,7 +193,7 @@ function submitCourseSummary(courseID){
                                                 </button>
                                             </div>
 
-                                            <div v-if="course.application_status == 'submitted,k '">
+                                            <div v-if="course.application_status == 'submitted'">
                                                 <!-- Application Status -->
                                                 <div class="hidden sm:flex items-center justify-center space-x-2">
                                                     <span class="relative flex h-3 w-3">

@@ -269,7 +269,7 @@ class ApplicationController extends Controller
             $pendingApplications = $this->ValidateApplications();
             $applicant = null;
             $applicantCourse = null;
-
+            
 
             if ($pendingApplications == false){
 
@@ -311,7 +311,9 @@ class ApplicationController extends Controller
 
     public function addNewCourse(){
         try {
-            dd(session());
+            dd(session()->all());
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+
         }catch(Exception $e){
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
