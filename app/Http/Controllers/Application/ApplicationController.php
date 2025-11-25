@@ -269,14 +269,12 @@ class ApplicationController extends Controller
             $pendingApplications = $this->ValidateApplications();
             $applicant = null;
             $applicantCourse = null;
-            
+            dd($pendingApplications);
 
             if ($pendingApplications == false){
 
                 return Inertia::render('Application/ModeOfStudy', [
                     'applicantCourse' => $applicantCourse,
-
-
                 ]);
 
             }else if ($pendingApplications == true){
@@ -311,8 +309,12 @@ class ApplicationController extends Controller
 
     public function addNewCourse(){
         try {
-            dd(session()->all());
-            $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
+            $applicationID = $this->retrieveOrUpdateSessionData('get', 'application_no');
+            $applicantCourse = null;
+            
+            return Inertia::render('Application/ModeOfStudy', [
+                'applicantCourse' => $applicantCourse,
+            ]);
 
         }catch(Exception $e){
             return redirect()->back()->withErrors([
@@ -339,6 +341,21 @@ class ApplicationController extends Controller
         }catch(Exception $e){
             return false;
         }
+    }
+
+    public function postModeOfStudyy(Request $request, $action){
+        $validated = $request->validate([
+            'mode_of_study' => 'required|string',
+        ]);
+
+        try {
+            $pendingApplications = $this->ValidateApplications();
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+
     }
 
     public function postModeOfStudy(Request $request){
