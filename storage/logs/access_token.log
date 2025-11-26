@@ -27,3 +27,5 @@
 [2025-11-25 06:17:45] local.ERROR: 2025-11-25 06:17:45_internet_connection  
 [2025-11-25 06:22:42] local.ERROR: 2025-11-25 06:22:42_internet_connection  
 [2025-11-25 06:22:53] local.ERROR: 2025-11-25 06:22:52_internet_connection  
+[2025-11-26 07:23:34] local.ERROR: 2025-11-26 07:23:32_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  
+[2025-11-26 09:39:39] local.ERROR: 2025-11-26 09:39:37_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  

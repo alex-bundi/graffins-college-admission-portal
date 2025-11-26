@@ -198,6 +198,41 @@ class ApplicationController extends Controller
         }
         
     }
+
+    public function getEditApplication($applicationID){
+        try {
+           
+            $applications = Applicant::where('email', $this->user->email)
+                ->where('id' , $applicationID)
+                ->first();
+            $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->where('application_status', 'new')->first();
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applications);
+
+            if ($applicantCourse != null){
+                $this->retrieveOrUpdateSessionData('put', 'applicationCourseID',  $applicantCourse->id);
+            }
+            $this->retrieveOrUpdateSessionData('put', 'application_no',  $applications->id);
+           
+            return redirect()->route('mode.of.study')->with([
+                'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
+            ]);
+
+            // return Inertia::render('Application/ModeOfStudy', [
+            //     'applicantCourse' => $applicantCourse,
+            //     'completedSteps' => $completedSteps,
+
+
+            // ]);
+
+            // return Inertia::render('Application/Department');
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
     
 
     public function getDepartmentPage(){
@@ -263,49 +298,55 @@ class ApplicationController extends Controller
         }
     }
 
-
     public function getModeOfStudyPage(){
         try {
+           
             $pendingApplications = $this->ValidateApplications();
             $applicant = null;
             $applicantCourse = null;
-            dd($pendingApplications);
 
-            if ($pendingApplications == false){
+            // There is an existing application with the application status new
+            if ($pendingApplications == true){  
+                $applicantCourseID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
 
-                return Inertia::render('Application/ModeOfStudy', [
-                    'applicantCourse' => $applicantCourse,
-                ]);
-
-            }else if ($pendingApplications == true){
-                $applications = Applicant::where('email', $this->user->email)
-                    ->where('application_status' , 'new')
+                if ($applicantCourseID != null){
+                    
+                    $applications = Applicant::where('email', $this->user->email)
+                    ->where('id' , $this->retrieveOrUpdateSessionData('get', 'application_no'))
                     ->first();
+                    $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
+                    $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
+                    return Inertia::render('Application/ModeOfStudy', [
+                        'applicantCourse' => $applicantCourse,
+                        'completedSteps' => $completedSteps,
 
-               
-                $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
-                $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
-                $this->retrieveOrUpdateSessionData('put', 'applicationCourseID',  $applicantCourse->id);
-                $this->retrieveOrUpdateSessionData('put', 'application_no',  $applications->id);
-                // session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
-                // session()->put('applicant_data.application_no', $applications->id);
-            
+                    ]);
+                    
+                } else {
+                    return Inertia::render('Application/ModeOfStudy', [
+                        'applicantCourse' => $applicantCourse,
+                    ]);
+                }
 
 
+                
+            }
+            if ($pendingApplications == false){
                 return Inertia::render('Application/ModeOfStudy', [
                     'applicantCourse' => $applicantCourse,
-                    'completedSteps' => $completedSteps,
-
-
                 ]);
-
             }
+            
+          
         }catch(Exception $e){
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
         }
     }
+
+
+ 
 
     public function addNewCourse(){
         try {
@@ -392,35 +433,61 @@ class ApplicationController extends Controller
                     }   
                 }
             } else if ($pendingApplications == true){
-                $applications = Applicant::where('email', $this->user->email)
-                    ->where('application_status' , 'new')
-                    ->first();
-                $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
+                $applications = Applicant::where('id' , $this->retrieveOrUpdateSessionData('get', 'application_no'))->first();
                 
-                if($applicantCourse == null){
-                     $applicantCourse = [
+                // Applicant has not existing course selection
+                if($this->retrieveOrUpdateSessionData('get', 'applicationCourseID') == null ){
+                    
+                    $applicantCourse = [
                         'mode_of_study' =>$validated['mode_of_study'] == 'inclass' ? 1 : 2,
-                        'applicant_id' => $applications->id,
+                        'applicant_id' => session('applicant_data')['application_no'],
                     ];
 
                     $newApplicantCourse = ApplicantCourse::create($applicantCourse);
-                    $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
-                    $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
+                    if($newApplicantCourse->exists){
+                        $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
+
+                        return redirect()->route('department');
+                    } 
 
                 } else {
+                    // Update course selection
+                    $applicantCourse = ApplicantCourse::where('applicant_id', $applications->id)->first();
                     $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
                     if (!$applicantCourse->save()) {
                         return redirect()->back()->withErrors([
                             'error' => 'Failed to save the mode of study. Please try again.'
                         ]);
                     }
-                    $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $applicantCourse->id);
-                    $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
+                    return redirect()->route('department');
                 }
+
+
+                
+                // if($applicantCourse == null){
+                //      $applicantCourse = [
+                //         'mode_of_study' =>$validated['mode_of_study'] == 'inclass' ? 1 : 2,
+                //         'applicant_id' => $applications->id,
+                //     ];
+
+                //     $newApplicantCourse = ApplicantCourse::create($applicantCourse);
+                //     $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
+                //     $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
+
+                // } else {
+                //     $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
+                //     if (!$applicantCourse->save()) {
+                //         return redirect()->back()->withErrors([
+                //             'error' => 'Failed to save the mode of study. Please try again.'
+                //         ]);
+                //     }
+                //     $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $applicantCourse->id);
+                //     $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
+                // }
                 
                 
                 
-                return redirect()->route('department');
+                
                 
 
             }

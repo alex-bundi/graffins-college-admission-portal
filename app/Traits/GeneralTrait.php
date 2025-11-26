@@ -4,6 +4,7 @@ namespace App\Traits;
 use GuzzleHttp\Client;
 use Microsoft\Graph\Generated\Models\SignIn;
 use App\Http\Controllers\Auth\OAuth2Controller;
+
 use function PHPUnit\Framework\fileExists;
 use function PHPUnit\Framework\isEmpty;
 use GuzzleHttp\Exception\RequestException;
@@ -81,15 +82,25 @@ trait GeneralTrait {
     }
 
     public function retrieveOrUpdateSessionData($action, $key, $value = null){
-        $sessionKey = 'applicant_data';
-        if($action == 'put'){
-            
-            $data = $sessionKey . '.' .$key;
-            session([$data => $value]);
-            return;
-        }
-        if ($action == 'get'){
-            return session($sessionKey)[$key];
+        try {
+            $sessionKey = 'applicant_data';
+            if($action == 'put'){
+                
+                $data = $sessionKey . '.' .$key;
+                session([$data => $value]);
+                return;
+            }else if ($action == 'get'){
+                if (session($sessionKey)[$key] == null){
+                    return null;
+                
+                }
+                return session($sessionKey)[$key];
+            } else {
+                return null;
+            }
+        } catch(Exception $e){
+            return null;
+         
         }
 
     }
