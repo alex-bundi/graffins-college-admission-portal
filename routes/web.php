@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/course-summary', [ApplicationController::class, 'getCourseSummmary'])->name('course.summary');
         Route::post('/post-course-summary', [ApplicationController::class, 'postCourseSummmary'])->name('post.course.summary');
+        Route::post('/delete-course-line', [ApplicationController::class, 'deleteCourseLine'])->name('delete.course.line');
 
         Route::post('/post-course-confirmation', [ApplicationController::class, 'confirmCourse'])->name('confirm.course');
 

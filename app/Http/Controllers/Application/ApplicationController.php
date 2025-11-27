@@ -275,6 +275,7 @@ class ApplicationController extends Controller
         
     }
     public function postDepartment(Request $request){
+        dd($request->all());
         try{
             $validated = $request->validate([
                 'departmentCode' => 'required|string',
@@ -809,9 +810,9 @@ class ApplicationController extends Controller
         try{
             $applicant = null;
 
-            $applicationID =session('applicant_data')['applicationCourseID'];
+            $applicationID =session('applicant_data')['application_no'];
             
-            $applicantCourse = ApplicantCourse::where('id', $applicationID)->get();
+            $applicantCourse = ApplicantCourse::where('applicant_id', $applicationID)->get();
             $completedSteps = $this->getCompletedSteps($applicantCourse, $applicant);
             return Inertia::render('Application/CourseSummary', [
                 'applicantCourse' => $applicantCourse,
@@ -849,6 +850,29 @@ class ApplicationController extends Controller
             ]);
         }
 
+    }
+
+    public function deleteCourseLine(Request $request){
+        $validated = $request->validate([
+            'courseID' => 'required|integer',
+        ]);
+        try{
+            
+            $applicantCourse = ApplicantCourse::where('id', $validated['courseID'])->first();
+            if (!$applicantCourse->delete()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Failed to delete the course line. Please try again.'
+                ]);
+            }
+
+
+            return redirect()->back();
+            
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function getStartBioData(){

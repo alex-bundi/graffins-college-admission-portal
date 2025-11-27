@@ -52,3 +52,5 @@
 [2025-10-28 09:21:50] local.ERROR: [2025-10-28 09:21:50] Converting Application to customer in Business central took took 5573.43 ms  
 [2025-11-12 09:30:46] local.ERROR: [2025-11-12 09:30:46] getting intake took 863.65 ms  
 [2025-11-12 09:30:54] local.ERROR: [2025-11-12 09:30:54] getting tutors took 845.1 ms  
+[2025-11-27 05:49:08] local.ERROR: [2025-11-27 05:49:08] getting intake took 1354.65 ms  
+[2025-11-27 05:49:25] local.ERROR: [2025-11-27 05:49:25] getting tutors took 862.86 ms  
