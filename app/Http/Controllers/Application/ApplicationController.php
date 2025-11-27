@@ -275,7 +275,6 @@ class ApplicationController extends Controller
         
     }
     public function postDepartment(Request $request){
-        dd($request->all());
         try{
             $validated = $request->validate([
                 'departmentCode' => 'required|string',
@@ -284,7 +283,10 @@ class ApplicationController extends Controller
             
             $applicationID = $this->retrieveOrUpdateSessionData('get', 'applicationCourseID');
             // test
+
+            
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
+            dd($applicantCourse);
             $applicantCourse->department_code = trim($validated['departmentCode']);
             $applicantCourse->department_description = trim($validated['departmentDescription']);
             $applicantCourse->save();
