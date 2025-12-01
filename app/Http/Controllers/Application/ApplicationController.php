@@ -286,7 +286,6 @@ class ApplicationController extends Controller
 
             
             $applicantCourse = ApplicantCourse::where('id', $applicationID)->first();
-            dd($applicantCourse);
             $applicantCourse->department_code = trim($validated['departmentCode']);
             $applicantCourse->department_description = trim($validated['departmentDescription']);
             $applicantCourse->save();
@@ -303,7 +302,7 @@ class ApplicationController extends Controller
 
     public function getModeOfStudyPage(){
         try {
-           
+            
             $pendingApplications = $this->ValidateApplications();
             $applicant = null;
             $applicantCourse = null;
@@ -354,6 +353,7 @@ class ApplicationController extends Controller
     public function addNewCourse(){
         try {
             $applicationID = $this->retrieveOrUpdateSessionData('get', 'application_no');
+            session()->forget('applicant_data.applicationCourseID');
             $applicantCourse = null;
             
             return Inertia::render('Application/ModeOfStudy', [
