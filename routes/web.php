@@ -85,6 +85,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/post-course-confirmation', [ApplicationController::class, 'confirmCourse'])->name('confirm.course');
 
 
+        Route::get('/verify-course-lines', [ApplicationController::class, 'verifyCourseLines'])->name('verify.course.lines');
         Route::get('/start-bio-data', [ApplicationController::class, 'getStartBioData'])->name('start.bio.data');
 
 

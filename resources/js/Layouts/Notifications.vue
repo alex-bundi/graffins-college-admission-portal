@@ -108,6 +108,8 @@ function hideDiv(elementId){
     </div>
 </div>
 
+
+
 <div class="m-6" v-if="accountStatus">
     <div class="flex justify-between w-full   overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800" id="account_status_div">
         <div class="flex flex-row">

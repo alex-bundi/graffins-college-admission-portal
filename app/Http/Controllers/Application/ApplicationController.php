@@ -1359,4 +1359,24 @@ class ApplicationController extends Controller
             ]);
         }
     }
+
+    public function verifyCourseLines(){
+        try{
+            $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
+            $applicantCourses = ApplicantCourse::where('applicant_id', $applicationID)->get();
+
+            foreach($applicantCourses as $courseLine){
+                if ($courseLine->application_status != 'submitted'){
+                    return redirect()->back()->with('success', 'Please confirm the course lines or remove any that should not be included.');
+                } 
+            }
+            return redirect()->route('start.bio.data');
+
+             
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }

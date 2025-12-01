@@ -63,3 +63,17 @@
 [2025-12-01 09:19:50] local.ERROR: [2025-12-01 09:19:50] getting tutors took 821.92 ms  
 [2025-12-01 09:41:00] local.ERROR: [2025-12-01 09:41:00] getting intake took 929.58 ms  
 [2025-12-01 09:41:07] local.ERROR: [2025-12-01 09:41:07] getting tutors took 1281.44 ms  
+[2025-12-01 11:46:21] local.ERROR: [2025-12-01 11:46:20] getting Nationalities took 814.1 ms  
+[2025-12-01 11:46:23] local.ERROR: [2025-12-01 11:46:23] inserting Nationality to db took 35.86 ms  
+[2025-12-01 11:47:41] local.ERROR: [2025-12-01 11:47:41] getting intake took 871.78 ms  
+[2025-12-01 11:47:47] local.ERROR: [2025-12-01 11:47:47] getting tutors took 794.27 ms  
+[2025-12-01 11:48:58] local.ERROR: [2025-12-01 11:48:58] getting intake took 873.72 ms  
+[2025-12-01 11:49:05] local.ERROR: [2025-12-01 11:49:05] getting tutors took 771.86 ms  
+[2025-12-01 11:50:08] local.ERROR: [2025-12-01 11:50:08] inserting contacts took 53.33 ms  
+[2025-12-01 11:50:09] local.ERROR: [2025-12-01 11:50:09] getting Nationalities took 990.1 ms  
+[2025-12-01 11:50:11] local.ERROR: [2025-12-01 11:50:11] inserting Nationality to db took 56.87 ms  
+[2025-12-01 11:50:34] local.ERROR: [2025-12-01 11:50:34] getting residences took 999.46 ms  
+[2025-12-01 11:50:36] local.ERROR: [2025-12-01 11:50:36] inserting residence into db took 27.97 ms  
+[2025-12-01 11:50:37] local.ERROR: [2025-12-01 11:50:37] getting marketing data took 879.81 ms  
+[2025-12-01 11:50:40] local.ERROR: [2025-12-01 11:50:40] inserting about us into db took 43.71 ms  
+[2025-12-01 11:50:54] local.ERROR: [2025-12-01 11:50:54] processing passport file took 234.81 ms  
