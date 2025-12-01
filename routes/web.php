@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('application')->group(function () {
         // Route::get('/edit-course/{applicationID}', [ApplicationController::class, 'getEditCourse'])->name('edit.application');
+        Route::get('/edit-course/{applicationID}/{courseID}', [ApplicationController::class, 'getEditCourseLine'])->name('edit.course.line');
+
         Route::get('/edit-application/{applicationID}', [ApplicationController::class, 'getEditApplication'])->name('edit.application');
         
         Route::get('/mode-of-study', [ApplicationController::class, 'getModeOfStudyPage'])->name('mode.of.study');

@@ -233,6 +233,34 @@ class ApplicationController extends Controller
             ]);
         }
     }
+
+    public function getEditCourseLine($applicationID, $courseID){
+        try {
+           
+            $applications = Applicant::where('email', $this->user->email)
+                ->where('id' , $applicationID)
+                ->first();
+            $applicantCourse = ApplicantCourse::where('id', $courseID)->first();
+            $completedSteps = $this->getCompletedSteps($applicantCourse, $applications);
+            session()->put('applicant_data.applicationCourseID', $applicantCourse->id);
+            session()->put('applicant_data.application_no', $applications->id);
+
+            return Inertia::render('Application/ModeOfStudy', [
+                'applicantCourse' => $applicantCourse,
+                'completedSteps' => $completedSteps,
+
+
+            ]);
+
+            return Inertia::render('Application/Department');
+
+        }catch(Exception $e){
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+    }
     
 
     public function getDepartmentPage(){
@@ -302,7 +330,7 @@ class ApplicationController extends Controller
 
     public function getModeOfStudyPage(){
         try {
-            
+
             $pendingApplications = $this->ValidateApplications();
             $applicant = null;
             $applicantCourse = null;
@@ -629,6 +657,8 @@ class ApplicationController extends Controller
                 return Inertia::render('Application/WBMCourseLevels', [
                     'courseLevels' => $courseLevels,
                     'completedSteps' => $completedSteps,
+                    'applicantCourse' => $applicantCourse,
+
                 ]);
             }
 

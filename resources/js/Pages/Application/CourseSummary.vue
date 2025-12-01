@@ -52,6 +52,10 @@ function submitCourseSummary(courseID){
 
 }
 
+function editCourseLine($applicantID, $courseID){
+    router.get(`/application/edit-course/${$applicantID}/${$courseID}`)
+}
+
 function deleteCourseLine(courseID){
      disableSubmitBtn.value = true;
     form.courseID = courseID;
@@ -75,7 +79,7 @@ function deleteCourseLine(courseID){
 </script>
 
 <template>
-    <Head title="Class Start Date" />
+    <Head title="Courses Summary" />
     <AuthenticatedLayout>
         <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
@@ -168,7 +172,7 @@ function deleteCourseLine(courseID){
                                             {{ course.course_description }}
                                         </td>
                                         <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> 
-                                            {{ course.course_level }}
+                                            {{ course.level_description }}
                                         </td>
                                         <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> 
                                             {{ course.department_description }}
@@ -188,13 +192,27 @@ function deleteCourseLine(courseID){
                                         <td class=" p-5 ">
                                             <div v-if="course.application_status == 'new'" 
                                                 class="flex items-center gap-1">
-                                                <form action="" method="post" @submit.prevent="submitCourseSummary(course.id)">
-                                                    <button  :class="{'cursor-not-allowed' : disableSubmitBtn}" class="flex items-center text-black text-sm p-2 border border-black hover:bg-gray-500 hover:text-white hover:border-0 
+                                                <Link :href="route('edit.course.line', [course.applicant_id, course.id])" :class="{'cursor-not-allowed' : disableSubmitBtn}" class="flex items-center text-black text-sm p-2 border border-amber-400 hover:bg-gray-500 hover:text-white hover:border-0 
                                                         rounded-full  group transition-all duration-500 space-x-2">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
                                                         <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
                                                         <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                                                         </svg>
+
+
+
+                                                        <span>
+                                                            Edit
+                                                        </span>
+                                                </Link>
+                                                
+                                                <form action="" method="post" @submit.prevent="submitCourseSummary(course.id)">
+                                                    <button  :class="{'cursor-not-allowed' : disableSubmitBtn}" class="flex items-center text-black text-sm p-2 border border-black hover:bg-gray-500 hover:text-white hover:border-0 
+                                                        rounded-full  group transition-all duration-500 space-x-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                                        </svg>
+
 
                                                         <span>
                                                             Confirm

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -7,41 +7,63 @@ import StepperComponent from '@/Layouts/Stepper.vue';
 
 const props = defineProps({
     courseLevels: Object,
+    applicantCourse: Object,
+
     completedSteps: {
         type: Array,
         default: () => []
     }
 });
 
-
+const initialMode = ref(null);
+const disableSubmitBtn = ref(false);
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    courseLevel: '',
+    courseLevel: props.applicantCourse?.course_level ?? null,
+    levelDescription: props.applicantCourse.level_description  ?? null,
+
    
+});
+
+function getLevelDescription(levelDescription){
+    form.levelDescription = levelDescription;
+
+}
+const hasChanged = computed(() => {
+    return (
+        
+        form.courseLevel !== (props.applicantCourse?.course_level ?? null) ||
+        form.levelDescription !== (props.applicantCourse.level_description  ?? null)
+    );
 });
 
 function submit(){
 
-  
-    router.post('/application/post-course-levels', form, {
-        onError : (allErrors) => {
-            for(let error in allErrors){
-            errors.value[error] = allErrors[error]
-            }
-            disableSubmitBtn.value = false;
+    
+     disableSubmitBtn.value = true;
+   
 
-           
-        },
+     if (hasChanged.value == true) {
+         router.post('/application/post-course-levels', form, {
+            onError : (allErrors) => {
+                for(let error in allErrors){
+                errors.value[error] = allErrors[error]
+                }
+                disableSubmitBtn.value = false;
+            },
 
-    });
+        });
+    } else {
+        router.visit('/application/class-start-date');
+    }
 
  
 }
 </script>
 
 <template>
-    <Head title="Mode of Study" />
+    <Head title="Course Levels" />
     <AuthenticatedLayout>
         <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">
@@ -79,7 +101,8 @@ function submit(){
                          <!-- English Courses -->
                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                                 <li v-for="level in courseLevels" :key="level.CourseLevelCode">
-                                    <input type="radio" v-model="form.courseLevel" :id="level.CourseLevelCode" :name="level.CourseLevelCode" :value="level.CourseLevelCode + '..' + level.CourseLevelDescription" class="hidden peer" />
+                                    <input type="radio" v-model="form.courseLevel" :id="level.CourseLevelCode" :name="level.CourseLevelCode" :value="level.CourseLevelCode" 
+                                    class="hidden peer" @change="getLevelDescription(level.CourseLevelDescription)"/>
                                     <label :for="level.CourseLevelCode" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
                                         bg-white border border-gray-200 rounded-lg cursor-pointer  
                                         peer-checked:border-primaryColor
