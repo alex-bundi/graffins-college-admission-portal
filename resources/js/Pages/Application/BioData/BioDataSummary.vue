@@ -15,6 +15,8 @@ const props = defineProps({
         default: () => []
     },
 });
+
+console.log(props.applicantData);
 const errors = ref({});
 const success = ref({});
 const form = useForm({
@@ -79,7 +81,7 @@ function confirmPersonalData(){
                 <Notifications :errors="errors" :success="success"/> 
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12"> 
+        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12"> 
             <div class="flex flex-col space-y-3">
                 <div class="flex flex-row space-x-3">
                     <h3 class="font-monteserat text-base tracking-wider ">
@@ -196,7 +198,7 @@ function confirmPersonalData(){
                         </Link>
                     </div>
                     
-                    <!-- Conditional message that appears on click -->
+                    Conditional message that appears on click
                     <div 
                         v-if="showStepperMessage" 
                         class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm text-center transition-all duration-300 ease-in-out"
@@ -207,6 +209,58 @@ function confirmPersonalData(){
             </div>
 
            
+        </div> -->
+
+        <div class="m-8 bg-white p-10 rounded-lg">
+            <!-- Header -->
+            <div class="flex items-center space-x-6">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwyfHxhdmF0YXJ8ZW58MHwwfHx8MTY5MTg0NzYxMHww&ixlib=rb-4.0.3&q=80&w=1080"
+                        class="w-32 group-hover:w-36 group-hover:h-36 h-32 object-center object-cover rounded-full transition-all duration-500 delay-500 transform"
+                    />
+                </div>
+
+                <div class="font-josefin font-bold text-base  tracking-wider">
+                    <h2>
+                        {{ applicantData.first_name + ' ' + applicantData.second_name + ' ' + applicantData.last_name }}
+                    </h2>
+
+                    <p class="mt-3">
+                        {{ applicantData.nationality }}
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="mt-6">
+                <div>
+                    <h1 class="font-monteserat text-base tracking-wider md:text-2xl">
+                        General
+                    </h1>
+                </div>
+
+                <div class="mt-4">
+                    <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Phone Number
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-1/2 font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantData.phone_no }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            Phone Number
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-1/2 font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantData.phone_no }}
+                        </p>
+                    </div>
+
+
+                </div>
+            </div>
         </div>
 
 
