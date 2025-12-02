@@ -16,7 +16,7 @@ const props = defineProps({
     },
 });
 
-console.log(props.applicantData);
+console.log(props.emergencyContact);
 const errors = ref({});
 const success = ref({});
 const form = useForm({
@@ -81,135 +81,6 @@ function confirmPersonalData(){
                 <Notifications :errors="errors" :success="success"/> 
         </div>
 
-        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12"> 
-            <div class="flex flex-col space-y-3">
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        👤 Full Name: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                       {{ applicantData.first_name + ' ' + applicantData.second_name + ' ' + applicantData.last_name }}
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        📞 Phone Number: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                       {{ applicantData.phone_no }}
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        🌍 Nationality: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        {{ applicantData.nationality }}
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        📧 Email Address: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        {{ applicantData.email }}
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        📍 Lives in Nairobi: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        {{ applicantData.residence_description }}
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        📣 Heard About Us From: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        {{ applicantData.marketing_description }}
-                    </p>
-                </div>
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        ⚠️ Allergies: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                         {{ applicantData.allergies == 1 ? 'Yes' : 'No' }}
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        🚨 Emergency Contact:
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                       {{ emergencyContact.full_name }}
-                    </p>
-                </div>
-
-                <div class="flex flex-row space-x-3">
-                    <h3 class="font-monteserat text-base tracking-wider ">
-                        📎 Uploaded ID/Passport: 
-                    </h3>
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                       ✅ Received
-
-                    </p>
-                </div>
-            </div>
-
-            <div class="flex flex-col space-y-3">
-                <div class="flex flex-col space-y-3 items-center">
-                    <p class="font-josefin font-bold text-base  tracking-wider">
-                        If all details are correct,  Click <span class="font-monteserat tracking-wider font-bold">“Confirm” </span> to proceed.
-                    </p>
-
-                    <div>
-                        <form action="" @submit.prevent="confirmPersonalData">
-                            <input class="hidden" type="text" v-model="form.personalDataSummary" name="personalDataSummary" id="personalDataSummary" value="submitted">
-
-                            <button :class="{'cursor-not-allowed' : disableSubmitBtn}"  class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                Confirm
-                            </button>
-                        </form>
-                        
-                    </div>
-                </div>
-
-                <div class="flex flex-col space-y-3 items-center">
-                    <p class="font-josefin font-bold text-base tracking-wider">
-                        Need to change something? Click
-                        <span class="font-monteserat tracking-wider font-bold">Edit</span> 
-                    </p>
-
-                    <div>
-                        <Link 
-                            @click="showMessage"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                        >
-                            Edit
-                        </Link>
-                    </div>
-                    
-                    Conditional message that appears on click
-                    <div 
-                        v-if="showStepperMessage" 
-                        class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm text-center transition-all duration-300 ease-in-out"
-                    >
-                        💡 You can click on any step in the progress bar above to navigate directly!
-                    </div>
-                </div>
-            </div>
-
-           
-        </div> -->
 
         <div class="m-8 bg-white p-10 rounded-lg">
             <!-- Header -->
@@ -239,23 +110,145 @@ function confirmPersonalData(){
                     </h1>
                 </div>
 
-                <div class="mt-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 md:gap-6 mt-4">
                     <div>
                         <h3 class="font-monteserat text-base tracking-wider ">
                             Phone Number
                         </h3>
-                        <p class="bg-gray-300 rounded-md p-6 w-1/2 font-josefin font-bold text-base  tracking-wider">
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
                             {{ applicantData.phone_no }}
                         </p>
                     </div>
 
                     <div>
                         <h3 class="font-monteserat text-base tracking-wider ">
-                            Phone Number
+                           📧  Email Address
                         </h3>
-                        <p class="bg-gray-300 rounded-md p-6 w-1/2 font-josefin font-bold text-base  tracking-wider">
-                            {{ applicantData.phone_no }}
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantData.email }}
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            📍 Lives in Nairobi: 
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantData.residence_description }}
+                        </p>
+                    </div>
+
+
+                </div>
+            </div>
+
+             <div class="mt-6">
+                <div>
+                    <h1 class="font-monteserat text-base tracking-wider md:text-2xl">
+                        Other
+                    </h1>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 md:gap-6 mt-4">
+                    <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            📣 Heard About Us From: 
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantData.marketing_description }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            ⚠️ Allergies: 
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantData.allergies == 1 ? 'Yes' : 'No' }}
+                        </p>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <div>
+                    <h1 class="font-monteserat text-base tracking-wider md:text-2xl">
+                        Emergency Contact
+                    </h1>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 md:gap-6 mt-4">
+                    <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                            🚨 Full Name:
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
+                            {{ emergencyContact.full_name }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                             📞 Phone No: 
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
+                            {{ emergencyContact.phone_no }}
+                        </p>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div>
+                <hr class="w-48 h-1 mx-auto my-4 bg-primaryColor border-0 rounded-sm md:my-10"></hr>
+            </div>
+
+            <div class="mt-6">
+                <div>
+                    <h1 class="font-monteserat text-base tracking-wider md:text-2xl">
+                        Actions
+                    </h1>
+                </div>
+
+                <div class="grid grid-cols-1 place-content-between md:grid-cols-2 md:gap-6 mt-4">
+                    <div>
+                        <form action="" method="post">
+                            <button :href="route('verify.course.lines')"  class="group relative inline-flex h-[calc(48px+8px)] items-center justify-center font-josefin font-bold tracking-wider rounded-full bg-neutral-950 py-1 pl-6 pr-14 text-neutral-50">
+                                <span class="z-10 pr-2">
+                                    Confirm
+                                </span>
+                                <div class="absolute right-1 inline-flex h-12 w-12 items-center justify-end rounded-full bg-primaryColor transition-[width] group-hover:w-[calc(100%-8px)]">
+                                        <div class="mr-3.5 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                            </svg>
+
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                        
+                    </div>
+
+                    <div>
+                        <Link>
+                            <div>
+                                <div>
+                                    <button class="flex space-x-3 p-2.5 bg-yellow-500 rounded-xl font-josefin font-bold tracking-wider hover:rounded-3xl hover:bg-yellow-600 transition-all duration-300 text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        <span>
+                                            Edit
+                                        </span>
+                                    </button>
+                                    
+                                </div>
+                            </div>
+                        </Link>
                     </div>
 
 
