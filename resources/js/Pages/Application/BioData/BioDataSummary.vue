@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -16,13 +16,27 @@ const props = defineProps({
     },
 });
 
-console.log(props.emergencyContact);
+const applicantImage = ref('');
+const hasApplicantImage = ref(false);
+const fileName = ref('');
 const errors = ref({});
 const success = ref({});
 const form = useForm({
     personalDataSummary: '',
 
 });
+
+
+onMounted(() => {
+    if (props.applicantData != null && props.applicantData.student_image_file_path != null){
+        hasApplicantImage.value = true;
+        const fullPath = props.applicantData.student_image_file_path;
+        fileName.value = fullPath.split('\\').pop();
+        applicantImage.value = '/storage/app/student_images/' + fileName.value;
+    }
+
+    console.log(props.applicantData)
+})
 
 const showStepperMessage = ref(false);
 
@@ -85,19 +99,30 @@ function confirmPersonalData(){
         <div class="m-8 bg-white p-10 rounded-lg">
             <!-- Header -->
             <div class="flex items-center space-x-6">
-                <div>
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwyfHxhdmF0YXJ8ZW58MHwwfHx8MTY5MTg0NzYxMHww&ixlib=rb-4.0.3&q=80&w=1080"
+                <div v-if="hasApplicantImage">
+                    <!-- <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwyfHxhdmF0YXJ8ZW58MHwwfHx8MTY5MTg0NzYxMHww&ixlib=rb-4.0.3&q=80&w=1080"
+                        class="w-32 group-hover:w-36 group-hover:h-36 h-32 object-center object-cover rounded-full transition-all duration-500 delay-500 transform"
+                    /> -->
+                    <img :src="applicantImage"
                         class="w-32 group-hover:w-36 group-hover:h-36 h-32 object-center object-cover rounded-full transition-all duration-500 delay-500 transform"
                     />
                 </div>
+                <div v-else>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
 
+                    </div>
+                </div>
+                
                 <div class="font-josefin font-bold text-base  tracking-wider">
                     <h2>
                         {{ applicantData.first_name + ' ' + applicantData.second_name + ' ' + applicantData.last_name }}
                     </h2>
 
                     <p class="mt-3">
-                        {{ applicantData.nationality }}
+                        {{ applicantData.country_name }}
                     </p>
                 </div>
             </div>
@@ -213,9 +238,9 @@ function confirmPersonalData(){
                     </h1>
                 </div>
 
-                <div class="grid grid-cols-1 place-content-between md:grid-cols-2 md:gap-6 mt-4">
+                <div class="grid grid-cols-1 place-content-between md:grid-cols-2 gap-6 mt-4">
                     <div>
-                        <form action="" method="post">
+                        <form action="" method="post" @submit="confirmPersonalData">
                             <button :href="route('verify.course.lines')"  class="group relative inline-flex h-[calc(48px+8px)] items-center justify-center font-josefin font-bold tracking-wider rounded-full bg-neutral-950 py-1 pl-6 pr-14 text-neutral-50">
                                 <span class="z-10 pr-2">
                                     Confirm
@@ -234,7 +259,7 @@ function confirmPersonalData(){
                     </div>
 
                     <div>
-                        <Link>
+                        <Link :href="route('start.bio.data')">
                             <div>
                                 <div>
                                     <button class="flex space-x-3 p-2.5 bg-yellow-500 rounded-xl font-josefin font-bold tracking-wider hover:rounded-3xl hover:bg-yellow-600 transition-all duration-300 text-white">

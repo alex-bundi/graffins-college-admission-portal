@@ -77,3 +77,7 @@
 [2025-12-01 11:50:37] local.ERROR: [2025-12-01 11:50:37] getting marketing data took 879.81 ms  
 [2025-12-01 11:50:40] local.ERROR: [2025-12-01 11:50:40] inserting about us into db took 43.71 ms  
 [2025-12-01 11:50:54] local.ERROR: [2025-12-01 11:50:54] processing passport file took 234.81 ms  
+[2025-12-02 07:50:06] local.ERROR: [2025-12-02 07:50:05] processing passport file took 224.34 ms  
+[2025-12-02 09:43:05] local.ERROR: [2025-12-02 09:43:05] getting Nationalities took 1125.22 ms  
+[2025-12-02 09:43:13] local.ERROR: [2025-12-02 09:43:13] getting Nationalities took 891.24 ms  
+[2025-12-02 09:43:16] local.ERROR: [2025-12-02 09:43:16] getting Nationalities took 1322.01 ms  

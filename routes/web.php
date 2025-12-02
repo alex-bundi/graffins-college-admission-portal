@@ -155,7 +155,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/add-new-Course', [ApplicationController::class, 'addNewCourse'])->name('add.new.course');
         
-
+        // Get Image
+        Route::get('/applicant/image/{filename}', [BioDataController::class, 'getImage']);
 
     });
 

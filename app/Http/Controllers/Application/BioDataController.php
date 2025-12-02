@@ -16,10 +16,7 @@ use App\Traits\GeneralTrait;
 use Illuminate\Support\Str;
 use App\Http\Controllers\BusinessCentralAPIController;
 use Illuminate\Support\Facades\Auth;
-
-
-
-
+use Illuminate\Support\Facades\Storage;
 
 class BioDataController extends Controller
 {
@@ -828,6 +825,9 @@ class BioDataController extends Controller
         try{
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
+
+            dd($this->getImage(basename($applicant->student_image_file_path)));
+            
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
             $applicantCourse = null;
 
@@ -838,6 +838,7 @@ class BioDataController extends Controller
                 'completedSteps' => $completedSteps,
             ]);
         }catch(Exception $e){
+            dd($e->getMessage());
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
@@ -846,9 +847,6 @@ class BioDataController extends Controller
     }
 
     public function postBiodataSummary(Request $request){
-        $validated = $request->validate([  
-            'personalDataSummary' => 'nullable|string',
-        ]);
         try{
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
@@ -1031,6 +1029,20 @@ class BioDataController extends Controller
             ]);
         }
 
+    }
+
+    public function getImage($filename)
+    {
+
+        $path = 'app/student_images/' . $filename;
+        
+        if (file_exists(storage_path($filename))) {
+            echo "The file $filename exists.";
+        } else {
+            echo "The file $filename does not exist.";
+        }
+                
+        return response()->file(storage_path('app/student_images' . $path));
     }
 
 }
