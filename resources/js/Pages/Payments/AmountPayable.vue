@@ -51,23 +51,21 @@ const success = ref({});
 
       
         <div class="mt-4">
-            <p class="font-josefin font-bold text-base tracking-wider">
+            <!-- <p class="font-josefin font-bold text-base tracking-wider">
                 <span class="font-monteserat font-extrabold">🧾 Total Invoice Amount: KES <span class="text-primaryColor text-xl">
                     {{ formattedFee }}
                 </span>:</span> 
 
-            </p>
+            </p> -->
             <ul>
 
-                <li>
+                <!-- <li>
                     <p class="font-josefin font-bold text-base tracking-wider">
                         <span class="font-josefin font-extrabold">This includes tuition, registration, and applicable materials fees for your selected course.:</span> 
 
                     </p>
                     <ul class="flex flex-col font-bold space-y-4 p-4 font-josefin text-sm tracking-wider">
-                        <!-- <li>
-                            - Summary: 
-                        </li> -->
+                      
                         <li>
                             <h3>
                                 Department:
@@ -98,12 +96,70 @@ const success = ref({});
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> -->
             </ul>
 
             <div>
 
             </div>
+        </div>
+
+
+        <div class="m-2 sm:m-6">
+
+            <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-md border border-default">
+                <table class="w-full text-sm text-left rtl:text-right text-body">
+                    <thead class="text-white rounded-md tracking-wider font-monteserat text-sm text-body bg-black border-b border-default-medium">
+                        <tr>
+                            
+                            <th scope="col" class="px-6 py-3 font-medium">
+                                Department
+                            </th>
+                            <th scope="col" class="px-6 py-3 font-medium">
+                                 Course
+                            </th>
+                            <th scope="col" class="px-6 py-3 font-medium">
+                                Level
+                            </th>
+                            <th scope="col" class="px-6 py-3 font-medium">
+                                Units
+                            </th>
+                            <th scope="col" class="px-6 py-3 font-medium">
+                                Fee Amount
+                            </th>
+                          
+                            <th scope="col" class="px-6 py-3  font-medium">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+                          
+                            <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                                Apple MacBook Pro 17"
+                            </th>
+                            <td class="px-6 py-4">
+                                Silver
+                            </td>
+                            <td class="px-6 py-4">
+                                Laptop
+                            </td>
+                            <td class="px-6 py-4">
+                                Yes
+                            </td>
+                            <td class="px-6 py-4">
+                                Yes
+                            </td>
+                            <td class="flex items-center px-6 py-4">
+                                <a href="#" class="font-medium text-fg-brand hover:underline">Edit</a>
+                                <a href="#" class="font-medium text-danger hover:underline ms-3">Remove</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
         

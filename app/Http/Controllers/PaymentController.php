@@ -38,6 +38,7 @@ class PaymentController extends Controller
 
     public function getAmountPayable(){
         try{
+            
             $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'processed')
@@ -52,9 +53,11 @@ class PaymentController extends Controller
             $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
             $studentNo = $applicant->student_no;
             
-
+            
             $studentUnitsQuery = $this->generalQueries->studentUnitsQuery();
-            $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}' and Course_Code eq '{$applicantCourse->course_code}' and Course_Level eq '{$applicantCourse->course_level}'");
+            // $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}' and Course_Code eq '{$applicantCourse->course_code}' and Course_Level eq '{$applicantCourse->course_level}'");
+            $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}'");
+            
             $studentUnits = $this->businessCentralAccess->getOdata($studentUnitsURL);
             $response = $this->validateAPIResponse($studentUnits, url()->previous());
         
