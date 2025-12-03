@@ -240,8 +240,8 @@ function confirmPersonalData(){
 
                 <div class="grid grid-cols-1 place-content-between md:grid-cols-2 gap-6 mt-4">
                     <div>
-                        <form action="" method="post" @submit="confirmPersonalData">
-                            <button :href="route('verify.course.lines')"  class="group relative inline-flex h-[calc(48px+8px)] items-center justify-center font-josefin font-bold tracking-wider rounded-full bg-neutral-950 py-1 pl-6 pr-14 text-neutral-50">
+                        <form action="" method="post" @submit.prevent="confirmPersonalData">
+                            <button type="submit"  class="group relative inline-flex h-[calc(48px+8px)] items-center justify-center font-josefin font-bold tracking-wider rounded-full bg-neutral-950 py-1 pl-6 pr-14 text-neutral-50">
                                 <span class="z-10 pr-2">
                                     Confirm
                                 </span>

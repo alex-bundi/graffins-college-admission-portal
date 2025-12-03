@@ -283,7 +283,7 @@ class BusinessCentralSoapController extends Controller
                 ->where('application_status', 'submitted')
                 ->first();
 
-            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+            $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->get();
 
             if (!$applicantCourse) {
                 return response()->json([
@@ -325,26 +325,27 @@ class BusinessCentralSoapController extends Controller
                 $applicantNoBC = $applicationExists['applicant']['application_no'];
                
             }
+            
 
-
-            $params = new \stdClass();
-            $params->applicationNo = ($applicantNoBC);
-            $params->department = ($applicantCourse->department_code);
-            $params->modeOfStudy = (int) ($applicantCourse->mode_of_study);
-            $params->courseCode = $applicantCourse->course_code;
-            $params->courseLevel = $applicantCourse->course_level;
-            $params->startDate = $applicantCourse->start_date;
-            $params->endDate = $applicantCourse->end_date;
-            $params->classTime = $applicantCourse->class_time;
-            $params->courseType = $applicantCourse->unit_status;
-            $params->unitCode = $applicantCourse->unit_code;
-            $params->intake = $applicantCourse->intake_code;
-            $params->tutor = $applicantCourse->tutor_code;
-            $params->academicYr = $applicantCourse->academic_year;
+            foreach($applicantCourse as $courseLines){
+                $params = new \stdClass();
+                $params->applicationNo = ($applicantNoBC);
+                $params->department = ($courseLines->department_code);
+                $params->modeOfStudy = (int) ($courseLines->mode_of_study);
+                $params->courseCode = $courseLines->course_code;
+                $params->courseLevel = $courseLines->course_level;
+                $params->startDate = $courseLines->start_date;
+                $params->endDate = $courseLines->end_date;
+                $params->classTime = $courseLines->class_time;
+                $params->courseType = $courseLines->unit_status;
+                $params->unitCode = $courseLines->unit_code;
+                $params->intake = $courseLines->intake_code;
+                $params->tutor = $courseLines->tutor_code;
+                $params->academicYr = $courseLines->academic_year; 
+                $result = $soapClient->UpsertApplicantCourse($params);
+            }
 
             
-            
-            $result = $soapClient->UpsertApplicantCourse($params);
 
             if($result){
 

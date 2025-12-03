@@ -85,3 +85,24 @@
 [2025-12-03 08:03:16] local.ERROR: [2025-12-03 08:03:16] getting tutors took 847.77 ms  
 [2025-12-03 08:04:06] local.ERROR: [2025-12-03 08:04:06] inserting contacts took 44.35 ms  
 [2025-12-03 08:04:30] local.ERROR: [2025-12-03 08:04:30] getting Nationalities took 23011.7 ms  
+[2025-12-03 08:20:07] local.ERROR: [2025-12-03 08:20:07] inserting Nationality to db took 44.29 ms  
+[2025-12-03 08:25:51] local.ERROR: [2025-12-03 08:25:51] getting residences took 1708.59 ms  
+[2025-12-03 08:25:54] local.ERROR: [2025-12-03 08:25:54] inserting residence into db took 35.83 ms  
+[2025-12-03 08:25:56] local.ERROR: [2025-12-03 08:25:56] getting marketing data took 1827.06 ms  
+[2025-12-03 08:25:58] local.ERROR: [2025-12-03 08:25:58] inserting about us into db took 32.86 ms  
+[2025-12-03 08:26:29] local.ERROR: [2025-12-03 08:26:29] processing passport file took 209.18 ms  
+[2025-12-03 08:45:55] local.ERROR: [2025-12-03 08:45:55] Creating Application in Business central took took 5443.53 ms  
+[2025-12-03 08:49:26] local.ERROR: [2025-12-03 08:49:26] Creating Application in Business central took took 3626 ms  
+[2025-12-03 08:49:29] local.ERROR: [2025-12-03 08:49:29] Inserting Emergency Contacts in Business central took  took 2927.1 ms  
+[2025-12-03 08:49:33] local.ERROR: [2025-12-03 08:49:33] Insertng Course details in Business central took took 3247.71 ms  
+[2025-12-03 08:51:36] local.ERROR: [2025-12-03 08:51:36] getting Nationalities took 960.58 ms  
+[2025-12-03 08:51:42] local.ERROR: [2025-12-03 08:51:42] inserting Nationality to db took 38.11 ms  
+[2025-12-03 08:51:59] local.ERROR: [2025-12-03 08:51:59] getting residences took 1076.5 ms  
+[2025-12-03 08:52:04] local.ERROR: [2025-12-03 08:52:04] getting residences took 727.8 ms  
+[2025-12-03 08:52:06] local.ERROR: [2025-12-03 08:52:06] inserting residence into db took 46.93 ms  
+[2025-12-03 08:52:08] local.ERROR: [2025-12-03 08:52:08] getting marketing data took 1253.9 ms  
+[2025-12-03 08:52:11] local.ERROR: [2025-12-03 08:52:11] inserting about us into db took 44.28 ms  
+[2025-12-03 08:52:22] local.ERROR: [2025-12-03 08:52:22] processing passport file took 126.8 ms  
+[2025-12-03 08:53:06] local.ERROR: [2025-12-03 08:53:06] Creating Application in Business central took took 3994.51 ms  
+[2025-12-03 08:53:10] local.ERROR: [2025-12-03 08:53:10] Inserting Emergency Contacts in Business central took  took 3228.86 ms  
+[2025-12-03 08:53:13] local.ERROR: [2025-12-03 08:53:13] Insertng Course details in Business central took took 3259.87 ms  

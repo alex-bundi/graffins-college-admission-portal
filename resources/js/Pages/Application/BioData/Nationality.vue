@@ -40,7 +40,6 @@ function getDescription(description){
 
 function submit(){
     disableSubmitBtn.value = true;
-    console.log(hasChanged.value)
 
     if (hasChanged.value == true) {
         router.post('/application/post-nationality', form, {

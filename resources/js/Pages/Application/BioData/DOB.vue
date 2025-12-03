@@ -60,7 +60,7 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Class Start Date" />
+    <Head title="Date of Birth" />
     <AuthenticatedLayout>
         <StepperComponent :completed-steps="completedSteps" />
         <div class="flex flex-row space-x-6 items-center">

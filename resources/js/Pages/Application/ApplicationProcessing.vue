@@ -45,17 +45,17 @@ onMounted(async () => {
                     if(courseData?.success === true){
                         courseInfo.value = true;
 
-                        const applicationConversion = await processApplicationConversion(bioData.data.return_value);
-                        console.log('Conversion data:', applicationConversion);
-                        if(applicationConversion?.success === true){
-                            convertingApplication.value = true;
-                            isRegistrationComplete.value = true;
-                            router.visit('/payments/amount-payable')
+                        // const applicationConversion = await processApplicationConversion(bioData.data.return_value);
+                        // console.log('Conversion data:', applicationConversion);
+                        // if(applicationConversion?.success === true){
+                        //     convertingApplication.value = true;
+                        //     isRegistrationComplete.value = true;
+                        //     router.visit('/payments/amount-payable')
 
-                        }else {
-                            errors.value.message = applicationConversion.message;
-                            return;
-                        }
+                        // }else {
+                        //     errors.value.message = applicationConversion.message;
+                        //     return;
+                        // }
 
 
                     }else {
