@@ -826,7 +826,7 @@ class BioDataController extends Controller
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
 
-            dd($this->getImage(basename($applicant->student_image_file_path)));
+            // dd($this->getImage(basename($applicant->student_image_file_path)));
             
             $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
             $applicantCourse = null;

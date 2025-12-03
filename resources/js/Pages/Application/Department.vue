@@ -14,7 +14,6 @@ const props = defineProps({
     }
 });
 
-console.log(props.applicantCourse);
 
 const initialMode = ref(null);
 const disableSubmitBtn = ref(false);

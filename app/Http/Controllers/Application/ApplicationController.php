@@ -212,7 +212,11 @@ class ApplicationController extends Controller
                 $this->retrieveOrUpdateSessionData('put', 'applicationCourseID',  $applicantCourse->id);
             }
             $this->retrieveOrUpdateSessionData('put', 'application_no',  $applications->id);
-           
+
+            if ($applicantCourse == null){
+                return redirect()->route('course.summary');
+            }
+
             return redirect()->route('mode.of.study')->with([
                 'applicantCourse' => $applicantCourse,
                 'completedSteps' => $completedSteps,
@@ -302,6 +306,7 @@ class ApplicationController extends Controller
         }
         
     }
+
     public function postDepartment(Request $request){
         try{
             $validated = $request->validate([
@@ -341,6 +346,7 @@ class ApplicationController extends Controller
 
                 if ($applicantCourseID != null){
                     
+                    
                     $applications = Applicant::where('email', $this->user->email)
                     ->where('id' , $this->retrieveOrUpdateSessionData('get', 'application_no'))
                     ->first();
@@ -353,9 +359,26 @@ class ApplicationController extends Controller
                     ]);
                     
                 } else {
-                    return Inertia::render('Application/ModeOfStudy', [
-                        'applicantCourse' => $applicantCourse,
-                    ]);
+                    $applicantId = $this->retrieveOrUpdateSessionData('get', 'application_no');
+
+                    // Check if any course is NOT submitted
+                    $notSubmitted = ApplicantCourse::where('applicant_id', $applicantId)
+                        ->where('application_status', '<>', 'submitted')
+                        ->exists();
+
+                    dd($notSubmitted);
+
+                    if ($notSubmitted) {
+                        // Some course lines are are not submitted
+                        return Inertia::render('Application/ModeOfStudy', [
+                            'applicantCourse' => $notSubmitted,
+                        ]);
+                    } else {
+                        // All course lines are submitted but the biodata has not been submitted
+                        return redirect()->route('course.summary');
+                    }
+
+                    
                 }
 
 

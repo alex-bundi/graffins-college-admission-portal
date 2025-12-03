@@ -13,7 +13,6 @@ const props = defineProps({
         default: () => []
     }
 });
-console.log(props.applicantCourse)
 
 const errors = ref({});
 const success = ref({});

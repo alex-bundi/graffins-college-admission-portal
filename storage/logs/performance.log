@@ -81,3 +81,7 @@
 [2025-12-02 09:43:05] local.ERROR: [2025-12-02 09:43:05] getting Nationalities took 1125.22 ms  
 [2025-12-02 09:43:13] local.ERROR: [2025-12-02 09:43:13] getting Nationalities took 891.24 ms  
 [2025-12-02 09:43:16] local.ERROR: [2025-12-02 09:43:16] getting Nationalities took 1322.01 ms  
+[2025-12-03 08:03:08] local.ERROR: [2025-12-03 08:03:08] getting intake took 989.92 ms  
+[2025-12-03 08:03:16] local.ERROR: [2025-12-03 08:03:16] getting tutors took 847.77 ms  
+[2025-12-03 08:04:06] local.ERROR: [2025-12-03 08:04:06] inserting contacts took 44.35 ms  
+[2025-12-03 08:04:30] local.ERROR: [2025-12-03 08:04:30] getting Nationalities took 23011.7 ms  

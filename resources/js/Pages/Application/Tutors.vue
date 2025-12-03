@@ -13,7 +13,6 @@ const props = defineProps({
     }
 });
 
-console.log(props.tutors)
 const errors = ref({});
 const success = ref({});
 const form = useForm({
