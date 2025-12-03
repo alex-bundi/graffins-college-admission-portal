@@ -106,3 +106,11 @@
 [2025-12-03 08:53:06] local.ERROR: [2025-12-03 08:53:06] Creating Application in Business central took took 3994.51 ms  
 [2025-12-03 08:53:10] local.ERROR: [2025-12-03 08:53:10] Inserting Emergency Contacts in Business central took  took 3228.86 ms  
 [2025-12-03 08:53:13] local.ERROR: [2025-12-03 08:53:13] Insertng Course details in Business central took took 3259.87 ms  
+[2025-12-03 11:04:20] local.ERROR: [2025-12-03 11:04:20] Creating Application in Business central took took 5490.72 ms  
+[2025-12-03 11:04:22] local.ERROR: [2025-12-03 11:04:22] Inserting Emergency Contacts in Business central took  took 2591.26 ms  
+[2025-12-03 11:04:25] local.ERROR: [2025-12-03 11:04:25] Insertng Course details in Business central took took 2789.05 ms  
+[2025-12-03 11:04:32] local.ERROR: [2025-12-03 11:04:32] Converting Application to customer in Business central took took 6196.1 ms  
+[2025-12-03 11:07:44] local.ERROR: [2025-12-03 11:07:44] Creating Application in Business central took took 3093.33 ms  
+[2025-12-03 11:07:47] local.ERROR: [2025-12-03 11:07:47] Inserting Emergency Contacts in Business central took  took 2544.25 ms  
+[2025-12-03 11:07:50] local.ERROR: [2025-12-03 11:07:50] Insertng Course details in Business central took took 2776.43 ms  
+[2025-12-03 11:07:53] local.ERROR: [2025-12-03 11:07:53] Converting Application to customer in Business central took took 2974.95 ms  

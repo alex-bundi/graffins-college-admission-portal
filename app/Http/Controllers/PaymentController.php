@@ -56,7 +56,7 @@ class PaymentController extends Controller
             $studentUnitsQuery = $this->generalQueries->studentUnitsQuery();
             $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}' and Course_Code eq '{$applicantCourse->course_code}' and Course_Level eq '{$applicantCourse->course_level}'");
             $studentUnits = $this->businessCentralAccess->getOdata($studentUnitsURL);
-            $response = $this->validateAPIResponse($studentUnits);
+            $response = $this->validateAPIResponse($studentUnits, url()->previous());
         
             if ($response) {
                 return $response;
@@ -121,7 +121,7 @@ class PaymentController extends Controller
             $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
             $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}' and CourseCode eq '{$applicantCourse->course_code}' and CourseLevel eq '{$applicantCourse->course_level}'");
             $studentPayments =  $this->businessCentralAccess->getOdata($studentPaymentsURL);
-            $response = $this->validateAPIResponse($studentPayments);
+            $response = $this->validateAPIResponse($studentPayments, url()->previous());
         
             if ($response) {
                 return $response;
@@ -161,7 +161,7 @@ class PaymentController extends Controller
             $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
             $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}' and CourseCode eq '{$applicantCourse->course_code}' and CourseLevel eq '{$applicantCourse->course_level}'");
             $studentPayments =  $this->businessCentralAccess->getOdata($studentPaymentsURL);
-            $response = $this->validateAPIResponse($studentPayments);
+            $response = $this->validateAPIResponse($studentPayments, url()->previous());
         
             if ($response) {
                 return $response;
