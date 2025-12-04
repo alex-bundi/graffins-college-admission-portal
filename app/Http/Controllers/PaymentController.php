@@ -44,7 +44,7 @@ class PaymentController extends Controller
                 ->where('application_status', 'processed')
                 ->first();
 
-
+                
             if(!$applicant){
                return redirect()->back()->withErrors([
                     'error' => 'The application could not be processed. Please try again. If the issue persists, contact support for assistance.'
@@ -54,25 +54,23 @@ class PaymentController extends Controller
             $studentNo = $applicant->student_no;
             
             
-            $studentUnitsQuery = $this->generalQueries->studentUnitsQuery();
+            $studentCoursesQuery = $this->generalQueries->studentCourseQuery();
             // $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}' and Course_Code eq '{$applicantCourse->course_code}' and Course_Level eq '{$applicantCourse->course_level}'");
-            $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}'");
+            $studentCoursesURL = config('app.odata') . "{$studentCoursesQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}'");
             
-            $studentUnits = $this->businessCentralAccess->getOdata($studentUnitsURL);
-            $response = $this->validateAPIResponse($studentUnits, url()->previous());
-        
+            $studentCourses = $this->businessCentralAccess->getOdata($studentCoursesURL);
+            $response = $this->validateAPIResponse($studentCourses, url()->previous());
             if ($response) {
                 return $response;
             }
 
-            $studentUnitsData = $studentUnits['data']['value'];
+            $studentCoursesData = $studentCourses['data']['value'];
             $totalFees = 0;
 
-            foreach ($studentUnitsData as $unit) {
-                if ($unit['Is_Applicable']) {
-                    $totalFees += $unit['Unit_Fees'];
-                }
+            foreach ($studentCoursesData as $courseLines) {
+                $totalFees += $courseLines['Unit_Fees'];
             }
+
 
             $this->retrieveOrUpdateSessionData('put','fee_amount', $totalFees);
             // session()->put('applicant_data.', $totalFees);
@@ -80,7 +78,7 @@ class PaymentController extends Controller
             return Inertia::render('Payments/AmountPayable',[
                 'applicantCourse' => $applicantCourse,
                 'totalFees' => $totalFees,
-                'studentUnits'=> $studentUnitsData,
+                'studentCourses'=> $studentCoursesData,
             ]);
 
         }catch(Exception $e){

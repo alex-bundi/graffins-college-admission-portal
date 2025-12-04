@@ -63,6 +63,10 @@ class GeneralQueries extends Model
         return 'QyTutors';
     }
 
+    public function studentCourseQuery(){
+        return 'QyStudentCourses';
+    }
+
     
 
 }

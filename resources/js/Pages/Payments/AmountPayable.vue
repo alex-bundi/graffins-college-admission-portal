@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -8,19 +8,36 @@ import Notifications from '@/Layouts/Notifications.vue';
 const props = defineProps({
     applicantCourse: Object,
     totalFees: Number,
-    studentUnits: Object,
+    studentCourses: Object,
 });
 
+console.log(props.studentCourses);
+
+const noOfStudentCourses = ref(0);
+const formattedFee = ref(0);
+
 onMounted(() => {
-    const formattedFee = new Intl.NumberFormat('en-KE', {
+    formattedFee.value = new Intl.NumberFormat('en-KE', {
         style: 'currency',
         currency: 'KES',
     }).format(props.totalFees);
+
+    noOfStudentCourses.value = Object.keys(props.studentCourses).length;
 })
 
-// console.log(props.applicantCourse)
-// console.log(props.totalFees)
-// console.log(props.studentUnits)
+const formattedStudentCourse = computed(() => {
+  if (!props.studentCourses) return []
+  
+  return Object.entries(props.studentCourses).map(([key, course]) => ({
+    ...course,
+    id: key, // Preserve the original key
+    Unit_Fees: new Intl.NumberFormat('en-KE', {
+      style: 'currency',
+      currency: 'KES',
+    }).format(Number(course.Unit_Fees) || 0)
+  }))
+})
+
 
 const errors = ref({});
 const success = ref({});
@@ -48,62 +65,6 @@ const success = ref({});
                 </p>
             </div>
         </div>
-
-      
-        <div class="mt-4">
-            <!-- <p class="font-josefin font-bold text-base tracking-wider">
-                <span class="font-monteserat font-extrabold">🧾 Total Invoice Amount: KES <span class="text-primaryColor text-xl">
-                    {{ formattedFee }}
-                </span>:</span> 
-
-            </p> -->
-            <ul>
-
-                <!-- <li>
-                    <p class="font-josefin font-bold text-base tracking-wider">
-                        <span class="font-josefin font-extrabold">This includes tuition, registration, and applicable materials fees for your selected course.:</span> 
-
-                    </p>
-                    <ul class="flex flex-col font-bold space-y-4 p-4 font-josefin text-sm tracking-wider">
-                      
-                        <li>
-                            <h3>
-                                Department:
-                            </h3>
-                            <p class="font-monteserat text-black font-bold pl-4 pt-3">
-                                {{ applicantCourse.department_description }}
-                            </p>
-                        </li>
-                        <li>
-                            - Course:
-
-                            <p class="font-monteserat text-black font-bold pl-4 pt-3">
-                                {{ applicantCourse.course_description }}
-                            </p>
-                        </li>
-                        <li>
-                            - Level:
-                            <p class="font-monteserat text-black font-bold pl-4 pt-3">
-                                {{ applicantCourse.level_description }}
-                            </p>
-                        </li>
-                        <li>
-                            - Units:
-                            <ul>
-                                <li v-for="unit in studentUnits" class="font-monteserat text-black font-bold pl-4 pt-3">
-                                   -> {{ unit.Unit_Description }}
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li> -->
-            </ul>
-
-            <div>
-
-            </div>
-        </div>
-
 
         <div class="m-2 sm:m-6">
 
@@ -134,22 +95,23 @@ const success = ref({});
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+                        <tr v-for="(courseLine, index) in formattedStudentCourse" :key="index"
+                            class="font-josefin font-bold tracking-wider border-b border-default hover:bg-neutral-secondary-medium">
                           
-                            <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                                Apple MacBook Pro 17"
+                            <th scope="row" class="px-6 py-4 text-heading whitespace-nowrap">
+                                {{ courseLine.Department_Description }}
                             </th>
                             <td class="px-6 py-4">
-                                Silver
+                                {{ courseLine.Course_Description }}
                             </td>
                             <td class="px-6 py-4">
-                                Laptop
-                            </td>
-                            <td class="px-6 py-4">
-                                Yes
+                                {{ courseLine.Course_Level_Description }}
                             </td>
                             <td class="px-6 py-4">
                                 Yes
+                            </td>
+                            <td class="px-6 py-4 text-primaryColor">
+                                {{ courseLine.Unit_Fees }}
                             </td>
                             <td class="flex items-center px-6 py-4">
                                 <a href="#" class="font-medium text-fg-brand hover:underline">Edit</a>
@@ -160,6 +122,31 @@ const success = ref({});
                 </table>
             </div>
 
+        </div>
+
+        <div>
+            <section class="flex items-center mb-6">
+                <div class="w-full max-w-screen-xl px-4 mx-auto lg:px-12">
+                    <!-- Start coding here -->
+                    <div class="relative overflow-hidden bg-white rounded-b-lg shadow-md dark:bg-gray-800">
+                    <nav class="flex flex-col sm:flex-row gap-4 items-center justify-between p-4"
+                        aria-label="Table navigation">
+                        <div class="flex space-x-4">
+                            <h2 class="font-monteserat tracking-wider">
+                                Total Courses:
+                            </h2>
+                            <span class="font-josefin font-bold tracking-wider">
+                                {{ noOfStudentCourses }}
+                            </span>
+                        </div>
+                        <p class="flex items-center space-x-4">
+                            <span class="font-monteserat tracking-wider text-xl text-primaryColor">Total Fees:</span>
+                            <span class="font-monteserat tracking-wider text-base text-black">{{ formattedFee }}</span>
+                        </p>
+                    </nav>
+                    </div>
+                </div>
+            </section>
         </div>
 
         
