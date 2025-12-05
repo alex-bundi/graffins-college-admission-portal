@@ -55,7 +55,6 @@ class PaymentController extends Controller
             
             
             $studentCoursesQuery = $this->generalQueries->studentCourseQuery();
-            // $studentUnitsURL = config('app.odata') . "{$studentUnitsQuery}?". '$filter=' . rawurlencode("Admission_No eq '{$studentNo}' and Course_Code eq '{$applicantCourse->course_code}' and Course_Level eq '{$applicantCourse->course_level}'");
             $studentCoursesURL = config('app.odata') . "{$studentCoursesQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}'");
             
             $studentCourses = $this->businessCentralAccess->getOdata($studentCoursesURL);
@@ -93,6 +92,38 @@ class PaymentController extends Controller
     public function getPaymentInstructions(){
         try{
             $totalFees =$this->retrieveOrUpdateSessionData('get','fee_amount');
+            
+            if($totalFees == null){
+                $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
+                $applicant = Applicant::where('id', $applicationID)
+                    ->where('application_status', 'processed')
+                    ->first();
+
+                $studentNo = $applicant->student_no;
+            
+            
+                $studentCoursesQuery = $this->generalQueries->studentCourseQuery();
+                $studentCoursesURL = config('app.odata') . "{$studentCoursesQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}'");
+                
+                $studentCourses = $this->businessCentralAccess->getOdata($studentCoursesURL);
+                $response = $this->validateAPIResponse($studentCourses, url()->previous());
+                if ($response) {
+                    return $response;
+                }
+
+                $studentCoursesData = $studentCourses['data']['value'];
+                $totalFees = 0;
+
+                foreach ($studentCoursesData as $courseLines) {
+                    $totalFees += $courseLines['Unit_Fees'];
+                }
+
+                $this->retrieveOrUpdateSessionData('put','fee_amount', $totalFees);
+                $totalFees =$this->retrieveOrUpdateSessionData('get','fee_amount');
+
+            }
+
+
             return Inertia::render('Payments/PaymentInstructions', [
                 'totalFees' => $totalFees,
             ]);

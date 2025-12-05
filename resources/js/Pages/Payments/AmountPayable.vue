@@ -11,7 +11,7 @@ const props = defineProps({
     studentCourses: Object,
 });
 
-console.log(props.studentCourses);
+
 
 const noOfStudentCourses = ref(0);
 const formattedFee = ref(0);

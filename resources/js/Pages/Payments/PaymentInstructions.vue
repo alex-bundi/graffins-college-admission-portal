@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
@@ -9,8 +9,9 @@ const props = defineProps({
     totalFees: Number,
 });
 
+const formattedFee = ref(0);
 onMounted(() => {
-    const formattedFee = new Intl.NumberFormat('en-KE', {
+    formattedFee.value = new Intl.NumberFormat('en-KE', {
         style: 'currency',
         currency: 'KES',
     }).format(props.totalFees);
