@@ -149,9 +149,8 @@ class PaymentController extends Controller
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->get();
                 $studentNo = $applicant->student_no;
             }
-      
-
-
+            
+           
             $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
             $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}'");
             $studentPayments =  $this->businessCentralAccess->getOdata($studentPaymentsURL);
@@ -220,6 +219,7 @@ class PaymentController extends Controller
     }
 
     public function postPayment(Request $request, $retryCount = 0, $maxRetries = 3){
+        dd($request->all());
         $validated = $request->validate([
             'amountPaid' => 'required|numeric',
             'datePaid' => 'required|date',
@@ -236,7 +236,9 @@ class PaymentController extends Controller
                 ->first();
 
             if($applicant){
-                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)
+                ->where('applicant_id', $applicant->id)
+                ->first();
             }
 
              $context = $this->businessCentralAccess->initializeSoapProcess();

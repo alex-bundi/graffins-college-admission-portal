@@ -4073,3 +4073,7 @@
 #62 C:\\Development\\Portals\\admission-portal\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(23): require_once('C:\\\\Development\\\\...')
 #63 {main}
 "} 
+[2025-12-08 09:47:45] local.ERROR: Maximum execution time of 60 seconds exceeded {"userId":6,"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 60 seconds exceeded at C:\\Development\\Portals\\admission-portal\\vendor\\guzzlehttp\\guzzle\\src\\Handler\\CurlHandler.php:45)
+[stacktrace]
+#0 {main}
+"} 

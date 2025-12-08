@@ -33,6 +33,7 @@ class ApplicantCourse extends Model
         'tutor_code',
         'tutor_name',
         'unit_description',
+        'payment_updated,'
     ];
 
     protected $hidden = [

@@ -39,6 +39,8 @@ const form = useForm({
     datePaid: props.studentPayments ? props.studentPayments.Payment_Date : null,
     modeOfPayment: paymentMode,
     paymentReference: props.studentPayments ? props.studentPayments.Payment_Reference_No : null,
+    course: null,
+    level: null,
 });
 
 const hasChanged = computed(() => {
@@ -112,6 +114,9 @@ function submit(){
                                     <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6 text-gray-900 capitalize"> 
                                         Level 
                                     </th>
+                                    <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6 text-gray-900 capitalize"> 
+                                        Fee Amount 
+                                    </th>
                                     <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6  text-gray-900 capitalize">
                                         Actions
                                     </th>
@@ -125,9 +130,12 @@ function submit(){
                                     <td class="p-5 whitespace-nowrap text-sm leading-6 text-gray-900"> {{ courseLine.course_description }} </td>
                                    
                                     <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> {{ courseLine.level_description }} </td>
+                                    <td class="p-5 whitespace-nowrap text-sm leading-6  text-primaryColor"> 
+                                        <!-- {{ courseLine.Unit_Fees }}  -->
+                                    </td>
                                   
                                     <td class="flex p-5 items-center gap-0.5">
-                                        <button  @click="openPaymentModal(courseLine)"
+                                        <button  @click="openPaymentModal(courseLine )"
                                             class="flex items-center text-black text-sm p-2 border border-amber-400 hover:bg-gray-500 hover:text-white hover:border-0 
                                                 rounded-full  group transition-all duration-500 space-x-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
@@ -152,154 +160,169 @@ function submit(){
 
 
         <!-- 💬 PAYMENT MODAL -->
-<div 
-    v-if="showPaymentModal" 
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
->
-    <div class="bg-white rounded-lg p-6 w-1/2 shadow-xl">
-        <h2 class="text-xl font-monteserat tracking-wider font-bold mb-4">Capture Payment</h2>
+        <div 
+            v-if="showPaymentModal" 
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+            <div class="bg-white rounded-lg p-6 w-3/4 md:w-1/2 shadow-xl">
+                <h2 class="text-xl font-monteserat tracking-wider font-bold mb-4">Capture Payment</h2>
 
-        <p class="text-gray-700 mb-3">
-            Updating payment for:  
-            <strong>{{ selectedCourse?.course_description }}</strong>
-        </p>
+                <p class="text-gray-700 mb-3 font-josefin tracking-wider font-bold">
+                    Updating payment for:  
+                    <strong class="text-primaryColor">{{ selectedCourse?.course_description  }}</strong>
+                </p>
 
-        <div>
-            <form action="">
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div class="max-w-sm" >
-                        <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="amount_paid" label-name="Amount Paid" class="" />
-                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                                *
-                            </span>
+                <div>
+                    <form action="" method="post" class="" @submit.prevent="submit">
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="max-w-sm" >
+                                <div class="flex flex-row space-x-2">
+                                    <FormInputLabel for-input="amount_paid" label-name="Amount Paid" class="" />
+                                    <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                        *
+                                    </span>
+                                </div>
+                                <FormInput 
+                                    type="number"
+                                    id="amount_paid"
+                                    v-model="form.amountPaid"
+                                    class="py-2.5 sm:py-3 px-4 block w-full text-base font-josefin font-bold tracking-wider"
+                                    
+                                    required/> 
+                                    
+                                <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.amountPaid">{{ form.errors.amountPaid }}</div>
+                                
+                            </div>
+
+                            <div class="max-w-sm" >
+                                <div class="flex flex-row space-x-2">
+                                    <FormInputLabel for-input="date_paid" label-name="Date Paid" class="" />
+                                    <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                        *
+                                    </span>
+                                </div>
+                                <FormInput 
+                                    type="date"
+                                    id="date_paid"
+                                    v-model="form.datePaid"
+                                    class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
+                                    
+                                    required/> 
+                                    
+                                <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.datePaid">{{ form.errors.datePaid }}</div>
+                                
+                            </div>
+
+                            <div class="max-w-sm" >
+                                <div class="flex flex-row space-x-2">
+                                    <FormInputLabel for-input="payment_ref" label-name="Payment Reference" class="" />
+                                    <span class="font-josefin tracking-wider font-bold text-base text-red-500">
+                                        *
+                                    </span>
+                                </div>
+                                
+                                <FormInput 
+                                    type="text"
+                                    id="payment_ref"
+                                    v-model="form.paymentReference"
+                                    class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider uppercase"
+                                    
+                                    required/> 
+                                    
+                                <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.paymentReference">{{ form.errors.paymentReference }}</div>
+                                
+                            </div>
+
+                            
                         </div>
-                        <FormInput 
-                            type="number"
-                            id="amount_paid"
-                            v-model="form.amountPaid"
-                            class="py-2.5 sm:py-3 px-4 block w-full text-base font-josefin font-bold tracking-wider"
+                        <div class="max-w-sm mt-2" >
                             
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.amountPaid">{{ form.errors.amountPaid }}</div>
-                        
-                    </div>
-
-                     <div class="max-w-sm" >
-                        <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="date_paid" label-name="Date Paid" class="" />
-                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                                *
-                            </span>
-                        </div>
-                        <FormInput 
-                            type="date"
-                            id="date_paid"
-                            v-model="form.datePaid"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider"
-                            
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.datePaid">{{ form.errors.datePaid }}</div>
-                        
-                    </div>
-
-                    <div class="max-w-sm" >
-                        <div class="flex flex-row space-x-2">
-                            <FormInputLabel for-input="payment_ref" label-name="Payment Reference" class="" />
-                            <span class="font-josefin tracking-wider font-bold text-base text-red-500">
-                                *
-                            </span>
-                        </div>
-                        
-                        <FormInput 
-                            type="text"
-                            id="payment_ref"
-                            v-model="form.paymentReference"
-                            class="py-2.5 sm:py-3 px-4 block w-full font-josefin font-bold tracking-wider uppercase"
-                            
-                            required/> 
-                            
-                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.paymentReference">{{ form.errors.paymentReference }}</div>
-                        
-                    </div>
-
-                     <div class="max-w-sm" >
-                      
-
-                         <ul class="grid w-full gap-6 md:grid-cols-1 mt-2">
                             <FormInputLabel for-input="mode_of_payment" label-name="Mode of Payment" class="" />
+                            <ul class="grid w-full grid-cols-1 gap-6 md:grid-cols-3 mt-2">
+                                
 
-                            <li>
-                                <input type="radio" v-model="form.modeOfPayment" id="bank" name="bank" value="1" class="hidden peer" />
-                                <label for="bank" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
-                                    peer-checked:border-primaryColor
-                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                    dark:text-gray-400 ">                           
-                                    <div class="block">
-                                        <div class="w-full text-lg font-semibold">BANK</div>
-                                    </div>
-                                    
-                                </label>
-                                <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
-
-                            </li>
-                            <li>
-                                <input type="radio" v-model="form.modeOfPayment" id="mpesa" name="mpesa" value="2" class="hidden peer" />
-                                <label for="mpesa" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
-                                    peer-checked:border-primaryColor
-                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                    dark:text-gray-400 ">                           
-                                    <div class="block">
-                                        <div class="w-full text-lg font-semibold">MPESA</div>
-                                    </div>
-                                    
-                                </label>
-                                <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
-
-                            </li>
-                            <li>
-                                <input type="radio"  v-model="form.modeOfPayment" id="cheque" name="cheque" value="3" class="hidden peer">
-                                <label for="cheque" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
-                                    bg-white border border-gray-200 rounded-lg cursor-pointer  
-                                    peer-checked:border-primaryColor
-                                    peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
-                                    dark:text-gray-400 ">
-                                    <div class="block">
-                                        <div class="w-full text-lg font-semibold">CHEQUE</div>
+                                <li>
+                                    <input type="radio" v-model="form.modeOfPayment" id="bank" name="bank" value="1" class="hidden peer" />
+                                    <label for="bank" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                        peer-checked:border-primaryColor
+                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                        dark:text-gray-400 ">                           
+                                        <div class="block">
+                                            <div class="w-full text-lg font-semibold">BANK</div>
+                                        </div>
+                                        
+                                    </label>
                                     <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
-                                    </div>
-                                </label>
-                            </li>
+                                </li>
+                                <li>
+                                    <input type="radio" v-model="form.modeOfPayment" id="mpesa" name="mpesa" value="2" class="hidden peer" />
+                                    <label for="mpesa" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                        peer-checked:border-primaryColor
+                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                        dark:text-gray-400 ">                           
+                                        <div class="block">
+                                            <div class="w-full text-lg font-semibold">MPESA</div>
+                                        </div>
+                                        
+                                    </label>
+                                    <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
 
-                                    
-                        </ul>
-                    </div>
+                                </li>
+                                <li>
+                                    <input type="radio"  v-model="form.modeOfPayment" id="cheque" name="cheque" value="3" class="hidden peer">
+                                    <label for="cheque" class="inline-flex items-center justify-between w-full p-5 text-gray-500 
+                                        bg-white border border-gray-200 rounded-lg cursor-pointer  
+                                        peer-checked:border-primaryColor
+                                        peer-checked:text-primaryColor hover:text-gray-600 hover:bg-gray-100 
+                                        dark:text-gray-400 ">
+                                        <div class="block">
+                                            <div class="w-full text-lg font-semibold">CHEQUE</div>
+                                        <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.departmentCode">{{ form.errors.departmentCode }}</div>
+
+                                        </div>
+                                    </label>
+                                </li>
+
+                                        
+                            </ul>
+                        </div>
+
+
+                        <div class="flex justify-between space-x-2 mt-5">
+                            <button 
+                                type="submit"
+                                :disabled="form.processing" 
+                                class="py-2.5 sm:py-3 px-4  block w-1/2 items-center gap-x-2 font-league tracking-wider text-sm font-medium rounded-lg border border-transparent 
+                                            bg-primaryColor text-white hover:bg-darkPrimaryColor focus:outline-hidden focus:bg-primaryColor disabled:opacity-50 
+                                                    disabled:pointer-events-none"
+                            >
+                                Save
+                            </button>
+                            <button 
+                                @click="showPaymentModal = false"
+                                class="flex space-x-3 bg-black rounded-full text-white py-2.5 sm:py-3 px-4 hover:bg-gray-700 font-josefin font-bold tracking-wider"
+                            >
+                                <span>
+                                    Cancel
+                                </span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+
+                                
+                            </button>
+
+                        
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
 
-        <div class="flex justify-end space-x-2">
-            <button 
-                @click="showPaymentModal = false"
-                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-            >
-                Cancel
-            </button>
-
-            <button 
-                @click="submitPayment"
-                class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
-                Save
-            </button>
+            
+            </div>
         </div>
-    </div>
-</div>
 
         <!-- <div class="mt-4"> 
             <form action="" method="post" class="" @submit.prevent="submit">
