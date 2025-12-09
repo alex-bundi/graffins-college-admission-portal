@@ -12,21 +12,35 @@ const props = defineProps({
     courseLines: Object,
 });
 
-console.log(props.courseLines);
 
 const showPaymentModal = ref(false);
 const selectedCourse = ref(null);
 const paymentAmount = ref('');
 const noOfStudentCourses = ref(0);
 const totalFees = ref(0);
+let paymentMode = ref(null);
 
-function openPaymentModal(courseLine) {
+const errors = ref({});
+const success = ref({});
+const form = useForm({
+    amountPaid: props.studentPayments ? props.studentPayments.Amount_to_pay : null,
+    datePaid: props.studentPayments ? props.studentPayments.Payment_Date : null,
+    modeOfPayment: paymentMode,
+    paymentReference: props.studentPayments ? props.studentPayments.Payment_Reference_No : null,
+    courseID: null,
+});
+
+console.log(props.courseLines);
+
+
+function openPaymentModal(courseLine, courseLineID) {
     selectedCourse.value = courseLine;
     paymentAmount.value = '';
     showPaymentModal.value = true;
+    form.courseID = courseLineID;
 }
 
-let paymentMode = ref(null);
+
 
 if((props.studentPayments != null) && (props.studentPayments.Payment_Mode == 'Bank')){
     paymentMode = 1;
@@ -36,16 +50,7 @@ if((props.studentPayments != null) && (props.studentPayments.Payment_Mode == 'Ba
     paymentMode = 3;
 }
 
-const errors = ref({});
-const success = ref({});
-const form = useForm({
-    amountPaid: props.studentPayments ? props.studentPayments.Amount_to_pay : null,
-    datePaid: props.studentPayments ? props.studentPayments.Payment_Date : null,
-    modeOfPayment: paymentMode,
-    paymentReference: props.studentPayments ? props.studentPayments.Payment_Reference_No : null,
-    course: null,
-    level: null,
-});
+
 
 const hasChanged = computed(() => {
     return (
@@ -139,9 +144,7 @@ async function getFeeDetails() {
                                     <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6 text-gray-900 capitalize"> 
                                         Level 
                                     </th>
-                                    <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6 text-gray-900 capitalize"> 
-                                        Fee Amount 
-                                    </th>
+                                   
                                     <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6  text-gray-900 capitalize">
                                         Actions
                                     </th>
@@ -155,12 +158,10 @@ async function getFeeDetails() {
                                     <td class="p-5 whitespace-nowrap text-sm leading-6 text-gray-900"> {{ courseLine.course_description }} </td>
                                    
                                     <td class="p-5 whitespace-nowrap text-sm leading-6  text-gray-900"> {{ courseLine.level_description }} </td>
-                                    <td class="p-5 whitespace-nowrap text-sm leading-6  text-primaryColor"> 
-                                        <!-- {{ courseLine.Unit_Fees }}  -->
-                                    </td>
+                                  
                                   
                                     <td class="flex p-5 items-center gap-0.5">
-                                        <button  @click="openPaymentModal(courseLine )"
+                                        <button  @click="openPaymentModal(courseLine, courseLine.id )"
                                             class="flex items-center text-black text-sm p-2 border border-amber-400 hover:bg-gray-500 hover:text-white hover:border-0 
                                                 rounded-full  group transition-all duration-500 space-x-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
@@ -243,6 +244,15 @@ async function getFeeDetails() {
                                     
                                 <div class="text-red-500 tracking-wider font-josefin font-bold m-2 text-sm" v-if="form.errors.amountPaid">{{ form.errors.amountPaid }}</div>
                                 
+                            </div>
+                            <div class="hidden">
+                                <FormInput 
+                                    type="number"
+                                    id="course_Id"
+                                    v-model="form.amountPaid"
+                                    class="py-2.5 sm:py-3 px-4 block w-full text-base font-josefin font-bold tracking-wider"
+                                    
+                                    required/> 
                             </div>
 
                             <div class="max-w-sm" >

@@ -131,3 +131,7 @@
 [2025-12-04 08:00:00] local.ERROR: [2025-12-04 08:00:00] Inserting Emergency Contacts in Business central took  took 2356.06 ms  
 [2025-12-04 08:00:03] local.ERROR: [2025-12-04 08:00:03] Insertng Course details in Business central took took 3247.55 ms  
 [2025-12-04 08:00:09] local.ERROR: [2025-12-04 08:00:09] Converting Application to customer in Business central took took 5752.41 ms  
+[2025-12-09 09:25:36] local.ERROR: [2025-12-09 09:25:35] getting Students from ERP took 1030.65 ms  
+[2025-12-09 09:41:06] local.ERROR: [2025-12-09 09:41:06] getting Students from ERP took 1263.61 ms  
+[2025-12-09 09:41:12] local.ERROR: [2025-12-09 09:41:12] getting Students from ERP took 836.96 ms  
+[2025-12-09 09:41:14] local.ERROR: [2025-12-09 09:41:14] getting Students from ERP took 799 ms  

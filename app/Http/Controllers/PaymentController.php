@@ -159,12 +159,14 @@ class PaymentController extends Controller
             if ($response) {
                 return $response;
             }
+            
 
              if (!empty($studentPayments['data']['value']) && count($studentPayments['data']['value']) > 0) {
-                    $studentPaymentsData = $studentPayments['value'][0];
+                    $studentPaymentsData = $studentPayments['data']['value'][0];
             }else {
                 $studentPaymentsData = null;
             }
+  
             return Inertia::render('Payments/UpdatePayment', [
                 'studentPayments' => $studentPaymentsData,
                 'names' => $applicant->first_name . ' ' . $applicant->second_name . ' ' . $applicant->last_name,
@@ -172,7 +174,6 @@ class PaymentController extends Controller
             ]);
 
         }catch(Exception $e){
-            // dd($e->getMessage());
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);
@@ -261,30 +262,35 @@ class PaymentController extends Controller
     }
 
     public function postPayment(Request $request, $retryCount = 0, $maxRetries = 3){
-        dd($request->all());
         $validated = $request->validate([
             'amountPaid' => 'required|numeric',
             'datePaid' => 'required|date',
             'modeOfPayment' => 'required|string',
             'paymentReference' => 'required|string',
+            'courseID' => 'required|Integer',
         ]);
 
         try{
+            $studentNo = '';
+
+
             $applicationID= $this->retrieveOrUpdateSessionData('get','application_no' );
             $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
 
-            $applicant = Applicant::where('id', $applicationID)
+            if($studentNo == null){
+                $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'processed')
                 ->first();
 
-            if($applicant){
-                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)
-                ->where('applicant_id', $applicant->id)
-                ->first();
+                $studentNo = $applicant->student_no;
             }
 
-             $context = $this->businessCentralAccess->initializeSoapProcess();
+            
 
+            $applicantCourse = ApplicantCourse::where('id', $validated['courseID'])->first();
+            
+
+            $context = $this->businessCentralAccess->initializeSoapProcess();
             
             if($context['success'] == true){
                 $soapClient = new \SoapClient(
@@ -314,12 +320,13 @@ class PaymentController extends Controller
 
             $result = $soapClient->InsertPayment($params);
             if($result){
+                
                 if($result->return_value == true){
-                    if($applicant){
-                        $applicant->payment_updated = true;
-                        $applicant->save();
+                    if($applicantCourse){
+                        $applicantCourse->payment_updated = true;
+                        $applicantCourse->save();
                     }
-
+                
                     return redirect()->route('student.id')->with('success', 'Payment details captured successfully');
 
                 } else{

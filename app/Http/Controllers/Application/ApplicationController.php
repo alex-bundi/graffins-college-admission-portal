@@ -936,7 +936,20 @@ class ApplicationController extends Controller
 
     public function getStudentIDPage(){
         try{
+           
             $studentNo = $this->retrieveOrUpdateSessionData('get','student_no' );
+            
+
+            if($studentNo == null){
+                $applicationID= $this->retrieveOrUpdateSessionData('get','application_no' );
+                $applicant = Applicant::where('id', $applicationID)
+                ->where('application_status', 'processed')
+                ->first();
+                $this->retrieveOrUpdateSessionData('put','student_no', $applicant->student_no);
+
+                $studentNo = $applicant->student_no;
+            }
+
             $studentQuery = $this->generalQueries->studentsQuery();
             $studentURL = config('app.odata') . "{$studentQuery}?". '$filter=' . rawurlencode("No eq '{$studentNo}'");
             $students=  $this->businessCentralAccess->getOdata($studentURL);

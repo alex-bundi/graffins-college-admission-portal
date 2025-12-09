@@ -4325,3 +4325,7 @@
 #62 C:\\Development\\Portals\\admission-portal\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(23): require_once('C:\\\\Development\\\\...')
 #63 {main}
 "} 
+[2025-12-09 09:35:57] local.ERROR: syntax error, unexpected token "}" {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): syntax error, unexpected token \"}\" at C:\\Development\\Portals\\admission-portal\\app\\Models\\ApplicantCourse.php:45)
+[stacktrace]
+#0 {main}
+"} 

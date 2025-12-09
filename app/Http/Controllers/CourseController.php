@@ -11,6 +11,8 @@ use App\Models\GeneralQueries;
 use App\Traits\GeneralTrait;
 use App\Models\Applicant;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ApplicantCourse;
+
 
 
 
@@ -29,14 +31,16 @@ class CourseController extends Controller
         try{
             $email = Auth::user()->email; 
 
-            $applications = Applicant::where('email', $email)->get();
-            // dd($applications);
+            $applications = Applicant::where('email', $email)
+                ->with('courseLines')
+                ->get();
             
             return Inertia::render('CourseList',[
                 'applications' => $applications,
             ]);
 
         }catch(Exception $e){
+            dd($e->getMessage());
             return redirect()->back()->withErrors([
                 'error' => $e->getMessage()
             ]);

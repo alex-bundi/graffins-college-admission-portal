@@ -44,7 +44,7 @@ class Applicant extends Model
     ];
 
 
-    public function applicantCourse(): HasMany
+    public function courseLines(): HasMany
     {
         return $this->hasMany(ApplicantCourse::class);
     }
