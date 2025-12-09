@@ -180,6 +180,48 @@ class PaymentController extends Controller
 
     }
 
+    public function getFeeDetails()
+    {
+        try {
+            $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
+                $applicant = Applicant::where('id', $applicationID)
+                    ->where('application_status', 'processed')
+                    ->first();
+
+                $studentNo = $applicant->student_no;
+            
+            
+                $studentCoursesQuery = $this->generalQueries->studentCourseQuery();
+                $studentCoursesURL = config('app.odata') . "{$studentCoursesQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}'");
+                
+                $studentCourses = $this->businessCentralAccess->getOdata($studentCoursesURL);
+                $response = $this->validateAPIResponse($studentCourses, url()->previous());
+                if ($response) {
+                    return $response;
+                }
+
+                $studentCoursesData = $studentCourses['data']['value'];
+                $totalFees = 0;
+
+                foreach ($studentCoursesData as $courseLines) {
+                    $totalFees += $courseLines['Unit_Fees'];
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'studentCourses' => $studentCoursesData,
+                        'totalFees' => $totalFees,
+                    ] 
+                ], 200);
+        }catch(Exception $e){
+            return response()->json([
+                'error' => false,
+                'message' => $e->getMessage()
+            ], 404);
+        }
+    }
+
     public function editPayment($applicationID){
         try{
             $applicant = Applicant::where('email', $this->user->email)

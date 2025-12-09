@@ -12,9 +12,13 @@ const props = defineProps({
     courseLines: Object,
 });
 
+console.log(props.courseLines);
+
 const showPaymentModal = ref(false);
 const selectedCourse = ref(null);
 const paymentAmount = ref('');
+const noOfStudentCourses = ref(0);
+const totalFees = ref(0);
 
 function openPaymentModal(courseLine) {
     selectedCourse.value = courseLine;
@@ -52,17 +56,34 @@ const hasChanged = computed(() => {
         form.paymentReference !== (props.studentPayments?.Payment_Reference_No ?? null) 
     );
 });
+
+
+onMounted(async () => {
+    const feeDetailsData = await getFeeDetails();
+    console.log(feeDetailsData.data)
+
+    if(feeDetailsData.success === true){
+        totalFees.value = new Intl.NumberFormat('en-KE', {
+            style: 'currency',
+            currency: 'KES',
+        }).format(feeDetailsData.data.totalFees);
+
+    }else if(feeDetailsData.error === true){
+        errors.value.message = bioData.message;
+        return;
+    }
+
+    noOfStudentCourses.value = Object.keys(props.courseLines).length;
+})
+
 function submit(){
     if (hasChanged.value == true) {
         router.post('/payments/post-update-payment', form, {
             onError : (allErrors) => {
                 for(let error in allErrors){
                 errors.value[error] = allErrors[error]
-                }
-
-            
+                } 
             },
-
         });
     } else {
         router.visit('/application/student-id');
@@ -70,11 +91,15 @@ function submit(){
 
         
     }
-
-    
-
- 
 }
+
+
+
+async function getFeeDetails() {
+    const response = await fetch('/payments/fee-details');
+    return await response.json();
+}
+
 </script>
 
 <template>
@@ -159,7 +184,33 @@ function submit(){
         </div>
 
 
-        <!-- 💬 PAYMENT MODAL -->
+        <div class="mt-4">
+            <section class="flex items-center mb-6">
+                <div class="w-full max-w-screen-xl px-4 mx-auto lg:px-12">
+                    <!-- Start coding here -->
+                    <div class="relative overflow-hidden bg-white rounded-b-lg shadow-md dark:bg-gray-800">
+                    <nav class="flex flex-col sm:flex-row gap-4 items-center justify-between p-4"
+                        aria-label="Table navigation">
+                        <div class="flex space-x-4">
+                            <h2 class="font-monteserat tracking-wider">
+                                Total Courses:
+                            </h2>
+                            <span class="font-josefin font-bold tracking-wider">
+                                {{ noOfStudentCourses }}
+                            </span>
+                        </div>
+                        <p class="flex items-center space-x-4">
+                            <span class="font-monteserat tracking-wider text-xl text-primaryColor">Total Fees:</span>
+                            <span class="font-monteserat tracking-wider text-base text-black">{{ totalFees }}</span>
+                        </p>
+                    </nav>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+
+        <!--  PAYMENT MODAL -->
         <div 
             v-if="showPaymentModal" 
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
