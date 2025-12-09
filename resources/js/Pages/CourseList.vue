@@ -39,6 +39,10 @@ const applicationCount = computed(() => {
     return Object.keys(props.applications).length;
 })
 
+const hasPendingPayments = computed(() => {
+    Object.keys(props.applications).forEach(key)
+})
+
 </script>
 
 <template>
