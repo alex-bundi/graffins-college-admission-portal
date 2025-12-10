@@ -14,7 +14,6 @@ const props = defineProps({
     }
 });
 
-console.log(props.applicantCourse)
 const errors = ref({});
 const success = ref({});
 const form = useForm({

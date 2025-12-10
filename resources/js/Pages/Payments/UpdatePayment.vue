@@ -11,7 +11,6 @@ const props = defineProps({
     names: String,
     courseLines: Object,
 });
-console.log(props.studentPayments)
 
 
 const showPaymentModal = ref(false);
@@ -35,14 +34,13 @@ const editForm = useForm({
 const errors = ref({});
 const success = ref({});
 const form = useForm({
-    amountPaid: props.studentPayments ? props.studentPayments.Amount_to_pay : null,
-    datePaid: props.studentPayments ? props.studentPayments.Payment_Date : null,
-    modeOfPayment: paymentMode,
-    paymentReference: props.studentPayments ? props.studentPayments.Payment_Reference_No : null,
+    amountPaid: null,
+    datePaid:  null,
+    modeOfPayment: null,
+    paymentReference:  null,
     courseID: null,
 });
 
-console.log(props.courseLines);
 
 
 function openPaymentModal(courseLine, courseLineID) {
@@ -626,7 +624,24 @@ function submitEdit() {
         </div>
 
 
+        <div>
+             <div class="w-1/4">
+                <Link :href="route('student.id')" class="flex items-center gap-2 px-6 py-3 text-white text-xl font-josefin tracking-wider font-bold 
+                                rounded-full shadow-md 
+                                bg-gradient-to-b from-lime-400 to-green-500 
+                                hover:from-lime-500 hover:to-green-600 
+                                active:scale-95 transition">
+                    NEXT
+                    <span class="flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                        <path fill-rule="evenodd" d="M13.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L11.69 12 4.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M19.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06L17.69 12l-6.97-6.97a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
+                        </svg>
 
+                    </span>
+                </Link>
+            </div>
+       </div>
 
 
     </ApplicationLayout>

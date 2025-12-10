@@ -7,7 +7,6 @@ import Notifications from '@/Layouts/Notifications.vue';
 const props = defineProps({
     applications: Object,
 });
-console.log(props.applications);
 const errors = ref({});
 const success = ref({});
 

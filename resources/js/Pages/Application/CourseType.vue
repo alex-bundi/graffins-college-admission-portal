@@ -25,7 +25,6 @@ const uniqueLevels = computed(() => {
   return [...new Set(levels)].sort()
 });
 
-console.log(props.units);
 
 
 

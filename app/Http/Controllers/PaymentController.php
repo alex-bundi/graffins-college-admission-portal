@@ -327,7 +327,8 @@ class PaymentController extends Controller
                         $applicantCourse->save();
                     }
                 
-                    return redirect()->route('student.id')->with('success', 'Payment details captured successfully');
+                    return redirect()->back()->with('success', 'Payment details captured successfully');
+                    // return redirect()->route('student.id')->with('success', 'Payment details captured successfully');
 
                 } else{
                     return redirect()->back()->withErrors([

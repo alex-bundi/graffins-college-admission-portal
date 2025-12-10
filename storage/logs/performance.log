@@ -140,3 +140,73 @@
 [2025-12-10 08:41:35] local.ERROR: [2025-12-10 08:41:35] Insertng Course details in Business central took took 2475.82 ms  
 [2025-12-10 08:41:40] local.ERROR: [2025-12-10 08:41:40] Converting Application to customer in Business central took took 4509.05 ms  
 [2025-12-10 09:02:36] local.ERROR: [2025-12-10 09:02:36] getting Students from ERP took 884.16 ms  
+[2025-12-10 09:59:16] local.ERROR: [2025-12-10 09:59:16] getting Students from ERP took 1141.77 ms  
+[2025-12-10 10:45:43] local.ERROR: [2025-12-10 10:45:43] getting Students from ERP took 1285.05 ms  
+[2025-12-10 10:48:11] local.ERROR: [2025-12-10 10:48:11] getting intake took 985.02 ms  
+[2025-12-10 10:48:19] local.ERROR: [2025-12-10 10:48:19] getting tutors took 826.53 ms  
+[2025-12-10 10:49:12] local.ERROR: [2025-12-10 10:49:12] getting intake took 983.04 ms  
+[2025-12-10 10:50:15] local.ERROR: [2025-12-10 10:50:15] getting intake took 927.89 ms  
+[2025-12-10 10:50:26] local.ERROR: [2025-12-10 10:50:26] getting intake took 829.86 ms  
+[2025-12-10 10:50:50] local.ERROR: [2025-12-10 10:50:50] getting tutors took 846.16 ms  
+[2025-12-10 10:51:09] local.ERROR: [2025-12-10 10:51:09] getting tutors took 940.13 ms  
+[2025-12-10 10:52:24] local.ERROR: [2025-12-10 10:52:24] getting intake took 833.96 ms  
+[2025-12-10 10:52:34] local.ERROR: [2025-12-10 10:52:34] getting tutors took 776.81 ms  
+[2025-12-10 10:53:06] local.ERROR: [2025-12-10 10:53:06] getting intake took 858.48 ms  
+[2025-12-10 10:53:13] local.ERROR: [2025-12-10 10:53:13] getting tutors took 772.04 ms  
+[2025-12-10 10:53:37] local.ERROR: [2025-12-10 10:53:37] inserting contacts took 41.98 ms  
+[2025-12-10 10:53:38] local.ERROR: [2025-12-10 10:53:38] getting Nationalities took 858.74 ms  
+[2025-12-10 10:53:44] local.ERROR: [2025-12-10 10:53:44] inserting Nationality to db took 41.37 ms  
+[2025-12-10 10:54:07] local.ERROR: [2025-12-10 10:54:07] getting residences took 887.6 ms  
+[2025-12-10 10:54:10] local.ERROR: [2025-12-10 10:54:10] inserting residence into db took 44.24 ms  
+[2025-12-10 10:54:11] local.ERROR: [2025-12-10 10:54:11] getting marketing data took 812.08 ms  
+[2025-12-10 10:54:14] local.ERROR: [2025-12-10 10:54:14] inserting about us into db took 56.69 ms  
+[2025-12-10 10:54:56] local.ERROR: [2025-12-10 10:54:56] processing passport file took 308.86 ms  
+[2025-12-10 10:55:18] local.ERROR: [2025-12-10 10:55:18] Creating Application in Business central took took 4796.74 ms  
+[2025-12-10 10:55:20] local.ERROR: [2025-12-10 10:55:20] Inserting Emergency Contacts in Business central took  took 2268.9 ms  
+[2025-12-10 10:55:24] local.ERROR: [2025-12-10 10:55:24] Insertng Course details in Business central took took 3925.7 ms  
+[2025-12-10 11:00:34] local.ERROR: [2025-12-10 11:00:34] Creating Application in Business central took took 4525.68 ms  
+[2025-12-10 11:00:37] local.ERROR: [2025-12-10 11:00:37] Inserting Emergency Contacts in Business central took  took 2613.8 ms  
+[2025-12-10 11:00:40] local.ERROR: [2025-12-10 11:00:40] Insertng Course details in Business central took took 3491.08 ms  
+[2025-12-10 11:03:58] local.ERROR: [2025-12-10 11:03:58] Creating Application in Business central took took 4096.53 ms  
+[2025-12-10 11:04:01] local.ERROR: [2025-12-10 11:04:01] Inserting Emergency Contacts in Business central took  took 2186.6 ms  
+[2025-12-10 11:04:05] local.ERROR: [2025-12-10 11:04:05] Insertng Course details in Business central took took 3775.08 ms  
+[2025-12-10 11:06:15] local.ERROR: [2025-12-10 11:06:15] Creating Application in Business central took took 5304.8 ms  
+[2025-12-10 11:06:18] local.ERROR: [2025-12-10 11:06:18] Inserting Emergency Contacts in Business central took  took 2452.7 ms  
+[2025-12-10 11:06:21] local.ERROR: [2025-12-10 11:06:21] Insertng Course details in Business central took took 2810.67 ms  
+[2025-12-10 11:07:23] local.ERROR: [2025-12-10 11:07:23] Creating Application in Business central took took 4594.66 ms  
+[2025-12-10 11:07:26] local.ERROR: [2025-12-10 11:07:26] Inserting Emergency Contacts in Business central took  took 2938.96 ms  
+[2025-12-10 11:07:29] local.ERROR: [2025-12-10 11:07:29] Insertng Course details in Business central took took 2718.83 ms  
+[2025-12-10 11:12:10] local.ERROR: [2025-12-10 11:12:10] Creating Application in Business central took took 3830.77 ms  
+[2025-12-10 11:12:13] local.ERROR: [2025-12-10 11:12:13] Inserting Emergency Contacts in Business central took  took 2560.71 ms  
+[2025-12-10 11:12:16] local.ERROR: [2025-12-10 11:12:16] Insertng Course details in Business central took took 2747.5 ms  
+[2025-12-10 11:12:58] local.ERROR: [2025-12-10 11:12:58] Creating Application in Business central took took 3707.59 ms  
+[2025-12-10 11:13:00] local.ERROR: [2025-12-10 11:13:00] Inserting Emergency Contacts in Business central took  took 2518.72 ms  
+[2025-12-10 11:13:04] local.ERROR: [2025-12-10 11:13:04] Insertng Course details in Business central took took 3197.69 ms  
+[2025-12-10 11:50:45] local.ERROR: [2025-12-10 11:50:45] Creating Application in Business central took took 10905.96 ms  
+[2025-12-10 11:50:48] local.ERROR: [2025-12-10 11:50:48] Inserting Emergency Contacts in Business central took  took 3229.79 ms  
+[2025-12-10 11:50:51] local.ERROR: [2025-12-10 11:50:51] Insertng Course details in Business central took took 2379.79 ms  
+[2025-12-10 11:50:55] local.ERROR: [2025-12-10 11:50:55] Converting Application to customer in Business central took took 4480.44 ms  
+[2025-12-10 11:55:38] local.ERROR: [2025-12-10 11:55:37] Creating Application in Business central took took 4462.7 ms  
+[2025-12-10 11:55:40] local.ERROR: [2025-12-10 11:55:40] Inserting Emergency Contacts in Business central took  took 2496.36 ms  
+[2025-12-10 11:55:43] local.ERROR: [2025-12-10 11:55:43] Insertng Course details in Business central took took 2889.38 ms  
+[2025-12-10 11:55:47] local.ERROR: [2025-12-10 11:55:47] Converting Application to customer in Business central took took 3582.51 ms  
+[2025-12-10 12:00:11] local.ERROR: [2025-12-10 12:00:11] Creating Application in Business central took took 3981.49 ms  
+[2025-12-10 12:00:13] local.ERROR: [2025-12-10 12:00:13] Inserting Emergency Contacts in Business central took  took 2201.99 ms  
+[2025-12-10 12:00:17] local.ERROR: [2025-12-10 12:00:17] Insertng Course details in Business central took took 3440.92 ms  
+[2025-12-10 12:00:21] local.ERROR: [2025-12-10 12:00:21] Converting Application to customer in Business central took took 3890.82 ms  
+[2025-12-10 12:03:48] local.ERROR: [2025-12-10 12:03:48] getting Students from ERP took 805.52 ms  
+[2025-12-10 12:05:07] local.ERROR: [2025-12-10 12:05:07] getting intake took 858.08 ms  
+[2025-12-10 12:05:14] local.ERROR: [2025-12-10 12:05:14] getting tutors took 800.56 ms  
+[2025-12-10 12:05:41] local.ERROR: [2025-12-10 12:05:41] inserting contacts took 29.56 ms  
+[2025-12-10 12:05:42] local.ERROR: [2025-12-10 12:05:42] getting Nationalities took 948.95 ms  
+[2025-12-10 12:05:44] local.ERROR: [2025-12-10 12:05:44] inserting Nationality to db took 42.01 ms  
+[2025-12-10 12:06:03] local.ERROR: [2025-12-10 12:06:03] getting residences took 860.61 ms  
+[2025-12-10 12:06:06] local.ERROR: [2025-12-10 12:06:06] inserting residence into db took 39.59 ms  
+[2025-12-10 12:06:07] local.ERROR: [2025-12-10 12:06:07] getting marketing data took 755.76 ms  
+[2025-12-10 12:06:09] local.ERROR: [2025-12-10 12:06:09] inserting about us into db took 40.24 ms  
+[2025-12-10 12:06:29] local.ERROR: [2025-12-10 12:06:29] processing passport file took 122.82 ms  
+[2025-12-10 12:06:47] local.ERROR: [2025-12-10 12:06:47] Creating Application in Business central took took 2948.31 ms  
+[2025-12-10 12:06:50] local.ERROR: [2025-12-10 12:06:50] Inserting Emergency Contacts in Business central took  took 2493.12 ms  
+[2025-12-10 12:06:52] local.ERROR: [2025-12-10 12:06:52] Insertng Course details in Business central took took 2469.52 ms  
+[2025-12-10 12:06:56] local.ERROR: [2025-12-10 12:06:56] Converting Application to customer in Business central took took 3064.18 ms  
+[2025-12-10 12:07:30] local.ERROR: [2025-12-10 12:07:30] getting Students from ERP took 787.7 ms  
