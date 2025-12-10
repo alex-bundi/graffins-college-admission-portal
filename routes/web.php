@@ -181,6 +181,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/update-payment', [PaymentController::class, 'getUpdatePaymentForm'])->name('update.payment');
         Route::get('/edit-update-payment/{applicationID}', [PaymentController::class, 'editPayment'])->name('edit.payment');
         Route::post('/post-update-payment', [PaymentController::class, 'postPayment'])->name('post.payment');
+        Route::post('/post-edit-payment', [PaymentController::class, 'postEditPayment'])->name('edit.payment');
 
 
         Route::get('/fee-details', [PaymentController::class, 'getFeeDetails'])->name('fee.details');

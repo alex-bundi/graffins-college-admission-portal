@@ -162,7 +162,7 @@ class PaymentController extends Controller
             
 
              if (!empty($studentPayments['data']['value']) && count($studentPayments['data']['value']) > 0) {
-                    $studentPaymentsData = $studentPayments['data']['value'][0];
+                    $studentPaymentsData = $studentPayments['data']['value'];
             }else {
                 $studentPaymentsData = null;
             }
@@ -338,6 +338,70 @@ class PaymentController extends Controller
             
 
             
+        }catch(\SoapFault | Exception $e){
+            if($e->getCode() == 0 && $retryCount < $maxRetries){
+                
+                // Refresh token
+                $this->businessCentralAccess->initializeSoapProcess(true);
+                return $this->postPayment($request, $retryCount + 1, $maxRetries);
+            }
+            return redirect()->back()->withErrors([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+
+    public function postEditPayment(Request $request, $retryCount = 0, $maxRetries = 3){
+        $validated = $request->validate([
+            'amountPaid' => 'required|numeric',
+            'datePaid' => 'required|date',
+            'modeOfPayment' => 'required|string',
+            'paymentReference' => 'required|string',
+            'paymentNo' => 'required|string',
+        ]);
+        try {
+            $context = $this->businessCentralAccess->initializeSoapProcess();
+            
+            if($context['success'] == true){
+                $soapClient = new \SoapClient(
+                    config('app.webService'), 
+                    [
+                        'stream_context' => $context['context'],
+                        'trace' => 1,
+                        'exceptions' => 1
+                        
+                    ]
+                );
+            } else if($context['error'] == true){
+               return redirect()->route('api.errors')->with([
+                    'data' => $context['message'],
+                    'previousURL' => url()->previous(),
+                ]);
+            }
+
+            $params = new \stdClass();
+            $params->studentPaymentNo = $validated['paymentNo'];
+            $params->amountPaid = $validated['amountPaid'];
+            $params->datePaid = $validated['datePaid'];
+            $params->paymentRef = trim($validated['paymentReference']);
+            $params->paymentMode = (int) $validated['modeOfPayment'];
+
+            $result = $soapClient->UpdatePayment($params);
+            if($result){
+                
+                if($result->return_value == 'Modify Successful'){
+                    return redirect()->back()->with('success', 'Payment details updated successfully');
+                
+                    
+
+                } else{
+                    return redirect()->back()->withErrors([
+                        'error' => 'There was an error updating the payment',
+                    ]);
+                }
+            }
+
         }catch(\SoapFault | Exception $e){
             if($e->getCode() == 0 && $retryCount < $maxRetries){
                 
