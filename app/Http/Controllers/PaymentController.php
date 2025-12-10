@@ -229,29 +229,33 @@ class PaymentController extends Controller
                 ->where('id' , $applicationID)
                 ->first();
 
+            
             if($applicant){
-                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->first();
+                $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->get();
                 $studentNo = $applicant->student_no;
             }
-      
-
-
+            
+           
             $studentPaymentsQuery = $this->generalQueries->studentPaymentsQuery();
-            $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}' and CourseCode eq '{$applicantCourse->course_code}' and CourseLevel eq '{$applicantCourse->course_level}'");
+            $studentPaymentsURL = config('app.odata') . "{$studentPaymentsQuery}?". '$filter=' . rawurlencode("Student_No eq '{$studentNo}'");
             $studentPayments =  $this->businessCentralAccess->getOdata($studentPaymentsURL);
             $response = $this->validateAPIResponse($studentPayments, url()->previous());
-        
+            
             if ($response) {
                 return $response;
             }
+            
 
              if (!empty($studentPayments['data']['value']) && count($studentPayments['data']['value']) > 0) {
-                    $studentPaymentsData = $studentPayments['data']['value'][0];
+                    $studentPaymentsData = $studentPayments['data']['value'];
             }else {
                 $studentPaymentsData = null;
             }
+  
             return Inertia::render('Payments/UpdatePayment', [
                 'studentPayments' => $studentPaymentsData,
+                'names' => $applicant->first_name . ' ' . $applicant->second_name . ' ' . $applicant->last_name,
+                'courseLines' =>$applicantCourse,
             ]);
 
         }catch(Exception $e){

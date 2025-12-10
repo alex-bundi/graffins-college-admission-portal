@@ -99,6 +99,9 @@ function submit(){
                 errors.value[error] = allErrors[error]
                 } 
             },
+            onSuccess: () => {
+                showPaymentModal.value = false;
+            }
         });
     } else {
         router.visit('/application/student-id');
