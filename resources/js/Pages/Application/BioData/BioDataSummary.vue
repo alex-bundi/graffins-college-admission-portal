@@ -16,6 +16,8 @@ const props = defineProps({
     },
 });
 
+console.log(props.applicantData);
+
 const applicantImage = ref('');
 const hasApplicantImage = ref(false);
 const fileName = ref('');
@@ -35,7 +37,6 @@ onMounted(() => {
         applicantImage.value = '/storage/app/student_images/' + fileName.value;
     }
 
-    console.log(props.applicantData)
 })
 
 const showStepperMessage = ref(false);
@@ -151,6 +152,14 @@ function confirmPersonalData(){
                         </h3>
                         <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
                             {{ applicantData.email }}
+                        </p>
+                    </div>
+                     <div>
+                        <h3 class="font-monteserat text-base tracking-wider ">
+                           Passport
+                        </h3>
+                        <p class="bg-gray-300 rounded-md p-6 w-full font-josefin font-bold text-base  tracking-wider">
+                            {{ applicantData.id_passport_No }}
                         </p>
                     </div>
 

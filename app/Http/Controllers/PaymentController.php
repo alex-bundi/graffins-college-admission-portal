@@ -38,7 +38,7 @@ class PaymentController extends Controller
 
     public function getAmountPayable(){
         try{
-            
+           
             $applicationID =$this->retrieveOrUpdateSessionData('get','application_no' );
             $applicant = Applicant::where('id', $applicationID)
                 ->where('application_status', 'processed')

@@ -88,10 +88,6 @@ const success = ref({});
                             <th scope="col" class="px-6 py-3 font-medium">
                                 Fee Amount
                             </th>
-                          
-                            <th scope="col" class="px-6 py-3  font-medium">
-                                Action
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,10 +108,6 @@ const success = ref({});
                             </td>
                             <td class="px-6 py-4 text-primaryColor">
                                 {{ courseLine.Unit_Fees }}
-                            </td>
-                            <td class="flex items-center px-6 py-4">
-                                <a href="#" class="font-medium text-fg-brand hover:underline">Edit</a>
-                                <a href="#" class="font-medium text-danger hover:underline ms-3">Remove</a>
                             </td>
                         </tr>
                     </tbody>

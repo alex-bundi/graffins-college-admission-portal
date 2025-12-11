@@ -190,10 +190,10 @@ class BusinessCentralSoapController extends Controller
         try {
             $applicationID = $this->retrieveOrUpdateSessionData('get', 'application_no');
             
-            $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->first();
+            $emergencyContact = EmergencyContact::where('applicant_id', $applicationID)->get();
             $context = $this->businessCentralAccess->initializeSoapProcess();
 
-            if($context['success'] == true){
+             if($context['success'] == true){
                 $soapClient = new \SoapClient(
                     config('app.webService'), 
                     [
@@ -209,6 +209,7 @@ class BusinessCentralSoapController extends Controller
                     'previousURL' => url()->previous(),
                 ]);
             }
+
             $applicationExists = $this->validateApplication();
             $applicantNoBC = '';
 
@@ -223,37 +224,45 @@ class BusinessCentralSoapController extends Controller
                
             }
 
-            $params = new \stdClass();
-            $params->applicationNo = $applicantNoBC;
-            $params->fullName = trim(ucfirst($emergencyContact->full_name));
-            $params->phoneNo = trim(($emergencyContact->phone_no));
-            $params->relationship = ($emergencyContact->relationship);
-            
-            
-            $result = $soapClient->UpsertApplicantEmergencyContacts($params);
-            if($result){
-                if($result->return_value == true){
-                    $this->testPerformance($this->start, 'performance', 'Inserting Emergency Contacts in Business central took ');
+            foreach($emergencyContact as $contact){
+                
+                $params = new \stdClass();
+                $params->applicationNo = $applicantNoBC;
+                $params->fullName = trim(ucfirst($contact->full_name));
+                $params->phoneNo = trim(($contact->phone_no));
+                $params->relationship = ($contact->relationship);
+                
+                
+                $result = $soapClient->UpsertApplicantEmergencyContacts($params);
+                if($result){
+                    if($result->return_value == true){
+                        $this->testPerformance($this->start, 'performance', 'Inserting Emergency Contacts in Business central took ');
 
+                        return response()->json([
+                            'success' => true,
+                            'data' => $result,
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'error' => true,
+                            'message' => 'There was an error inserting the Emergency contacts. Please try again, and if the issue continues, contact our support team for assistance.',
+                            'data' => $result,
+                        ], 404);
+                    }
+                 } else {
                     return response()->json([
-                        'success' => true,
-                        'data' => $result,
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'error' => true,
-                        'message' => 'There was an error inserting the Emergency contacts. Please try again, and if the issue continues, contact our support team for assistance.',
-                        'data' => $result,
+                    'error' => true,
+                    'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
                     ], 404);
                 }
+            }
+
+           
+            
+
                 
         
-            } else {
-                return response()->json([
-                'error' => true,
-                'message' => 'We encountered a problem while creating your application. Please try again, and if the issue continues, contact our support team for assistance.'
-                ], 404);
-            }
+           
 
         }catch(SoapFault | Exception $e){
             if($e->getCode() == 0 && $retryCount < $maxRetries){
