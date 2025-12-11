@@ -1271,7 +1271,8 @@ class ApplicationController extends Controller
          try{
             $currentYr = date('Y');
             $intakeQuery = $this->generalQueries->intakesQuery();
-            $intakeURL = config('app.odata')  . "{$intakeQuery}?" . '$filter=' . rawurlencode("AcademicYear eq '{$currentYr}'");
+            // $intakeURL = config('app.odata')  . "{$intakeQuery}?" . '$filter=' . rawurlencode("AcademicYear eq '{$currentYr}'");
+            $intakeURL = config('app.odata')  . "{$intakeQuery}";
             $intakes=  $this->businessCentralAccess->getOdata($intakeURL);
             $response = $this->validateAPIResponse($intakes, url()->previous());
         
