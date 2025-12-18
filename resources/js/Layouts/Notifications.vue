@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, computed } from 'vue';
+import { defineProps, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({

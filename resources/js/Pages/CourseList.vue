@@ -119,7 +119,7 @@ const hasPendingPayments = computed(() => {
 
         <div v-else>
             <!-- New Applications -->
-            <section class="mt-6 ml-6 md:ml-12">
+            <section class="mt-6 ml-1 md:ml-12">
                 <div>
                     <h2 class="font-monteserat tracking-wider text-black text-base">
                         New Applications
@@ -242,7 +242,7 @@ const hasPendingPayments = computed(() => {
            
 
             <!-- Submitted Applications -->
-            <section v-if="totalSubmittedApplications > 0" class="mt-6 ml-6 md:ml-12">
+            <section v-if="totalSubmittedApplications > 0" class="mt-6 ml-1 md:ml-12">
                 <div>
                     <h2 class="font-monteserat tracking-wider text-black text-base">
                         Submitted Applications
@@ -328,7 +328,7 @@ const hasPendingPayments = computed(() => {
 
 
             <!-- Processed Applications -->
-            <section v-if="totalProcessedApplications > 0" class="mt-6 ml-6 md:ml-12">
+            <section v-if="totalProcessedApplications > 0" class="mt-6 ml-1 md:ml-12">
                 <div>
                     <h2 class="font-monteserat tracking-wider text-black text-base">
                         Processed Applications

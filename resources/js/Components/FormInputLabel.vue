@@ -1,5 +1,4 @@
 <script setup>
-// defineProps(['type', 'id', 'inputname'])
 defineProps({
     forInput: {
         type: String

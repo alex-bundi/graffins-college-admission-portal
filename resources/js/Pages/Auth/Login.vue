@@ -1,6 +1,5 @@
 <script setup>
 import { Head, Link, useForm,router } from '@inertiajs/vue3';
-import ApplicationLayout from '@/Layouts/ApplicationLayout.vue';
 import Notifications from '@/Layouts/Notifications.vue';
 import FormInput from '@/Components/FormInput.vue';
 import FormInputLabel from '@/Components/FormInputLabel.vue';
