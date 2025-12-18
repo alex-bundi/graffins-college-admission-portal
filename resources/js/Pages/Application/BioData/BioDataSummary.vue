@@ -16,7 +16,6 @@ const props = defineProps({
     },
 });
 
-console.log(props.applicantData);
 
 const applicantImage = ref('');
 const hasApplicantImage = ref(false);
