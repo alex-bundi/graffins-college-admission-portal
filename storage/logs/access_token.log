@@ -56,3 +56,4 @@
 [2025-12-11 07:22:20] local.ERROR: 2025-12-11 07:22:19_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  
 [2026-01-19 09:49:34] local.ERROR: 2026-01-19 09:49:32_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  
 [2026-01-19 09:50:50] local.ERROR: 2026-01-19 09:50:49_access_token_{"error":{"code":"Authentication_InvalidCredentials","message":"The server has rejected the client credentials.  CorrelationId:  0e624f84-6bd2-4cfe-b5b5-602a6ec458c8."}}  
+[2026-01-21 06:42:01] local.ERROR: 2026-01-21 06:42:00_access_token_{"error":{"code":"Authentication_InvalidCredentials","message":"The server has rejected the client credentials.  CorrelationId:  a3954bba-b5f3-4f1f-8b01-5505aaad3fe2."}}  

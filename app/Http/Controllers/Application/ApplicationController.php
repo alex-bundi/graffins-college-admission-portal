@@ -1262,7 +1262,7 @@ class ApplicationController extends Controller
         if(base64_encode($decoded) != $s) {
             return false;
         }
-    
+
         return true;
     }
 
@@ -1271,8 +1271,8 @@ class ApplicationController extends Controller
          try{
             $currentYr = date('Y');
             $intakeQuery = $this->generalQueries->intakesQuery();
-            // $intakeURL = config('app.odata')  . "{$intakeQuery}?" . '$filter=' . rawurlencode("AcademicYear eq '{$currentYr}'");
-            $intakeURL = config('app.odata')  . "{$intakeQuery}";
+            $intakeURL = config('app.odata')  . "{$intakeQuery}?" . '$filter=' . rawurlencode("AcademicYear eq '{$currentYr}'");
+            // $intakeURL = config('app.odata')  . "{$intakeQuery}";
             $intakes=  $this->businessCentralAccess->getOdata($intakeURL);
             $response = $this->validateAPIResponse($intakes, url()->previous());
         
