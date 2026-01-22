@@ -1013,6 +1013,27 @@ class BioDataController extends Controller
             'passportID' => 'required|string',
         ]);
         try{
+            $passport_Id = strtoupper(trim($validated['passportID']));
+            // Check if passport or ID exists
+            $studentsQuery = $this->generalQueries->studentsQuery();
+            $studentsURL = config('app.odata') . "{$studentsQuery}?" . '$filter=' . rawurlencode("PassportID eq '{$passport_Id}'");
+            $studentsData = $this->businessCentralAccess->getOdata($studentsURL);
+            $response = $this->validateAPIResponse($studentsData, url()->previous());
+        
+            if ($response) {
+                return $response;
+            }
+            $student = $studentsData['data']['value'];
+
+            if(count($student) > 0){
+                return redirect()->back()->withErrors([
+                    'error' => 'This passport/ID is already in use. If you don’t have your passport/ID, please enter your full name instead.'
+                ]);
+            }
+
+            
+
+            
             $applicationID =$this->retrieveOrUpdateSessionData('get', 'application_no');
             $applicant = Applicant::where('id', $applicationID)->first();
             $applicant->id_passport_No = strtoupper(trim($validated['passportID']));

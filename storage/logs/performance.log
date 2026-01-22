@@ -357,3 +357,9 @@
 [2026-01-21 06:46:49] local.ERROR: [2026-01-21 06:46:49] Insertng Course details in Business central took took 3079.59 ms  
 [2026-01-21 06:46:54] local.ERROR: [2026-01-21 06:46:54] Converting Application to customer in Business central took took 5018.96 ms  
 [2026-01-21 06:49:25] local.ERROR: [2026-01-21 06:49:25] getting Students from ERP took 781.31 ms  
+[2026-01-22 06:26:56] local.ERROR: [2026-01-22 06:26:56] getting intake took 847.22 ms  
+[2026-01-22 06:27:03] local.ERROR: [2026-01-22 06:27:03] getting tutors took 804.41 ms  
+[2026-01-22 06:27:25] local.ERROR: [2026-01-22 06:27:25] inserting contacts took 47.29 ms  
+[2026-01-22 06:27:26] local.ERROR: [2026-01-22 06:27:26] getting Nationalities took 741.29 ms  
+[2026-01-22 06:27:29] local.ERROR: [2026-01-22 06:27:29] inserting Nationality to db took 59.37 ms  
+[2026-01-22 06:42:04] local.ERROR: [2026-01-22 06:42:04] getting residences took 882.24 ms  
