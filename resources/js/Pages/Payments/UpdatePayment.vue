@@ -116,8 +116,6 @@ function submit(){
     }
 }
 
-
-
 async function getFeeDetails() {
     const response = await fetch('/payments/fee-details');
     return await response.json();
@@ -241,7 +239,7 @@ function submitEdit() {
                                                     </span>
                                             </button >
                                         </div>
-                                        <div v-else>
+                                        <div v-if="courseLine.payment_updated == 1">
                                             <div class="hidden sm:flex items-center justify-center space-x-2">
                                                 <span class="relative flex h-3 w-3">
                                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>

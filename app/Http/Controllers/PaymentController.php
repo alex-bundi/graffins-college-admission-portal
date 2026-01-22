@@ -143,8 +143,6 @@ class PaymentController extends Controller
                 ->where('application_status', 'processed')
                 ->first();
 
-
-
             if($applicant){
                 $applicantCourse = ApplicantCourse::where('applicant_id', $applicant->id)->get();
                 $studentNo = $applicant->student_no;
