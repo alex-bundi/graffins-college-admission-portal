@@ -272,6 +272,7 @@ class ApplicationController extends Controller
 
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
+            dd($departmentsURL);
             $departmentsData = $this->businessCentralAccess->getOdata($departmentsURL);
             // dd(url()->previous());
             $response = $this->validateAPIResponse($departmentsData, url()->previous());
