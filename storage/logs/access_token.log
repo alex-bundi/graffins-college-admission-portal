@@ -161,3 +161,7 @@
 [2026-03-23 10:59:08] local.ERROR: 2026-03-23 10:58:46_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  
 [2026-03-23 10:59:35] local.ERROR: 2026-03-23 10:59:35_internet_connection{"message":"Too many error requests"}  
 [2026-03-23 10:59:47] local.ERROR: 2026-03-23 10:59:46_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  
+[2026-04-14 05:33:04] local.ERROR: 2026-04-14 05:33:03_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  
+[2026-04-14 05:33:28] local.ERROR: 2026-04-14 05:33:28_internet_connection{"error":{"code":"Internal_ServerError","message":"Sorry, the current permissions prevented the action. (TableData 50007 Intake Read: GraffinsErp)  CorrelationId:  c49ec2ad-3a29-4cf4-a442-72421a9bd371."}}  
+[2026-04-14 05:33:35] local.ERROR: 2026-04-14 05:33:35_internet_connection{"error":{"code":"Internal_ServerError","message":"Sorry, the current permissions prevented the action. (TableData 50007 Intake Read: GraffinsErp)  CorrelationId:  49b42473-3ec1-4599-97b6-5de39676259c."}}  
+[2026-05-04 12:02:05] local.ERROR: 2026-05-04 12:02:03_access_token_<error xmlns="http://docs.oasis-open.org/odata/ns/metadata"><code>Unauthorized</code><message>The credentials provided are incorrect</message></error>  

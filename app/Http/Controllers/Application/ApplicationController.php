@@ -269,10 +269,8 @@ class ApplicationController extends Controller
 
     public function getDepartmentPage(){
         try {
-
             $departmentsQuery = $this->generalQueries->departmentsQuery();
             $departmentsURL = config('app.odata') . "{$departmentsQuery}?". '$filter=' . rawurlencode("Dimension_Code eq 'DEPARTMENT'");
-            dd($departmentsURL);
             $departmentsData = $this->businessCentralAccess->getOdata($departmentsURL);
             // dd(url()->previous());
             $response = $this->validateAPIResponse($departmentsData, url()->previous());
@@ -300,7 +298,7 @@ class ApplicationController extends Controller
             ]);
 
         }catch(Exception $e){
-            
+            dd($e->getMessage());
             return redirect()->back()->withErrors(
                 'error', $e->getMessage()
             );
@@ -366,8 +364,6 @@ class ApplicationController extends Controller
                     $notSubmitted = ApplicantCourse::where('applicant_id', $applicantId)
                         ->where('application_status', '<>', 'submitted')
                         ->exists();
-
-                    dd($notSubmitted);
 
                     if ($notSubmitted) {
                         // Some course lines are are not submitted
@@ -435,23 +431,9 @@ class ApplicationController extends Controller
             }
 
         }catch(Exception $e){
+            dd($e->getMessage());
             return false;
         }
-    }
-
-    public function postModeOfStudyy(Request $request, $action){
-        $validated = $request->validate([
-            'mode_of_study' => 'required|string',
-        ]);
-
-        try {
-            $pendingApplications = $this->ValidateApplications();
-        }catch(Exception $e){
-            return redirect()->back()->withErrors([
-                'error' => $e->getMessage()
-            ]);
-        }
-
     }
 
     public function postModeOfStudy(Request $request){
@@ -517,34 +499,6 @@ class ApplicationController extends Controller
                     return redirect()->route('department');
                 }
 
-
-                
-                // if($applicantCourse == null){
-                //      $applicantCourse = [
-                //         'mode_of_study' =>$validated['mode_of_study'] == 'inclass' ? 1 : 2,
-                //         'applicant_id' => $applications->id,
-                //     ];
-
-                //     $newApplicantCourse = ApplicantCourse::create($applicantCourse);
-                //     $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $newApplicantCourse->id);
-                //     $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
-
-                // } else {
-                //     $applicantCourse->mode_of_study = $validated['mode_of_study'] == 'inclass' ? 1 : 2;
-                //     if (!$applicantCourse->save()) {
-                //         return redirect()->back()->withErrors([
-                //             'error' => 'Failed to save the mode of study. Please try again.'
-                //         ]);
-                //     }
-                //     $this->retrieveOrUpdateSessionData('put', 'applicationCourseID', $applicantCourse->id);
-                //     $this->retrieveOrUpdateSessionData('put', 'application_no', $applications->id);
-                // }
-                
-                
-                
-                
-                
-
             }
 
             
@@ -606,7 +560,7 @@ class ApplicationController extends Controller
             if (!$applicantCourse->save()) {
                 return redirect()->back()->withErrors([
                     'error' => 'Failed to save the course. Please try again.'
-                ]);
+                ]);    
             }
 
             return redirect()->route('course-type');
